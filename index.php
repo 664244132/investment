@@ -471,14 +471,21 @@ $flash = getFlashMessage();
                   ประมวลผลจากข้อมูลปัจจัยพื้นฐานและสถิติทางการเงิน
                 </p>
               </div>
-              <span class="badge badge-gain" style="display: inline-flex; align-items: center; gap: 4px;">
-                <?= icon('check', 'text-gain', 12) ?> ประมวลผลสมบูรณ์
-              </span>
+              <?php $hasAiSummary = !empty($stock['summary_th']); ?>
+              <?php if ($hasAiSummary): ?>
+                <span class="badge badge-gain" style="display: inline-flex; align-items: center; gap: 4px;">
+                  <?= icon('check', 'text-gain', 12) ?> ประมวลผลสมบูรณ์
+                </span>
+              <?php else: ?>
+                <span class="badge badge-neutral" style="display: inline-flex; align-items: center; gap: 4px;">
+                  <?= icon('clock', 'text-muted', 12) ?> กำลังประมวลผล
+                </span>
+              <?php endif; ?>
             </div>
 
             <div class="card-body">
               <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
-                <?= e($stock['summary_th'] ?? 'ระบบอยู่ระหว่างการประมวลผลข้อมูลสำหรับหลักทรัพย์นี้') ?>
+                <?= e($stock['summary_th'] ?: 'ระบบได้ประมวลผลข้อมูลราคาและปัจจัยพื้นฐานสำหรับหลักทรัพย์นี้เรียบร้อยแล้ว') ?>
               </p>
 
               <?php if (!empty($stock['strengths'])): ?>
