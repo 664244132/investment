@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 🚪 pages/logout.php
- * ตัวจัดการการออกจากระบบ (Logout Handler)
+ * pages/logout.php
+ * SmartPort AI - Secure Session Termination
  */
 
 require_once __DIR__ . '/../config/constants.php';

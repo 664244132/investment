@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 🔐 pages/login.php
- * SmartPort AI - User Authentication
+ * pages/login.php
+ * SmartPort AI - Authentication Portal - User Authentication
  * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 

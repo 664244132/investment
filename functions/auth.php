@@ -2,9 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 🔐 functions/auth.php
- * โมดูลจัดการระบบยืนยันตัวตน (Authentication) และความปลอดภัยของเซสชัน
- * ปฏิบัติตามมาตรฐานความปลอดภัย: Password Hashing, Session Fixation Protection, Prepared Statements
+ * functions/auth.php
+ * SmartPort AI - Authentication & Session Management Moduleความปลอดภัย: Password Hashing, Session Fixation Protection, Prepared Statements
  */
 
 require_once __DIR__ . '/../config/constants.php';

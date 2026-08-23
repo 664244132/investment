@@ -4,6 +4,26 @@
 
 ---
 
+## 📌 [Version 1.3.0] - 2026-08-23
+### 🌐 Live Real-Time Market Data Gateway & Global Stock Search Engine
+
+#### 1. ระบบดึงราคาตลาดจริงและสถิติซื้อขายสด (Live Real-Time Market Data)
+- สร้างโมดูล [`functions/market_api.php`](file:///c:/xampp/htdocs/investment/functions/market_api.php) ทำหน้าที่เป็น **Financial Data Gateway** เชื่อมต่อ Live Market Feeds
+- รองรับการดึงข้อมูลสดทั้ง **หุ้นไทย (SET / mai เช่น PTT, DELTA, KBANK, OR)** และ **หุ้นสากลทั่วโลก (NASDAQ, NYSE, S&P500 เช่น TSLA, AAPL, NVDA, MSFT, GOOGL)**
+- ดึงราคาตลาด Real-time, ราคาปิดวันก่อนหน้า, การเปลี่ยนแปลงราคาและเปอร์เซ็นต์, ราคาสูงสุด/ต่ำสุดของวัน (Day High/Low), ปริมาณการซื้อขาย (Volume), และแท่งเทียนย้อนหลัง (OHLCV)
+
+#### 2. ระบบค้นหาหุ้นทั่วโลกแบบสด (Global Stock Search & Autocomplete)
+- สร้าง API Endpoint [**`api/search.php`**](file:///c:/xampp/htdocs/investment/api/search.php) สำหรับค้นหาหุ้นทั้งจากฐานข้อมูลในเครื่องและตลาดโลกแบบไดนามิก
+- พัฒนา UI Autocomplete Dropdown ใน [**`js/main.js`**](file:///c:/xampp/htdocs/investment/js/main.js) แสดงผลการค้นหาแบบ Real-time พร้อมชื่อบริษัท, ตลาดหลักทรัพย์, และราคาตลาด
+
+#### 3. ระบบนำเข้าและวิเคราะห์อัตโนมัติ (On-Demand Auto-Sync & AI Synthesis)
+- ปรับปรุง [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) ให้มีระบบ **Live Auto-Sync Fallback** เมื่อผู้ใช้ค้นหาหุ้นตัวใดในโลกที่ยังไม่มีในระบบ:
+  1. ระบบจะวิ่งไปดึงข้อมูลสดจากตลาดจริงทันที
+  2. สร้างรายการหุ้นในฐานข้อมูล MySQL อัตโนมัติ พร้อมคำนวณตัวชี้วัดทางการเงินและบทวิเคราะห์ AI Score
+  3. บันทึกแท่งเทียนย้อนหลังสำหรับเรนเดอร์กราฟ Chart.js ทันที พร้อมให้นำไปทดลองซื้อขายในพอร์ตจำลองได้ทันที
+
+---
+
 ## 📌 [Version 1.2.0] - 2026-08-23
 ### 🎨 SmartPort AI Branding & UX/UI Polish (Rounded Rectangles, Non-breaking Thai Typography & Unified Fonts)
 
@@ -68,22 +88,4 @@
 
 ## 📌 [Version 1.0.0] - 2026-08-23
 ### 🎉 Initial Core Release & Full-Stack Architecture
-
-#### 1. สถาปัตยกรรมเอกสารและข้อกำหนด (Specifications & Documentation)
-- จัดทำ `markdowns/aboutProject.md`: บันทึกขอบเขตฟีเจอร์หลัก (กราฟราคา, งบการเงิน, AI Score, พอร์ตจำลอง)
-- จัดทำ `DESIGN.md`: กำหนดระบบชุดสี 60-30-5-5 (`#1D1616`, `#FFCC00`, `#FF0000`, `#03C988`), Typography, และ Component Tokens
-- จัดทำ `TECHSTACK.md`: กำหนดสถาปัตยกรรม PHP 8.x + MySQL + HTML5/CSS3/JS, มาตรฐานความปลอดภัย PDO Prepared Statements, และกฎข้อบังคับโปรเจกต์
-- จัดทำ `markdowns/DEBUG.md`: คู่มือการตรวจสอบข้อผิดพลาดบน XAMPP
-- จัดทำ `markdowns/REFACTORCODE.md`: มาตรฐานการเขียนโค้ดและการรีแฟคเตอร์
-
-#### 2. โครงสร้างฐานข้อมูล (Database Schema & Seed Data)
-- สร้างไฟล์ `database_schema.sql` ประกอบด้วย 9 ตารางหลัก:
-  - `users`: จัดเก็บสมาชิกและรหัสผ่าน (`password_hash`)
-  - `stocks`: จัดเก็บรายชื่อหุ้นและราคาตลาด Real-time
-  - `stock_price_history`: จัดเก็บแท่งเทียนราคา OHLCV ย้อนหลัง
-  - `financial_metrics`: จัดเก็บอัตราส่วน P/E, EPS, ROE, P/BV, Dividend Yield, รายได้, กำไรสุทธิ, D/E
-  - `financial_statements`: จัดเก็บงบดุล, งบกำไรขาดทุน, งบกระแสเงินสด
-  - `ai_analyses`: จัดเก็บบทวิเคราะห์และคะแนน AI Score (0-100)
-  - `portfolios` & `portfolio_items`: จัดเก็บพอร์ตจำลองและหุ้นที่ถือครอง
-  - `transactions`: บันทึกประวัติการซื้อ-ขายจำลอง (BUY/SELL)
-- ใส่ Seed Data ตัวอย่างสำหรับหุ้นชั้นนำ: DELTA, PTT, CPALL, BDMS, AOT, SCB, NVDA, AAPL
+- จัดทำเอกสารและฐานข้อมูลเริ่มต้น 9 ตาราง พร้อมระบบจำลองพอร์ต 1,000,000 บาท

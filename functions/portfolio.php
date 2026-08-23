@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 💼 functions/portfolio.php
- * โมดูลจัดการพอร์ตการลงทุนจำลอง (Simulated Portfolio Engine)
+ * functions/portfolio.php
+ * SmartPort AI - Portfolio Simulation & Trade Execution Engine
  * รองรับการจำลองซื้อ-ขายหุ้นตามราคาตลาดจริงแบบ Real-time คำนวณต้นทุนเฉลี่ย และผลกำไร-ขาดทุน
  */
 

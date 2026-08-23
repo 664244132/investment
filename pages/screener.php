@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 🔍 pages/screener.php
- * SmartPort AI - Fundamental & Quantitative Stock Screener
+ * pages/screener.php
+ * SmartPort AI - Stock Screener & Quantitative Filter Engine - Fundamental & Quantitative Stock Screener
  * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 

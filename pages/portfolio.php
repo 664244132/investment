@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 💼 pages/portfolio.php
- * SmartPort AI - Simulated Portfolio Engine & Transaction Management
+ * pages/portfolio.php
+ * SmartPort AI - Simulated Portfolio & Trade Execution Portale & Transaction Management
  * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 

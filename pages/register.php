@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 📝 pages/register.php
- * SmartPort AI - User Registration & Instant Portfolio Provisioning
+ * pages/register.php
+ * SmartPort AI - User Registration Portal - User Registration & Instant Portfolio Provisioning
  * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 

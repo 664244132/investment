@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * 🗄️ config/db.php
+ * config/db.php
  * ไฟล์จัดการการเชื่อมต่อฐานข้อมูล MySQL ผ่าน PDO (PHP Data Objects)
  * ออกแบบตามหลัก Singleton Pattern เพื่อประสิทธิภาพและลดภาระเซิร์ฟเวอร์
  */

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * 🛠️ functions/helpers.php
+ * functions/helpers.php
  * รวมฟังก์ชันช่วยเหลือทั่วไป (Utility & Helper Functions)
  * ออกแบบตามหลัก De Morgan's Laws, Early Return Guard Clauses และ Security Best Practices
  */

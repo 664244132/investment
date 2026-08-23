@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * 📈 functions/stocks.php
- * โมดูลจัดการข้อมูลหุ้น อัตราส่วนทางการเงิน งบการเงิน และระบบคัดกรองหุ้น (Stock Screener)
+ * functions/stocks.php
+ * SmartPort AI - Stock Analysis & Financial Metrics Engine
  * ปฏิบัติตามมาตรฐาน PDO Prepared Statements, Strict Types และ Early Return
  */
 
@@ -91,6 +91,11 @@ function getStockBySymbol(PDO $pdo, string $symbol): ?array
     $stock = $stmt->fetch();
 
     if (!$stock) {
+        // Fallback: ดึงข้อมูลสดจากตลาดโลกและซิงค์เข้าฐานข้อมูลอัตโนมัติ
+        require_once __DIR__ . '/market_api.php';
+        if (function_exists('syncStockToDatabase')) {
+            return syncStockToDatabase($pdo, $symbol);
+        }
         return null;
     }
 

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * 🏠 index.php
+ * index.php
  * SmartPort AI - Financial Terminal & Simulated Portfolio Dashboard
  * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * 🎨 functions/icons.php
+ * functions/icons.php
  * โมดูลจัดการ SVG Vector Icons มาตรฐานของโปรเจกต์ (Strictly Icons Only — Zero Emojis)
  * ทำงานแบบ Local 100% ไม่พึ่งพา External Font หรือ CDN ภายนอก
  */
