@@ -84,11 +84,44 @@ document.addEventListener('DOMContentLoaded', () => {
     tradeQtyInput.addEventListener('input', calculateTradeTotal);
   }
 
+  const tradeStockSelect = document.getElementById('trade_stock_id');
+  if (tradeStockSelect && tradeStockPrice) {
+    tradeStockSelect.addEventListener('change', () => {
+      const selectedOption = tradeStockSelect.options[tradeStockSelect.selectedIndex];
+      if (selectedOption && selectedOption.dataset.price) {
+        const price = parseFloat(selectedOption.dataset.price) || 0;
+        tradeStockPrice.setAttribute('data-price', price.toString());
+        tradeStockPrice.textContent = '฿' + price.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        calculateTradeTotal();
+      }
+    });
+  }
+
   openTradeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const type = btn.getAttribute('data-trade-type') || 'BUY';
       if (tradeTypeInput) tradeTypeInput.value = type;
       
+      const stockId = btn.getAttribute('data-stock-id');
+      const customPrice = btn.getAttribute('data-price');
+      const tradeStockSelect = document.getElementById('trade_stock_id');
+
+      if (stockId && tradeStockSelect) {
+        tradeStockSelect.value = stockId;
+        tradeStockSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      if (customPrice && tradeStockPrice) {
+        tradeStockPrice.setAttribute('data-price', customPrice);
+        tradeStockPrice.textContent = '฿' + parseFloat(customPrice).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
       if (tradeSubmitBtn) {
         if (type === 'BUY') {
           tradeSubmitBtn.className = 'btn btn-buy btn-full';

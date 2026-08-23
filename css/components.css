@@ -15,70 +15,104 @@
   padding: 0.65rem 1.35rem;
   border-radius: var(--radius-md);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   font-family: var(--font-primary);
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: all 0.15s ease;
   text-decoration: none;
   line-height: 1;
   position: relative;
   white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .btn-primary {
-  background: var(--accent-gold);
-  color: var(--text-dark);
+  background: linear-gradient(180deg, #FFD633 0%, #FFCC00 100%);
+  color: #1A1300 !important;
+  border: 1px solid #FFE066;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.02em;
+}
+.btn-primary svg {
+  stroke: #1A1300 !important;
 }
 .btn-primary:hover, .btn-primary:focus-visible {
-  background: var(--accent-gold-hover);
+  background: linear-gradient(180deg, #FFE466 0%, #FFD633 100%);
+  border-color: #FFF099;
 }
 .btn-primary:active {
-  background: #E6B800;
+  background: #CCA300;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid var(--accent-gold-border);
+  background: linear-gradient(180deg, rgba(255, 204, 0, 0.06) 0%, rgba(255, 204, 0, 0.02) 100%);
+  border: 1px solid rgba(255, 204, 0, 0.35);
   color: var(--accent-gold);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 .btn-outline:hover, .btn-outline:focus-visible {
-  background: var(--accent-gold-subtle);
+  background: linear-gradient(180deg, rgba(255, 204, 0, 0.18) 0%, rgba(255, 204, 0, 0.08) 100%);
   border-color: var(--accent-gold);
+  color: #FFF099;
 }
 .btn-outline:active {
-  background: rgba(255, 204, 0, 0.2);
+  background: rgba(255, 204, 0, 0.25);
 }
 
+/* ==============================================================================
+   🌟 Premium Buy & Sell Financial Trading Buttons
+   ============================================================================== */
 .btn-buy {
-  background: var(--color-success);
-  color: #11281E;
+  background: linear-gradient(180deg, #03D38E 0%, #029E6B 100%);
+  color: #062316 !important;
+  border: 1px solid #03E298;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 8px rgba(3, 201, 136, 0.25);
+  letter-spacing: 0.02em;
+}
+.btn-buy svg {
+  stroke: #062316 !important;
 }
 .btn-buy:hover, .btn-buy:focus-visible {
-  background: var(--color-success-hover);
+  background: linear-gradient(180deg, #25E5A5 0%, #03C988 100%);
+  border-color: #38F0B2;
 }
 .btn-buy:active {
-  background: #029E6B;
+  background: #028257;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .btn-sell {
-  background: var(--color-danger);
-  color: #FFFFFF;
+  background: linear-gradient(180deg, #FF3333 0%, #D60000 100%);
+  color: #FFFFFF !important;
+  border: 1px solid #FF4D4D;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 8px rgba(255, 0, 0, 0.25);
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.btn-sell svg {
+  stroke: #FFFFFF !important;
 }
 .btn-sell:hover, .btn-sell:focus-visible {
-  background: var(--color-danger-hover);
+  background: linear-gradient(180deg, #FF5C5C 0%, #E60000 100%);
+  border-color: #FF7070;
 }
 .btn-sell:active {
-  background: #CC0000;
+  background: #B30000;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .btn-sm {
-  padding: 0.4rem 0.85rem;
+  padding: 0.45rem 0.95rem;
   font-size: 0.8rem;
   border-radius: var(--radius-sm);
 }
 
 .btn-lg {
-  padding: 0.9rem 1.85rem;
-  font-size: 1rem;
+  padding: 0.95rem 2rem;
+  font-size: 1.05rem;
   border-radius: var(--radius-md);
 }
 
@@ -122,48 +156,53 @@
 }
 
 /* ==============================================================================
-   3. Colors & Badges (Sleek Rounded Shapes — No Capsules)
+   3. Colors & Luxury Glassmorphic Badges (Sleek Rounded Shapes — No Capsules)
    ============================================================================== */
-.text-gain { color: var(--color-success) !important; }
-.text-loss { color: var(--color-danger) !important; }
+.text-gain { color: #1AE29E !important; }
+.text-loss { color: #FF5C5C !important; }
 .text-neutral { color: var(--text-muted) !important; }
 .text-gold { color: var(--accent-gold) !important; }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.28rem 0.65rem;
+  gap: 0.38rem;
+  padding: 0.32rem 0.75rem;
   border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 600;
   font-family: var(--font-primary);
   white-space: nowrap;
   line-height: 1.2;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.15s ease;
 }
 
 .badge-gain {
-  background: var(--color-success-subtle);
-  color: var(--color-success);
-  border: 1px solid var(--color-success-border);
+  background: linear-gradient(180deg, rgba(3, 201, 136, 0.22) 0%, rgba(3, 201, 136, 0.08) 100%);
+  color: #1AE29E;
+  border: 1px solid rgba(3, 201, 136, 0.4);
 }
 
 .badge-loss {
-  background: var(--color-danger-subtle);
-  color: var(--color-danger);
-  border: 1px solid var(--color-danger-border);
+  background: linear-gradient(180deg, rgba(255, 46, 46, 0.22) 0%, rgba(255, 46, 46, 0.08) 100%);
+  color: #FF6666;
+  border: 1px solid rgba(255, 46, 46, 0.4);
 }
 
 .badge-neutral {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+  color: #D4C9B4;
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .badge-gold {
-  background: var(--accent-gold-subtle);
-  color: var(--accent-gold);
-  border: 1px solid var(--accent-gold-border);
+  background: linear-gradient(180deg, rgba(255, 204, 0, 0.22) 0%, rgba(255, 204, 0, 0.08) 100%);
+  color: #FFD633;
+  border: 1px solid rgba(255, 204, 0, 0.42);
 }
 
 /* ==============================================================================

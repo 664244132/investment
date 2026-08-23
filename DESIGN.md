@@ -119,3 +119,30 @@
 - ติดตั้งปุ่มเพิ่ม-ลดจำนวน (▲ / ▼) สไตล์ Dark Gold คัสตอมที่ขอบขวาของช่องกรอกตัวเลข
 - เชื่อมต่อการเพิ่ม-ลดค่าตาม `step`, `min`, `max` พร้อมยิง Event `input` / `change` สำหรับคำนวณแบบ Real-time ทันที
 
+---
+
+## ⚡ 7. ระบบปุ่มซื้อ-ขายระดับสถาบัน และ Glassmorphic Badges (Trading Buttons & Badges)
+
+### 7.1 ปุ่มคำสั่งซื้อ `.btn-buy` (Buy / Long Action)
+- พื้นหลัง: `linear-gradient(180deg, #03D38E 0%, #029E6B 100%)`
+- เส้นขอบและ Inner Highlight: `border: 1px solid #03E298; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 8px rgba(3, 201, 136, 0.25);`
+- ตัวอักษรและไอคอน: สีเข้มจัด `#062316` ตัวหนา 700
+- Hover State: สว่างขึ้นเป็นสีมินต์ `#25E5A5` (ไม่ลอยตัว)
+
+### 7.2 ปุ่มคำสั่งขาย `.btn-sell` (Sell / Short Action)
+- พื้นหลัง: `linear-gradient(180deg, #FF3333 0%, #D60000 100%)`
+- เส้นขอบและ Inner Highlight: `border: 1px solid #FF4D4D; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 8px rgba(255, 0, 0, 0.25);`
+- ตัวอักษรและไอคอน: สีขาวบริสุทธิ์ `#FFFFFF` ตัวหนา 700 พร้อม Text Shadow
+- Hover State: สว่างขึ้นเป็นสีแดงสด `#FF5C5C` (ไม่ลอยตัว)
+
+### 7.3 Glassmorphic Financial Badges (`.badge`)
+- โครงสร้าง: `display: inline-flex; align-items: center; gap: 0.38rem; padding: 0.32rem 0.75rem; border-radius: var(--radius-sm);`
+- เอฟเฟกต์กระจก: `backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);`
+- เงาขนาดเล็ก: `box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);`
+- เฉดสี:
+  - 🟢 **`.badge-gain`:** พื้นหลังเขียวมรกตโปร่งแสง ขอบสีเขียวสด `#1AE29E`
+  - 🔴 **`.badge-loss`:** พื้นหลังแดงทับทิมโปร่งแสง ขอบสีแดง `#FF6666`
+  - 🟡 **`.badge-gold`:** พื้นหลังทองคำโปร่งแสง ขอบสีทอง `#FFD633`
+  - ⚪ **`.badge-neutral`:** พื้นหลังเงินสว่างโปร่งแสง ขอบ `#D4C9B4`
+
+

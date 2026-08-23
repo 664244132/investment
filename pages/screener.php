@@ -124,13 +124,13 @@ $screenedStocks = screenStocks($pdo, $filters);
         <span style="font-size: 0.75rem; font-family: var(--font-primary); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap;">
           กลยุทธ์ยอดนิยม:
         </span>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="badge badge-neutral">
           <?= icon('zap', 'text-gold', 12) ?> หุ้นปันผลสูง (Yield > 4%)
         </a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="badge badge-neutral">
           <?= icon('trending-up', 'text-gain', 12) ?> หุ้นเติบโตราคาถูก (P/E < 20 & ROE > 15%)
         </a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="badge badge-neutral">
           <?= icon('star', 'text-gold', 12) ?> หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
         </a>
       </div>
@@ -254,7 +254,7 @@ $screenedStocks = screenStocks($pdo, $filters);
                     </td>
                     <td style="text-align: center;">
                       <?php if ($s['total_score']): ?>
-                        <span class="badge" style="background: var(--accent-gold-subtle); color: var(--accent-gold); border: 1px solid var(--accent-gold-border); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px;">
+                        <span class="badge badge-gold font-bold">
                           <?= icon('star', 'text-gold', 12) ?> <?= (int)$s['total_score'] ?>
                         </span>
                       <?php else: ?>

@@ -297,10 +297,18 @@ $flash = getFlashMessage();
                         (<?= formatPercent((float)$item['return_percent']) ?>)
                       </div>
                     </td>
-                    <td style="text-align: center;">
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="btn btn-outline btn-sm">
-                        <?= icon('bot', '', 12) ?> วิเคราะห์
-                      </a>
+                    <td style="text-align: right; white-space: nowrap;">
+                      <div style="display: inline-flex; gap: 0.35rem;">
+                        <button type="button" class="btn btn-buy btn-sm open-trade-modal-btn" data-trade-type="BUY" data-stock-id="<?= (int)$item['stock_id'] ?>" data-price="<?= (float)$item['current_price'] ?>">
+                          <?= icon('plus', '', 12) ?> ซื้อ
+                        </button>
+                        <button type="button" class="btn btn-sell btn-sm open-trade-modal-btn" data-trade-type="SELL" data-stock-id="<?= (int)$item['stock_id'] ?>" data-price="<?= (float)$item['current_price'] ?>">
+                          <?= icon('minus', '', 12) ?> ขาย
+                        </button>
+                        <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="btn btn-outline btn-sm">
+                          <?= icon('bot', '', 12) ?> วิเคราะห์
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 <?php endforeach; ?>

@@ -24,6 +24,12 @@
 - **4.2 Custom Number Steppers:** ห้ามปล่อยให้ปุ่ม Spin Button สี่เหลี่ยมสีขาวดั้งเดิมของเบราว์เซอร์ใน `<input type="number">` โผล่มาทำลายธีมมืดเด็ดขาด (ต้องรีเซ็ตด้วย `-webkit-appearance: none;`) และต้องใช้ **ปุ่มเพิ่ม-ลดจำนวน Custom Stepper (▲ / ▼)** สไตล์ Dark Gold คัสตอมเท่านั้น
 - **4.3 Unified Shape & Typography:** กรอบและปุ่มทุกจุดต้องใช้ความโค้งมนที่กลมกลืน (`4px - 10px`) และใช้ **Modern Sans-serif Stack เดียวกันทั้งระบบ** (ยกเว้นตัวเลขทางการเงินให้ใช้ Monospace แบบ `tabular-nums`)
 
+### 🔴 กฎข้อ 5: การออกแบบปุ่มซื้อ-ขายระดับสถาบัน และ Glassmorphic Badges (Institutional Trading Buttons & Glassmorphic Badges)
+- **5.1 ปุ่มคำสั่งซื้อ (`.btn-buy`):** ต้องใช้การไล่เฉดสีมรกตลึก `linear-gradient(180deg, #03D38E 0%, #029E6B 100%)`, ตัวอักษรสีเข้มจัด `#062316` ตัวหนา 700, ขอบบน Inner Highlight `inset 0 1px 0 rgba(255, 255, 255, 0.35)`, และเปลี่ยนเป็นสีมินต์ `#25E5A5` เมื่อ Hover โดยไม่ลอยตัว
+- **5.2 ปุ่มคำสั่งขาย (`.btn-sell`):** ต้องใช้การไล่เฉดสีแดงทับทิม `linear-gradient(180deg, #FF3333 0%, #D60000 100%)`, ตัวอักษรสีขาวบริสุทธิ์ `#FFFFFF` ตัวหนา 700 พร้อม Text Shadow, และเปลี่ยนเป็นสีแดงสด `#FF5C5C` เมื่อ Hover
+- **5.3 ปุ่มทองแบรนด์หลัก (`.btn-primary`):** ต้องใช้การไล่เฉดสีทองทรงคุณค่า `linear-gradient(180deg, #FFD633 0%, #FFCC00 100%)`, ตัวอักษรสี `#1A1300` ตัวหนา 700
+- **5.4 Glassmorphic Badges (`.badge`):** ป้ายกำกับสถานะทุกตัวต้องใช้เอฟเฟกต์กระจกเบลอ `backdrop-filter: blur(12px);`, พื้นหลังไล่เฉดโปร่งแสง (Translucent Tint), เส้นขอบบาง 1px, และ Micro Shadow `0 1px 3px rgba(0, 0, 0, 0.25)`
+
 ### 🔴 กฎข้อ 10: การจัดการฐานข้อมูล (Database Protocol)
 - **ห้ามนำข้อมูลเข้า หรือสร้าง table database เองโดยอัตโนมัติเด็ดขาด**
 - ต้องจัดเตรียมไฟล์คำสั่ง SQL (เช่น `database_schema.sql`) และแจ้งผู้ใช้ทราบ พร้อมส่งมอบโค้ดให้ผู้ใช้เป็นผู้นำไปกดรันผ่าน phpMyAdmin บนเครื่องของผู้ใช้เองเท่านั้น

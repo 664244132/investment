@@ -212,8 +212,8 @@ $flash = getFlashMessage();
                 <span class="stock-symbol"><?= e($stock['symbol']) ?></span>
                 <span class="badge badge-gold"><?= e($stock['market']) ?></span>
                 <span class="badge badge-neutral"><?= e($stock['sector']) ?></span>
-                <span class="badge" style="background: rgba(3, 201, 136, 0.1); color: var(--color-success); border: 1px solid var(--color-success-border); font-size: 0.7rem;">
-                  <?= icon('check', 'text-gain', 10) ?> ข้อมูลพร้อมวิเคราะห์
+                <span class="badge badge-gain">
+                  <?= icon('check', 'text-gain', 12) ?> ข้อมูลพร้อมวิเคราะห์
                 </span>
               </div>
               <p style="color: var(--text-muted); font-size: 1.05rem;">
@@ -473,11 +473,11 @@ $flash = getFlashMessage();
               </div>
               <?php $hasAiSummary = !empty($stock['summary_th']); ?>
               <?php if ($hasAiSummary): ?>
-                <span class="badge badge-gain" style="display: inline-flex; align-items: center; gap: 4px;">
+                <span class="badge badge-gain">
                   <?= icon('check', 'text-gain', 12) ?> ประมวลผลสมบูรณ์
                 </span>
               <?php else: ?>
-                <span class="badge badge-neutral" style="display: inline-flex; align-items: center; gap: 4px;">
+                <span class="badge badge-neutral">
                   <?= icon('clock', 'text-muted', 12) ?> กำลังประมวลผล
                 </span>
               <?php endif; ?>
@@ -538,7 +538,7 @@ $flash = getFlashMessage();
                 ประเมินจากแบบจำลองเชิงปริมาณ 4 มิติหลัก (เต็ม 100 คะแนน)
               </p>
             </div>
-            <span class="badge badge-gold" style="font-size: 0.8rem;">
+            <span class="badge badge-gold">
               โมเดลการประเมินปัจจัยพื้นฐาน
             </span>
           </div>
@@ -569,8 +569,8 @@ $flash = getFlashMessage();
               </div>
 
               <div style="margin-top: 1rem;">
-                <span class="badge badge-gain" style="font-size: 0.9rem; padding: 0.4rem 0.85rem;">
-                  <?= e($stock['recommendation'] ?? 'Buy') ?>
+                <span class="badge badge-gain">
+                  <?= icon('check', 'text-gain', 14) ?> <?= e($stock['recommendation'] ?? 'Buy') ?>
                 </span>
               </div>
             </div>
