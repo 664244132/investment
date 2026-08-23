@@ -1,0 +1,66 @@
+# ==============================================================================
+# 🚫 .gitignore: Git Ignore Rules for AI Stock Analysis & Investment Platform
+# ==============================================================================
+
+# --- 1. Environment & Sensitive Config Files ---
+.env
+.env.local
+.env.*.local
+*.env
+config/secrets.php
+
+# --- 2. PHP & Server Logs / Runtime Dumps ---
+logs/
+*.log
+error_log
+php_errors.log
+php_error_log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# --- 3. Package Managers & Dependency Directories ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+vendor/
+composer.phar
+
+# --- 4. Frontend Prototype Build Caches (AI Stock folder) ---
+AI Stock/node_modules/
+AI Stock/dist/
+AI Stock/.next/
+AI Stock/.parcel-cache/
+AI Stock/build/
+AI Stock/.cache/
+
+# --- 5. Operating System Generated Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- 6. IDE & Code Editor Configurations ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# --- 7. Local Database Backups & Temporary SQL Dumps ---
+*.sql.gz
+*.sql.bak
+dump.sql
+backup.sql

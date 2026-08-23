@@ -1,0 +1,43 @@
+# ==============================================================================
+# 🤖 .antigravityignore: AI Agent Indexing & Context Exclusion Rules
+# ==============================================================================
+
+# --- 1. Version Control & Git Internals ---
+.git/
+.gitignore
+
+# --- 2. Heavy Dependencies & Vendor Folders ---
+node_modules/
+vendor/
+AI Stock/node_modules/
+AI Stock/dist/
+AI Stock/.next/
+AI Stock/.parcel-cache/
+AI Stock/build/
+
+# --- 3. Temporary, Cache & Log Files ---
+logs/
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+error_log
+php_errors.log
+
+# --- 4. Large Archives & Binary Dumps ---
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.sql.gz
+*.sql.bak
+*.bak
+
+# --- 5. OS & IDE System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/

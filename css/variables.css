@@ -1,0 +1,53 @@
+/**
+ * 🎨 css/variables.css
+ * Design Tokens & 60-30-5-5 Color Palette
+ * Designed according to DESIGN.md (Flat & Stable States — No Bloom Glow, No Floating)
+ */
+
+:root {
+  /* --- 60-30-5-5 Core Palette --- */
+  --bg-primary: #1D1616;              /* 60% Deep Charcoal Dark Base */
+  --bg-card: #231B1B;                 /* Primary Card Surface */
+  --bg-card-elevated: #2A2020;        /* Elevated Card / Dropdown */
+  --bg-input: #1B1414;                /* Input Fields Background */
+  
+  --accent-gold: #FFCC00;             /* 30% Primary Brand & Highlight */
+  --accent-gold-hover: #FFE066;       /* Subtle Lighten State on Hover */
+  --accent-gold-subtle: rgba(255, 204, 0, 0.12); /* Subtle Gold Badge/Tag */
+  --accent-gold-border: rgba(255, 204, 0, 0.25);
+  
+  --color-danger: #FF0000;            /* 5% Negative / Loss / Sell */
+  --color-danger-hover: #FF4D4D;      /* Subtle Lighten State on Hover */
+  --color-danger-subtle: rgba(255, 0, 0, 0.15);
+  --color-danger-border: rgba(255, 0, 0, 0.3);
+  
+  --color-success: #03C988;           /* 5% Positive / Gain / Buy */
+  --color-success-hover: #26DCA0;     /* Subtle Lighten State on Hover */
+  --color-success-subtle: rgba(3, 201, 136, 0.15);
+  --color-success-border: rgba(3, 201, 136, 0.3);
+
+  /* --- Text & Neutral Typography Colors --- */
+  --text-primary: #F0E6D0;            /* Warm Off-White for High Contrast Text */
+  --text-secondary: #D4C9B4;          /* Body paragraph text */
+  --text-muted: #8A7F70;              /* Labels, metadata, timestamps */
+  --text-dark: #1D1616;               /* Dark text on Gold buttons */
+  --border-subtle: rgba(255, 204, 0, 0.12);
+  --border-focus: #FFCC00;
+
+  /* --- Spacing & Radius Tokens --- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* --- Stable Shadows (No Bloom Glow) --- */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  
+  /* --- Fonts (Local System Stack) --- */
+  --font-sans: 'Inter', 'Prompt', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
+}
