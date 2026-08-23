@@ -1,5 +1,5 @@
 /**
- * 🎨 css/variables.css
+ * css/variables.css
  * Design Tokens & 60-30-5-5 Color Palette
  * Designed for SmartPort AI (Unified Sans Typography, Subtle Flat States, Sleek Rounded Shapes)
  */
@@ -51,4 +51,13 @@
   --font-sans: var(--font-primary);
   --font-serif: var(--font-primary);
   --font-mono: 'JetBrains Mono', 'Consolas', 'Roboto Mono', monospace;
+
+  /* --- iOS & Android Safe Area Insets --- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* --- Minimum Touch Target (Apple HIG & Material Standard) --- */
+  --touch-target-min: 44px;
 }

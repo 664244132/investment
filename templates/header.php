@@ -1,0 +1,160 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * templates/header.php
+ * Modular Document Head & Luxury Glassmorphic Navigation Bar
+ * SmartPort AI - 100% Local Assets, Icons Only, Safe Area Ready
+ */
+
+// ตรวจสอบค่าเริ่มต้นสำหรับตัวแปรที่ใช้ใน Header
+$pageTitle = $pageTitle ?? APP_TITLE;
+$activeNav = $activeNav ?? '';
+$isUserLoggedIn = $isUserLoggedIn ?? isLoggedIn();
+$currentUser = $currentUser ?? getCurrentUser();
+?>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title><?= e($pageTitle) ?></title>
+  
+  <!-- CSS Stylesheets (Local Assets 100%) -->
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
+
+  <?php if (!empty($extraHead)): ?>
+    <?= $extraHead ?>
+  <?php endif; ?>
+</head>
+<body>
+
+  <!-- ==============================================================================
+       Ultra-Luxury Glassmorphic Header & Navigation Bar
+       ============================================================================== -->
+  <header class="app-header">
+    <div class="container header-inner">
+      
+      <!-- Brand Logo -->
+      <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
+        <div class="brand-icon">
+          <?= icon('chart-bar', '', 20, '#1A1300') ?>
+        </div>
+        <div class="brand-text">
+          <span>SmartPort</span>
+          <span class="brand-gold">AI</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links (Segmented Glass Rail) -->
+      <nav class="main-nav">
+        <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link <?= ($activeNav === 'index') ? 'active' : '' ?>">
+          หน้าหลัก / วิเคราะห์หุ้น
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link <?= ($activeNav === 'screener') ? 'active' : '' ?>">
+          คัดกรองหุ้น (Screener)
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link <?= ($activeNav === 'portfolio') ? 'active' : '' ?>">
+          พอร์ตจำลอง (Portfolio)
+        </a>
+      </nav>
+
+      <!-- Search & Auth Controls -->
+      <div class="header-actions">
+        
+        <!-- Stock Live Search Box -->
+        <div class="search-box">
+          <?= icon('search', '', 14, '#8A7F70') ?>
+          <input type="text" id="stockSearchInput" placeholder="ค้นหาหุ้น... (กด Enter)">
+        </div>
+
+        <?php if ($isUserLoggedIn): ?>
+          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline btn-sm btn-header-action btn-header-portfolio">
+            <?= icon('wallet', '', 14) ?> พอร์ตของฉัน
+          </a>
+          <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm btn-header-action btn-header-logout">
+            ออกจากระบบ
+          </a>
+        <?php else: ?>
+          <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm btn-header-action btn-header-login">
+            เข้าสู่ระบบ
+          </a>
+          <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm btn-header-action btn-header-register">
+            เริ่มต้นใช้งานฟรี
+          </a>
+        <?php endif; ?>
+
+        <!-- Mobile Toggle Button -->
+        <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false">
+          <span class="toggle-icon-menu"><?= icon('menu', '', 20) ?></span>
+          <span class="toggle-icon-close" style="display: none;"><?= icon('close', '', 20) ?></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Drawer Navigation -->
+    <div class="mobile-drawer" id="mobileDrawer">
+      <!-- Mobile Quick Search Box -->
+      <div class="mobile-search-row">
+        <div class="search-box mobile-search-box">
+          <?= icon('search', '', 14, '#8A7F70') ?>
+          <input type="text" id="mobileStockSearchInput" placeholder="ค้นหาหุ้นด่วน... (กด Enter)">
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <div class="mobile-nav-links">
+        <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link <?= ($activeNav === 'index') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('chart-bar', 'text-gold', 16) ?> หน้าหลัก / วิเคราะห์หุ้น
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link <?= ($activeNav === 'screener') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('filter', 'text-gold', 16) ?> คัดกรองหุ้น (Screener)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link <?= ($activeNav === 'portfolio') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('wallet', 'text-gold', 16) ?> พอร์ตจำลอง (Portfolio)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+      </div>
+
+      <!-- Mobile Auth / User Section -->
+      <div class="mobile-auth-section">
+        <?php if ($isUserLoggedIn): ?>
+          <div class="mobile-user-info">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 28px; height: 28px; border-radius: var(--radius-xs); background: var(--accent-gold-subtle); display: flex; align-items: center; justify-content: center;">
+                <?= icon('user', 'text-gold', 16) ?>
+              </div>
+              <div>
+                <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;"><?= e($currentUser['full_name'] ?: $currentUser['username']) ?></div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);"><?= e($currentUser['email'] ?? '') ?></div>
+              </div>
+            </div>
+            <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm text-loss" style="border-color: rgba(255, 0, 0, 0.3);">
+              <?= icon('close', 'text-loss', 12) ?> ออกจากระบบ
+            </a>
+          </div>
+        <?php else: ?>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
+            <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm" style="justify-content: center;">
+              เข้าสู่ระบบ
+            </a>
+            <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm" style="justify-content: center;">
+              สมัครสมาชิกฟรี
+            </a>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </header>

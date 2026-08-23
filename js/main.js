@@ -1,15 +1,62 @@
 /**
- * ⚡ js/main.js
+ * js/main.js
  * SmartPort AI - Core UI Interactions, Bespoke Luxury Dropdowns, Live Global Stock Search & Autocomplete, Password Toggles, and Trade Modal
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Mobile Drawer Toggle
+  // 1. Mobile Drawer Toggle & Interaction
   const mobileToggle = document.querySelector('.mobile-toggle');
-  const mobileDrawer = document.querySelector('.mobile-drawer');
+  const mobileDrawer = document.getElementById('mobileDrawer') || document.querySelector('.mobile-drawer');
+  const toggleIconMenu = document.querySelector('.toggle-icon-menu');
+  const toggleIconClose = document.querySelector('.toggle-icon-close');
+
+  function toggleMobileMenu(forceState) {
+    if (!mobileDrawer) return;
+    const isOpening = (forceState !== undefined) ? forceState : !mobileDrawer.classList.contains('open');
+    
+    if (isOpening) {
+      mobileDrawer.classList.add('open');
+      if (mobileToggle) {
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        if (toggleIconMenu) toggleIconMenu.style.display = 'none';
+        if (toggleIconClose) toggleIconClose.style.display = 'inline-block';
+      }
+    } else {
+      mobileDrawer.classList.remove('open');
+      if (mobileToggle) {
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        if (toggleIconMenu) toggleIconMenu.style.display = 'inline-block';
+        if (toggleIconClose) toggleIconClose.style.display = 'none';
+      }
+    }
+  }
+
   if (mobileToggle && mobileDrawer) {
-    mobileToggle.addEventListener('click', () => {
-      mobileDrawer.classList.toggle('open');
+    mobileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+
+    // Close when clicking any nav link inside drawer
+    mobileDrawer.querySelectorAll('.nav-link, a').forEach(link => {
+      link.addEventListener('click', () => {
+        toggleMobileMenu(false);
+      });
+    });
+
+    // Close when clicking outside header & drawer
+    document.addEventListener('click', (e) => {
+      const header = document.querySelector('.app-header');
+      if (header && !header.contains(e.target) && mobileDrawer.classList.contains('open')) {
+        toggleMobileMenu(false);
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
+        toggleMobileMenu(false);
+      }
     });
   }
 
@@ -152,23 +199,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Live Global Stock Search & Autocomplete
-  const stockSearchInput = document.getElementById('stockSearchInput');
-  const searchBoxContainer = document.querySelector('.search-box');
+  // 5. Live Global Stock Search & Autocomplete (Support Desktop & Mobile Inputs)
+  function setupSearchAutocomplete(inputId, containerSelector) {
+    const inputEl = document.getElementById(inputId);
+    const containerEl = document.querySelector(containerSelector);
 
-  if (stockSearchInput && searchBoxContainer) {
-    searchBoxContainer.style.position = 'relative';
+    if (!inputEl || !containerEl) return;
+    containerEl.style.position = 'relative';
 
     const dropdown = document.createElement('div');
     dropdown.className = 'search-dropdown';
     dropdown.style.display = 'none';
-    searchBoxContainer.appendChild(dropdown);
+    containerEl.appendChild(dropdown);
 
     let debounceTimer = null;
 
-    stockSearchInput.addEventListener('input', () => {
+    inputEl.addEventListener('input', () => {
       clearTimeout(debounceTimer);
-      const query = stockSearchInput.value.trim();
+      const query = inputEl.value.trim();
 
       if (query.length === 0) {
         dropdown.style.display = 'none';
@@ -222,14 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('click', (e) => {
-      if (!searchBoxContainer.contains(e.target)) {
+      if (!containerEl.contains(e.target)) {
         dropdown.style.display = 'none';
       }
     });
 
-    stockSearchInput.addEventListener('keydown', (e) => {
+    inputEl.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const query = stockSearchInput.value.trim().toUpperCase();
+        const query = inputEl.value.trim().toUpperCase();
         if (query) {
           dropdown.style.display = 'none';
           window.location.href = (window.BASE_URL || '') + '/index.php?symbol=' + encodeURIComponent(query);
@@ -238,8 +286,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  setupSearchAutocomplete('stockSearchInput', '.header-actions .search-box');
+  setupSearchAutocomplete('mobileStockSearchInput', '.mobile-search-row .mobile-search-box');
+
   // ==============================================================================
-  // 6. 🌟 Luxury Custom Dropdown Initializer for all <select> elements
+  // 6. Luxury Custom Dropdown Initializer for all <select> elements
   // ==============================================================================
   function initCustomDropdowns() {
     const selects = document.querySelectorAll('select.form-input');
@@ -340,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomDropdowns();
 
   // ==============================================================================
-  // 7. 🌟 Custom Dark-Gold Number Stepper for all <input type="number">
+  // 7. Custom Dark-Gold Number Stepper for all <input type="number">
   // ==============================================================================
   function initCustomNumberInputs() {
     const numberInputs = document.querySelectorAll('input[type="number"].form-input');

@@ -38,39 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$flash = getFlashMessage();
+$pageTitle = 'เข้าสู่ระบบ - ' . APP_TITLE;
+$activeNav = 'login';
+
+require_once __DIR__ . '/../templates/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เข้าสู่ระบบ - <?= e(APP_TITLE) ?></title>
-  
-  <!-- CSS Stylesheets (Local Assets) -->
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="app-header">
-    <div class="container header-inner">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
-        <div class="brand-icon">
-          <?= icon('chart-bar', '', 18, '#1D1616') ?>
-        </div>
-        <span>SmartPort AI</span>
-      </a>
-
-      <div class="header-actions">
-        <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm">
-          เริ่มต้นใช้งานฟรี
-        </a>
-      </div>
-    </div>
-  </header>
 
   <!-- Login Form Wrapper -->
   <main class="main-content auth-wrapper">
@@ -89,17 +61,12 @@ $flash = getFlashMessage();
         </p>
       </div>
 
-      <!-- Flash Message & Errors -->
-      <?php if ($flash): ?>
-        <div class="alert alert-<?= e($flash['type']) ?>">
-          <?= icon('info', '', 16) ?>
-          <span><?= e($flash['message']) ?></span>
-        </div>
-      <?php endif; ?>
+      <!-- Flash Message Notification -->
+      <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <?php if ($error !== null): ?>
-        <div class="alert alert-danger">
-          <?= icon('alert', 'text-loss', 16) ?>
+        <div class="alert alert-danger" role="alert">
+          <?= icon('alert-triangle', '', 16) ?>
           <span><?= e($error) ?></span>
         </div>
       <?php endif; ?>
@@ -179,7 +146,5 @@ $flash = getFlashMessage();
     </div>
   </main>
 
-  <!-- Scripts (Local Asset) -->
-  <script src="<?= e(JS_URL) ?>/main.js"></script>
-</body>
-</html>
+  <!-- Footer Template -->
+  <?php require_once __DIR__ . '/../templates/footer.php'; ?>

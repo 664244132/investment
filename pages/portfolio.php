@@ -62,83 +62,24 @@ $totalNetVal = (float)$portfolio['total_portfolio_value'];
 $cashPct = ($totalNetVal > 0) ? ($cashVal / $totalNetVal) * 100 : 100;
 $stocksPct = ($totalNetVal > 0) ? ($stocksVal / $totalNetVal) * 100 : 0;
 
-$flash = getFlashMessage();
+$pageTitle = 'พอร์ตการลงทุนจำลอง - ' . APP_TITLE;
+$activeNav = 'portfolio';
+
+require_once __DIR__ . '/../templates/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>พอร์ตการลงทุนจำลอง - <?= e(APP_TITLE) ?></title>
-  
-  <!-- CSS Stylesheets (Local Assets) -->
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="app-header">
-    <div class="container header-inner">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
-        <div class="brand-icon">
-          <?= icon('chart-bar', '', 18, '#1D1616') ?>
-        </div>
-        <span>SmartPort AI</span>
-      </a>
-
-      <nav class="main-nav">
-        <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link">หน้าหลัก / วิเคราะห์หุ้น</a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link">คัดกรองหุ้น (Screener)</a>
-        <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link active">พอร์ตจำลอง (Portfolio)</a>
-      </nav>
-
-      <div class="header-actions">
-        <div class="search-box">
-          <?= icon('search', '', 14, '#8A7F70') ?>
-          <input type="text" id="stockSearchInput" placeholder="ค้นหาหุ้น... (กด Enter)">
-        </div>
-
-        <span style="font-size: 0.85rem; color: var(--text-muted); display: none; @media(min-width:768px){display:inline;}; white-space: nowrap;">
-          <?= icon('user', '', 14) ?> <?= e($user['full_name'] ?? $user['username']) ?>
-        </span>
-        <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm">
-          ออกจากระบบ
-        </a>
-
-        <button class="mobile-toggle" aria-label="Toggle Navigation">
-          <?= icon('menu', '', 20) ?>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Drawer -->
-    <div class="mobile-drawer">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link">หน้าหลัก / วิเคราะห์หุ้น</a>
-      <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link">คัดกรองหุ้น (Screener)</a>
-      <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link active">พอร์ตจำลอง (Portfolio)</a>
-      <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="nav-link" style="color: var(--color-danger);">ออกจากระบบ</a>
-    </div>
-  </header>
 
   <!-- Main Content -->
   <main class="main-content">
     <div class="container">
 
-      <!-- Flash Message -->
-      <?php if ($flash): ?>
-        <div class="alert alert-<?= e($flash['type']) ?>">
-          <?= icon('info', '', 16) ?>
-          <span><?= e($flash['message']) ?></span>
-        </div>
-      <?php endif; ?>
+      <!-- Flash Message Notification -->
+      <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Portfolio Header & Summary Controls -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem;">
         <div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-            <h1 style="font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+            <h1 style="font-size: clamp(1.4rem, 4vw, 1.85rem); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
               <?= icon('wallet', 'text-gold', 24) ?> <?= e($portfolio['portfolio_name']) ?>
             </h1>
             <span class="badge badge-gold">จำลองตามราคาตลาดจริง</span>
@@ -148,7 +89,7 @@ $flash = getFlashMessage();
           </p>
         </div>
 
-        <div style="display: flex; gap: 0.75rem;">
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <button type="button" class="btn btn-buy open-trade-modal-btn" data-trade-type="BUY">
             <?= icon('plus', '', 14) ?> ส่งคำสั่งซื้อ (BUY)
           </button>
@@ -206,25 +147,25 @@ $flash = getFlashMessage();
 
       </div>
 
-      <!-- Asset Allocation Progress Bar (Clean Rounded Rectangle) -->
-      <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 2.5rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div style="font-size: 0.8rem; font-family: var(--font-primary); color: var(--text-primary); text-transform: uppercase; font-weight: 700; white-space: nowrap;">
+      <!-- Asset Allocation Progress Bar -->
+      <div class="card asset-allocation-card">
+        <div class="asset-allocation-head">
+          <div class="asset-allocation-title">
             สัดส่วนการจัดสรรสินทรัพย์ (Asset Allocation)
           </div>
-          <div style="display: flex; gap: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); flex-wrap: wrap;">
-            <span style="display: flex; align-items: center; gap: 6px; color: var(--accent-gold); white-space: nowrap;">
-              <span style="width: 10px; height: 10px; border-radius: var(--radius-xs); background: var(--accent-gold); display: inline-block;"></span>
+          <div class="asset-allocation-legend">
+            <span class="asset-legend-item" style="color: var(--accent-gold);">
+              <span class="asset-dot" style="background: var(--accent-gold);"></span>
               เงินสด (Cash): <?= number_format($cashPct, 1) ?>% (<?= formatMoney($cashVal) ?>)
             </span>
-            <span style="display: flex; align-items: center; gap: 6px; color: var(--color-success); white-space: nowrap;">
-              <span style="width: 10px; height: 10px; border-radius: var(--radius-xs); background: var(--color-success); display: inline-block;"></span>
+            <span class="asset-legend-item" style="color: var(--color-success);">
+              <span class="asset-dot" style="background: var(--color-success);"></span>
               หุ้น / ตราสารทุน (Stocks & Equities): <?= number_format($stocksPct, 1) ?>% (<?= formatMoney($stocksVal) ?>)
             </span>
           </div>
         </div>
 
-        <div style="height: 10px; background: rgba(255, 255, 255, 0.06); border-radius: var(--radius-xs); display: flex; overflow: hidden;">
+        <div class="asset-allocation-bar">
           <div style="width: <?= $cashPct ?>%; background: var(--accent-gold);" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
           <div style="width: <?= $stocksPct ?>%; background: var(--color-success);" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
         </div>
@@ -318,17 +259,20 @@ $flash = getFlashMessage();
         </div>
       </div>
 
-      <!-- Transaction History Card -->
+      <!-- Transaction History Table Card -->
       <div class="card">
         <div class="card-header">
           <div>
             <h2 class="card-title">
-              <?= icon('history', 'text-gold', 18) ?> ประวัติคำสั่งซื้อ-ขายจำลอง (Order & Transaction Audit)
+              <?= icon('history', 'text-gold', 18) ?> ประวัติการทำรายการซื้อขาย (Transaction History)
             </h2>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-              บันทึกประวัติการทำรายการย้อนหลังพร้อมค่าคอมมิชชัน
+              บันทึกคำสั่งซื้อขายล่าสุดและค่าธรรมเนียมจริงในระบบจำลอง
             </p>
           </div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+            <?= count($transactions) ?> รายการ
+          </span>
         </div>
 
         <div class="table-responsive">
@@ -336,58 +280,52 @@ $flash = getFlashMessage();
             <thead>
               <tr>
                 <th>วันที่ / เวลา</th>
-                <th>ประเภทคำสั่ง</th>
-                <th>ชื่อหุ้น</th>
+                <th>ประเภท</th>
+                <th>หลักทรัพย์</th>
                 <th style="text-align: right;">จำนวนหุ้น</th>
                 <th style="text-align: right;">ราคาที่ทำรายการ</th>
                 <th style="text-align: right;">มูลค่ารวม</th>
-                <th style="text-align: right;">ค่าคอมมิชชัน</th>
-                <th style="text-align: right;">กำไร/ขาดทุนที่รับรู้จริง</th>
+                <th style="text-align: right;">ค่าธรรมเนียม</th>
+                <th style="text-align: right;">ยอดเงินสุทธิ</th>
               </tr>
             </thead>
             <tbody>
               <?php if (empty($transactions)): ?>
                 <tr>
-                  <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                    ยังไม่มีประวัติการทำรายการ
+                  <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                    ยังไม่มีประวัติการทำรายการในพอร์ตนี้
                   </td>
                 </tr>
               <?php else: ?>
-                <?php foreach ($transactions as $trx): ?>
+                <?php foreach ($transactions as $tx): ?>
                   <tr>
-                    <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
-                      <?= e(date('d/m/Y H:i', strtotime($trx['created_at']))) ?>
+                    <td style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+                      <?= date('d/m/Y H:i', strtotime($tx['executed_at'])) ?>
                     </td>
                     <td>
-                      <?php if ($trx['transaction_type'] === 'BUY'): ?>
-                        <span class="badge badge-gain">BUY (ซื้อ)</span>
-                      <?php else: ?>
-                        <span class="badge badge-loss">SELL (ขาย)</span>
-                      <?php endif; ?>
+                      <span class="badge <?= ($tx['transaction_type'] === 'BUY') ? 'badge-gain' : 'badge-loss' ?>">
+                        <?= e($tx['transaction_type']) ?>
+                      </span>
                     </td>
-                    <td style="font-weight: 700; font-family: var(--font-mono); white-space: nowrap;">
-                      <?= e($trx['symbol']) ?>
-                    </td>
-                    <td class="num">
-                      <?= number_format((int)$trx['quantity']) ?>
-                    </td>
-                    <td class="num">
-                      <?= number_format((float)$trx['price'], 2) ?>
+                    <td class="font-bold">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($tx['symbol']) ?>" style="color: var(--text-primary); font-family: var(--font-mono);">
+                        <?= e($tx['symbol']) ?>
+                      </a>
                     </td>
                     <td class="num font-bold">
-                      <?= number_format((float)$trx['total_amount'], 2) ?>
-                    </td>
-                    <td class="num" style="color: var(--text-muted);">
-                      <?= number_format((float)$trx['fee'], 2) ?>
+                      <?= number_format((int)$tx['quantity']) ?>
                     </td>
                     <td class="num">
-                      <?php if ($trx['realized_pnl'] !== null): ?>
-                        <span class="<?= getPnlColorClass((float)$trx['realized_pnl']) ?> font-bold">
-                          <?= ((float)$trx['realized_pnl'] >= 0 ? '+' : '') . number_format((float)$trx['realized_pnl'], 2) ?>
-                        </span>
-                      <?php else: ?>
-                        <span style="color: var(--text-muted);">-</span>
-                      <?php endif; ?>
+                      ฿<?= number_format((float)$tx['price'], 2) ?>
+                    </td>
+                    <td class="num">
+                      ฿<?= number_format((float)$tx['total_amount'], 2) ?>
+                    </td>
+                    <td class="num" style="color: var(--text-muted);">
+                      ฿<?= number_format((float)$tx['fee'], 2) ?>
+                    </td>
+                    <td class="num font-bold <?= ($tx['transaction_type'] === 'BUY') ? 'text-loss' : 'text-gain' ?>">
+                      <?= ($tx['transaction_type'] === 'BUY' ? '-' : '+') ?>฿<?= number_format((float)$tx['net_amount'], 2) ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -400,98 +338,35 @@ $flash = getFlashMessage();
     </div>
   </main>
 
-  <!-- Trade Modal Dialog -->
-  <div id="tradeModal" class="modal-backdrop">
-    <div class="modal-content card">
-      <div class="card-header">
-        <h3 class="card-title" id="modalTitle" style="display: flex; align-items: center; gap: 0.5rem;">
-          <?= icon('cart', 'text-gold', 18) ?> ส่งคำสั่งซื้อ-ขายจำลอง (Simulated Order)
-        </h3>
-        <button type="button" class="close-trade-modal-btn" style="color: var(--text-muted); display: flex; align-items: center;">
-          <?= icon('close', '', 18) ?>
-        </button>
-      </div>
+  <!-- Reusable Trade Modal Component -->
+  <?php
+  $modalStock = null;
+  $modalAllStocks = $allStocks;
+  require __DIR__ . '/../templates/trade_modal.php';
+  ?>
 
-      <div class="card-body">
-        <form action="<?= e(BASE_URL) ?>/pages/portfolio.php" method="POST">
-          <input type="hidden" name="action" value="trade">
-          <input type="hidden" id="trade_type" name="trade_type" value="BUY">
-
-          <div class="form-group">
-            <label for="trade_stock_id" class="form-label">เลือกหลักทรัพย์</label>
-            <div class="form-input-wrapper">
-              <select id="trade_stock_id" name="stock_id" class="form-input" style="cursor: pointer;" required>
-                <?php foreach ($allStocks as $s): ?>
-                  <option value="<?= (int)$s['id'] ?>" data-price="<?= (float)$s['current_price'] ?>">
-                    <?= e($s['symbol']) ?> - <?= e($s['name_th'] ?: $s['name_en']) ?> (฿<?= number_format((float)$s['current_price'], 2) ?>)
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-card-elevated); border-radius: var(--radius-sm);">
-            <span style="color: var(--text-muted); white-space: nowrap;">ราคาตลาดล่าสุด:</span>
-            <span id="modal_stock_price" data-price="<?= (float)($allStocks[0]['current_price'] ?? 0) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); white-space: nowrap;">
-              ฿<?= number_format((float)($allStocks[0]['current_price'] ?? 0), 2) ?>
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label for="trade_quantity" class="form-label">จำนวนหุ้น (หุ้น)</label>
-            <div class="form-input-wrapper">
-              <input type="number" id="trade_quantity" name="quantity" class="form-input" placeholder="เช่น 100, 1000" min="1" step="1" value="100" required>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1.5rem; padding: 0.75rem; border-top: 1px dashed var(--border-subtle);">
-            <span style="color: var(--text-muted); white-space: nowrap;">มูลค่ารวมสุทธิ (+ค่าคอมมิชชัน 0.157%):</span>
-            <span id="modal_trade_total" style="font-weight: 700; font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-primary); white-space: nowrap;">
-              ฿0.00
-            </span>
-          </div>
-
-          <div style="display: flex; gap: 0.75rem;">
-            <button type="button" class="btn btn-outline close-trade-modal-btn" style="flex: 1;">
-              ยกเลิก
-            </button>
-            <button type="submit" id="modal_submit_btn" class="btn btn-buy" style="flex: 2;">
-              ยืนยันคำสั่ง
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="app-footer">
-    <div class="container footer-bottom">
-      <p>© 2026 SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ</p>
-      <p>ข้อมูลจำลองเพื่อการศึกษาและการวิเคราะห์ ไม่ถือเป็นคำแนะนำทางการเงิน</p>
-    </div>
-  </footer>
-
-  <script>
-    window.BASE_URL = '<?= e(BASE_URL) ?>';
+  <!-- Scripts & Footer Template -->
+  <?php
+  $extraScripts = '<script>
+    window.BASE_URL = ' . json_encode(BASE_URL) . ';
     
     // อัปเดตราคาหุ้นใน Modal เมื่อเปลี่ยนหุ้นที่เลือก
-    const stockSelect = document.getElementById('trade_stock_id');
-    const priceDisplay = document.getElementById('modal_stock_price');
+    const stockSelect = document.getElementById("trade_stock_id");
+    const priceDisplay = document.getElementById("modal_stock_price");
     if (stockSelect && priceDisplay) {
-      stockSelect.addEventListener('change', () => {
+      stockSelect.addEventListener("change", () => {
         const selectedOpt = stockSelect.options[stockSelect.selectedIndex];
-        const price = parseFloat(selectedOpt.getAttribute('data-price')) || 0;
-        priceDisplay.setAttribute('data-price', price);
-        priceDisplay.textContent = '฿' + price.toLocaleString(undefined, {
+        const price = parseFloat(selectedOpt.getAttribute("data-price")) || 0;
+        priceDisplay.setAttribute("data-price", price);
+        priceDisplay.textContent = "฿" + price.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         });
-        const qtyInput = document.getElementById('trade_quantity');
-        if (qtyInput) qtyInput.dispatchEvent(new Event('input'));
+        const qtyInput = document.getElementById("trade_quantity");
+        if (qtyInput) qtyInput.dispatchEvent(new Event("input"));
       });
     }
-  </script>
-  <script src="<?= e(JS_URL) ?>/main.js"></script>
-</body>
-</html>
+  </script>';
+
+  require_once __DIR__ . '/../templates/footer.php';
+  ?>

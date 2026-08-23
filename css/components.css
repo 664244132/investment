@@ -1,5 +1,5 @@
 /**
- * 🧩 css/components.css
+ * css/components.css
  * Component Styles: Buttons, Cards, Badges, Charts, AI Gauges, Financial Tables, Luxury Custom Dropdowns & Modals
  * Designed for SmartPort AI (Unified Sans Typography, Sleek Rounded Shapes, No Floating, No Bloom Glow)
  */
@@ -61,7 +61,7 @@
 }
 
 /* ==============================================================================
-   🌟 Premium Buy & Sell Financial Trading Buttons
+   Premium Buy & Sell Financial Trading Buttons
    ============================================================================== */
 .btn-buy {
   background: linear-gradient(180deg, #03D38E 0%, #029E6B 100%);
@@ -206,7 +206,7 @@
 }
 
 /* ==============================================================================
-   4. Stock Hero Section
+   4. Stock Hero Section (Cross-Platform Responsive)
    ============================================================================== */
 .stock-hero {
   display: flex;
@@ -220,27 +220,55 @@
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .stock-symbol {
-  font-size: 2.25rem;
+  font-size: clamp(1.65rem, 5vw, 2.35rem);
   font-weight: 800;
   font-family: var(--font-primary);
   color: var(--text-primary);
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
 .stock-price-val {
-  font-size: 2.5rem;
+  font-size: clamp(1.85rem, 5.5vw, 2.6rem);
   font-weight: 800;
   font-family: var(--font-mono);
   color: var(--text-primary);
-  line-height: 1;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .stock-hero-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .stock-hero-top > div:last-child {
+    text-align: left !important;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.75rem;
+  }
+  
+  .stock-hero-top > div:last-child > div {
+    justify-content: flex-start !important;
+  }
+
+  .stock-hero-actions {
+    justify-content: stretch !important;
+    width: 100%;
+  }
+
+  .stock-hero-actions .btn {
+    flex: 1;
+    min-height: var(--touch-target-min);
+  }
 }
 
 .stats-bar {
@@ -253,13 +281,19 @@
   overflow: hidden;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
+  .stats-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
   .stats-bar {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1100px) {
   .stats-bar {
     grid-template-columns: repeat(7, 1fr);
   }
@@ -267,18 +301,22 @@
 
 .stats-item {
   background: var(--bg-card);
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.95rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-width: 0;
 }
 
 .stats-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   font-family: var(--font-primary);
   text-transform: uppercase;
+  letter-spacing: 0.02em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stats-val {
@@ -288,6 +326,8 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ==============================================================================
@@ -295,8 +335,14 @@
    ============================================================================== */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
+}
+
+@media (min-width: 540px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 992px) {
@@ -330,11 +376,11 @@
 }
 
 .metric-value {
-  font-size: 1.75rem;
+  font-size: clamp(1.45rem, 4vw, 1.85rem);
   font-weight: 700;
   color: var(--text-primary);
   font-family: var(--font-mono);
-  line-height: 1;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -348,7 +394,7 @@
 }
 
 /* ==============================================================================
-   6. Chart Container & Controls
+   6. Chart Container & Controls (Cross-Platform Fluid Height)
    ============================================================================== */
 .chart-header {
   display: flex;
@@ -367,7 +413,7 @@
 }
 
 .timeframe-btn {
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 0.85rem;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: var(--font-mono);
@@ -376,6 +422,8 @@
   transition: background-color 0.15s ease, color 0.15s ease;
   border-right: 1px solid var(--border-subtle);
   white-space: nowrap;
+  min-height: 36px;
+  min-width: 44px;
 }
 
 .timeframe-btn:last-child {
@@ -395,12 +443,25 @@
 .chart-canvas-wrapper {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: clamp(240px, 42vh, 380px);
 }
 
 /* ==============================================================================
-   7. AI Score Gauge & Breakdown
+   7. AI Score Gauge & Breakdown (Adaptive Grid)
    ============================================================================== */
+.score-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .score-grid {
+    grid-template-columns: 200px 1fr !important;
+  }
+}
+
 .score-gauge-container {
   display: flex;
   flex-direction: column;
@@ -459,6 +520,20 @@
   font-size: 0.875rem;
 }
 
+@media (max-width: 480px) {
+  .score-row {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .score-label {
+    width: auto !important;
+  }
+  .score-progress-track {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+}
+
 .score-label {
   width: 130px;
   color: var(--text-muted);
@@ -489,17 +564,20 @@
 }
 
 /* ==============================================================================
-   8. Financial Statements Table
+   8. Financial Statements Table (Touch Smooth Scrolling)
    ============================================================================== */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .financial-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  min-width: 600px;
 }
 
 .financial-table th {
@@ -607,7 +685,7 @@
 }
 
 /* ==============================================================================
-   🌟 Custom Dark-Gold Number Stepper & Input Spinner Reset
+   Custom Dark-Gold Number Stepper & Input Spinner Reset
    ============================================================================== */
 
 /* 1. Reset / Hide default ugly white browser spin buttons */
@@ -712,7 +790,7 @@ select.form-input option:checked {
 }
 
 /* ==============================================================================
-   🌟 Bespoke Custom Dropdown Component (.custom-select-container)
+   Bespoke Custom Dropdown Component (.custom-select-container)
    ============================================================================== */
 .custom-select-container {
   position: relative;
@@ -841,9 +919,10 @@ select.form-input option:checked {
 .search-dropdown {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
   right: 0;
-  min-width: 280px;
+  left: auto;
+  min-width: 260px;
+  max-width: min(340px, calc(100vw - 2rem));
   background: rgba(30, 22, 22, 0.98);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -976,6 +1055,359 @@ select.form-input option:checked {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
   box-shadow: var(--shadow-lg);
+  margin: auto;
+}
+
+@media (max-width: 480px) {
+  .modal-backdrop {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+  
+  .modal-content {
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+/* ==============================================================================
+   12. Extracted Modular Semantic Components (DRY Refactor)
+   ============================================================================== */
+
+/* Watchlist Chips Bar */
+.watchlist-bar {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  -webkit-overflow-scrolling: touch;
+}
+
+.watchlist-label {
+  font-size: 0.75rem;
+  font-family: var(--font-primary);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.watchlist-chip {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.watchlist-chip:hover {
+  border-color: var(--accent-gold-border);
+  background: rgba(255, 204, 0, 0.05);
+}
+
+.watchlist-chip.active {
+  background: var(--accent-gold-subtle);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.watchlist-change {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+/* 52-Week Range Component */
+.range-52w-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.range-52w-title {
+  font-size: 0.75rem;
+  font-family: var(--font-primary);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.range-52w-slider {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.range-52w-num {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.range-52w-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xs);
+  position: relative;
+}
+
+.range-52w-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--color-danger), var(--accent-gold), var(--color-success));
+  border-radius: var(--radius-xs);
+}
+
+.range-52w-pos {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--accent-gold);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Section Heading Standard */
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.section-heading-title {
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-heading-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-primary);
+  white-space: nowrap;
+}
+
+/* AI Synthesis Analysis Grid */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 992px) {
+  .analysis-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+.analysis-body-text {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.analysis-list-title-gain {
+  font-size: 0.85rem;
+  font-family: var(--font-primary);
+  color: var(--color-success);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.analysis-list-title-loss {
+  font-size: 0.85rem;
+  font-family: var(--font-primary);
+  color: var(--color-danger);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.analysis-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.analysis-list-item {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Trade Modal Reusable Classes */
+.modal-title-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-close-btn {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-xs);
+  transition: color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.trade-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-card-elevated);
+  border-radius: var(--radius-sm);
+}
+
+.trade-price-label {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.trade-price-val {
+  font-weight: 700;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.trade-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.trade-total-label {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.trade-total-val {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.modal-actions-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.modal-btn-cancel {
+  flex: 1;
+}
+
+.modal-btn-submit {
+  flex: 2;
+}
+
+/* Asset Allocation & Portfolio Classes */
+.asset-allocation-card {
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.asset-allocation-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.asset-allocation-title {
+  font-size: 0.8rem;
+  font-family: var(--font-primary);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.asset-allocation-legend {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  flex-wrap: wrap;
+}
+
+.asset-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.asset-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-xs);
+  display: inline-block;
+}
+
+.asset-allocation-bar {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-xs);
+  display: flex;
+  overflow: hidden;
 }

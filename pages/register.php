@@ -44,45 +44,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$pageTitle = 'สมัครสมาชิก - ' . APP_TITLE;
+$activeNav = 'register';
+
+require_once __DIR__ . '/../templates/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สมัครสมาชิก - <?= e(APP_TITLE) ?></title>
-  
-  <!-- CSS Stylesheets (Local Assets 100%) -->
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
-</head>
-<body>
-
-  <!-- Minimal Header -->
-  <header class="app-header">
-    <div class="container header-inner">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
-        <div class="brand-icon">
-          <?= icon('chart-bar', '', 18, '#1D1616') ?>
-        </div>
-        <span>SmartPort AI</span>
-      </a>
-
-      <div class="header-actions">
-        <span style="font-size: 0.875rem; color: var(--text-muted); white-space: nowrap;">มีบัญชีอยู่แล้ว?</span>
-        <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm">
-          เข้าสู่ระบบ
-        </a>
-      </div>
-    </div>
-  </header>
 
   <!-- Register Form Container -->
   <main class="main-content auth-wrapper">
-    <div class="auth-card auth-card-wide" style="display: grid; grid-template-columns: 1fr; gap: 2.5rem;">
+    <div class="auth-card auth-card-wide">
       
-      <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem;" class="register-grid">
+      <div class="register-grid">
         
         <!-- Left Column: Benefits & Value Proposition -->
         <div style="display: flex; flex-direction: column; justify-content: center; gap: 1.75rem;">
@@ -90,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); background: var(--color-success-subtle); color: var(--color-success); border: 1px solid var(--color-success-border); font-size: 0.75rem; font-family: var(--font-primary); margin-bottom: 1rem; white-space: nowrap;">
               <?= icon('zap', 'text-gain', 14) ?> พอร์ตจำลองเงินทุน 1,000,000 บาท ฟรี
             </div>
-            <h1 style="font-size: 2rem; line-height: 1.3; color: var(--text-primary); margin-bottom: 0.75rem;">
+            <h1 style="font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.3; color: var(--text-primary); margin-bottom: 0.75rem;">
               ตัดสินใจลงทุนอย่างชาญฉลาดด้วยพลังของ AI
             </h1>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
@@ -124,29 +97,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <?= icon('shield', 'text-gold', 16) ?> มาตรฐานสถาปัตยกรรมระดับสถาบัน
             </div>
             <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;">
-              ประมวลผลอัตราส่วนการเงินเชิงสถิติจริง (Deterministic Fundamentals) ร่วมกับคะแนนคุณภาพหุ้น 4 มิติ ทำงานบนสถาปัตยกรรม Native Zero-Latency โหลดเร็ว ปลอดภัย และเป็นส่วนตัว
+              ระบบแยก Logic, Views และ Data Layer อย่างปลอดภัยตามมาตรฐาน <code>PHP Strict Types</code> พร้อมการเข้ารหัสรหัสผ่านด้วย <code>BCRYPT (Cost 12)</code>
             </p>
-            <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-primary); border-top: 1px solid var(--border-subtle); padding-top: 0.6rem; flex-wrap: wrap;">
-              <span style="display: flex; align-items: center; gap: 4px; white-space: nowrap;"><?= icon('check', 'text-gain', 12) ?> Zero CDN Dependency</span>
-              <span style="display: flex; align-items: center; gap: 4px; white-space: nowrap;"><?= icon('check', 'text-gain', 12) ?> 100% Privacy First</span>
+            <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); flex-wrap: wrap;">
+              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> Zero CDN Dependency</span>
+              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> Local Vector Icons</span>
+              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> CSRF & SQL Prepared</span>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Registration Form -->
         <div>
+          
           <div style="margin-bottom: 1.5rem;">
             <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
-              สร้างบัญชีผู้ใช้งานของคุณ
+              สร้างบัญชีผู้ใช้ใหม่
             </h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">
-              กรอกข้อมูลเพื่อเริ่มต้นใช้งานระบบและรับพอร์ตจำลองทันที
+            <p style="color: var(--text-muted); font-size: 0.875rem;">
+              กรอกข้อมูลเพื่อเริ่มต้นใช้งานฟรี ไม่มีค่าใช้จ่ายแอบแฝง
             </p>
           </div>
 
+          <!-- Flash Message & Errors -->
+          <?php require __DIR__ . '/../templates/flash.php'; ?>
+
           <?php if ($error !== null): ?>
-            <div class="alert alert-danger">
-              <?= icon('alert', 'text-loss', 16) ?>
+            <div class="alert alert-danger" role="alert">
+              <?= icon('alert-triangle', '', 16) ?>
               <span><?= e($error) ?></span>
             </div>
           <?php endif; ?>
@@ -154,45 +132,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <form action="<?= e(BASE_URL) ?>/pages/register.php" method="POST">
             
             <div class="form-group">
-              <label for="full_name" class="form-label">ชื่อ - นามสกุล</label>
+              <label for="reg_username" class="form-label">ชื่อผู้ใช้ (Username) *</label>
               <div class="form-input-wrapper">
                 <input 
                   type="text" 
-                  id="full_name" 
-                  name="full_name" 
-                  class="form-input" 
-                  placeholder="เช่น สมชาย นักลงทุน" 
-                  value="<?= e($_POST['full_name'] ?? '') ?>"
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="username" class="form-label">ชื่อผู้ใช้ (Username) *</label>
-              <div class="form-input-wrapper">
-                <input 
-                  type="text" 
-                  id="username" 
+                  id="reg_username" 
                   name="username" 
                   class="form-input" 
-                  placeholder="เช่น investor_pro" 
+                  placeholder="เช่น super_trader (ภาษาอังกฤษและตัวเลข 3-30 ตัว)" 
                   value="<?= e($_POST['username'] ?? '') ?>"
-                  required
+                  required 
+                  autofocus
                 >
               </div>
             </div>
 
             <div class="form-group">
-              <label for="email" class="form-label">อีเมล (Email Address) *</label>
+              <label for="reg_email" class="form-label">อีเมล (Email Address) *</label>
               <div class="form-input-wrapper">
                 <input 
                   type="email" 
-                  id="email" 
+                  id="reg_email" 
                   name="email" 
                   class="form-input" 
-                  placeholder="name@domain.com" 
+                  placeholder="เช่น trader@example.com" 
                   value="<?= e($_POST['email'] ?? '') ?>"
                   required
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reg_full_name" class="form-label">ชื่อ-นามสกุล (Full Name)</label>
+              <div class="form-input-wrapper">
+                <input 
+                  type="text" 
+                  id="reg_full_name" 
+                  name="full_name" 
+                  class="form-input" 
+                  placeholder="เช่น สมชาย ลงทุนดี" 
+                  value="<?= e($_POST['full_name'] ?? '') ?>"
                 >
               </div>
             </div>
@@ -205,34 +184,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   id="reg_password" 
                   name="password" 
                   class="form-input" 
-                  placeholder="ความยาวอย่างน้อย 6-8 ตัวอักษร" 
+                  placeholder="กำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร" 
                   required
                 >
                 <button type="button" class="input-toggle-btn" data-target="reg_password" aria-label="แสดง/ซ่อนรหัสผ่าน">
                   <?= icon('eye', '', 16) ?>
                 </button>
               </div>
-              <!-- Strength meter -->
+              
+              <!-- Password Strength Meter -->
               <div class="pw-strength-bar">
                 <div class="pw-strength-segment"></div>
                 <div class="pw-strength-segment"></div>
                 <div class="pw-strength-segment"></div>
                 <div class="pw-strength-segment"></div>
               </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+                แนะนำ: มีตัวพิมพ์ใหญ่-เล็ก ตัวเลข และสัญลักษณ์
+              </span>
             </div>
 
             <div class="form-group">
-              <label for="confirm_password" class="form-label">ยืนยันรหัสผ่านอีกครั้ง *</label>
+              <label for="reg_confirm_password" class="form-label">ยืนยันรหัสผ่าน (Confirm Password) *</label>
               <div class="form-input-wrapper">
                 <input 
                   type="password" 
-                  id="confirm_password" 
+                  id="reg_confirm_password" 
                   name="confirm_password" 
                   class="form-input" 
-                  placeholder="พิมพ์รหัสผ่านเดิมซ้ำอีกครั้ง" 
+                  placeholder="พิมพ์รหัสผ่านเดิมอีกครั้ง" 
                   required
                 >
-                <button type="button" class="input-toggle-btn" data-target="confirm_password" aria-label="แสดง/ซ่อนรหัสผ่าน">
+                <button type="button" class="input-toggle-btn" data-target="reg_confirm_password" aria-label="แสดง/ซ่อนรหัสผ่าน">
                   <?= icon('eye', '', 16) ?>
                 </button>
               </div>
@@ -267,15 +250,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </main>
 
-  <style>
-    @media (min-width: 992px) {
-      .register-grid {
-        grid-template-columns: 1.1fr 1fr !important;
-      }
-    }
-  </style>
-
-  <!-- Scripts (Local Assets) -->
-  <script src="<?= e(JS_URL) ?>/main.js"></script>
-</body>
-</html>
+  <!-- Footer Template -->
+  <?php require_once __DIR__ . '/../templates/footer.php'; ?>

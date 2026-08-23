@@ -1,6 +1,6 @@
 /**
- * 📊 js/chart_engine.js
- * ตัวเรนเดอร์กราฟราคาหุ้นแบบ Interactive Candlestick / Area Chart
+ * js/chart_engine.js
+ * Chart Engine Wrapper for SmartPort AI (100% Local Asset & Retina/High-DPI Sharpness)
  * ธีมสีทอง #FFCC00 บนพื้นหลัง Dark #1D1616 สไตล์ Bloomberg / TradingView
  */
 
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      devicePixelRatio: window.devicePixelRatio || 1,
       interaction: {
         intersect: false,
         mode: 'index',

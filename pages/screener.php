@@ -31,85 +31,20 @@ $filters = [
 ];
 
 $screenedStocks = screenStocks($pdo, $filters);
+
+$pageTitle = 'คัดกรองหุ้น - ' . APP_TITLE;
+$activeNav = 'screener';
+
+require_once __DIR__ . '/../templates/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>คัดกรองหุ้น - <?= e(APP_TITLE) ?></title>
-  
-  <!-- CSS Stylesheets (Local Assets) -->
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="app-header">
-    <div class="container header-inner">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
-        <div class="brand-icon">
-          <?= icon('chart-bar', '', 18, '#1D1616') ?>
-        </div>
-        <span>SmartPort AI</span>
-      </a>
-
-      <nav class="main-nav">
-        <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link">หน้าหลัก / วิเคราะห์หุ้น</a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link active">คัดกรองหุ้น (Screener)</a>
-        <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link">พอร์ตจำลอง (Portfolio)</a>
-      </nav>
-
-      <div class="header-actions">
-        <div class="search-box">
-          <?= icon('search', '', 14, '#8A7F70') ?>
-          <input type="text" id="stockSearchInput" placeholder="ค้นหาหุ้น... (กด Enter)">
-        </div>
-
-        <?php if ($user): ?>
-          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline btn-sm">
-            <?= icon('wallet', '', 14) ?> พอร์ตของฉัน
-          </a>
-          <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm" style="color: var(--text-muted);">
-            ออกจากระบบ
-          </a>
-        <?php else: ?>
-          <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm">
-            เข้าสู่ระบบ
-          </a>
-          <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm">
-            เริ่มต้นใช้งาน
-          </a>
-        <?php endif; ?>
-
-        <button class="mobile-toggle" aria-label="Toggle Navigation">
-          <?= icon('menu', '', 20) ?>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Drawer -->
-    <div class="mobile-drawer">
-      <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link">หน้าหลัก / วิเคราะห์หุ้น</a>
-      <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link active">คัดกรองหุ้น (Screener)</a>
-      <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link">พอร์ตจำลอง (Portfolio)</a>
-      <?php if ($user): ?>
-        <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="nav-link" style="color: var(--color-danger);">ออกจากระบบ</a>
-      <?php else: ?>
-        <a href="<?= e(BASE_URL) ?>/pages/login.php" class="nav-link">เข้าสู่ระบบ</a>
-      <?php endif; ?>
-    </div>
-  </header>
 
   <!-- Main Content -->
   <main class="main-content">
     <div class="container">
       
       <div style="margin-bottom: 1.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-          <h1 style="font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+          <h1 style="font-size: clamp(1.4rem, 4vw, 1.85rem); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
             <?= icon('filter', 'text-gold', 24) ?> เครื่องมือคัดกรองหลักทรัพย์ (Quantitative Stock Screener)
           </h1>
           <span class="badge badge-gold">Deterministic Filters</span>
@@ -119,23 +54,23 @@ $screenedStocks = screenStocks($pdo, $filters);
         </p>
       </div>
 
-      <!-- Quick Strategy Presets (Clean Rounded Rectangles) -->
-      <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; align-items: center;">
-        <span style="font-size: 0.75rem; font-family: var(--font-primary); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap;">
+      <!-- Quick Strategy Presets -->
+      <div class="watchlist-bar">
+        <span class="watchlist-label">
           กลยุทธ์ยอดนิยม:
         </span>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="badge badge-neutral">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="watchlist-chip">
           <?= icon('zap', 'text-gold', 12) ?> หุ้นปันผลสูง (Yield > 4%)
         </a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="badge badge-neutral">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="watchlist-chip">
           <?= icon('trending-up', 'text-gain', 12) ?> หุ้นเติบโตราคาถูก (P/E < 20 & ROE > 15%)
         </a>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="badge badge-neutral">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="watchlist-chip">
           <?= icon('star', 'text-gold', 12) ?> หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
         </a>
       </div>
 
-      <!-- Filters Card -->
+      <!-- Screener Form Card -->
       <div class="card" style="margin-bottom: 2rem;">
         <div class="card-header">
           <h2 class="card-title">
@@ -147,7 +82,7 @@ $screenedStocks = screenStocks($pdo, $filters);
         </div>
 
         <div class="card-body">
-          <form action="<?= e(BASE_URL) ?>/pages/screener.php" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; align-items: flex-end;">
+          <form action="<?= e(BASE_URL) ?>/pages/screener.php" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; align-items: flex-end;">
             
             <div class="form-group" style="margin-bottom: 0;">
               <label for="filter_sector" class="form-label">กลุ่มอุตสาหกรรม (Sector)</label>
@@ -214,21 +149,21 @@ $screenedStocks = screenStocks($pdo, $filters);
                 <th style="text-align: right;">ROE (%)</th>
                 <th style="text-align: right;">Dividend Yield</th>
                 <th style="text-align: center;">คะแนนคุณภาพ</th>
-                <th style="text-align: center;">คำแนะนำ</th>
-                <th style="text-align: center;">จัดการ</th>
+                <th style="text-align: center;">คำแนะนำ AI</th>
+                <th style="text-align: center;">ดูรายละเอียด</th>
               </tr>
             </thead>
             <tbody>
               <?php if (empty($screenedStocks)): ?>
                 <tr>
                   <td colspan="10" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-                    ไม่พบหุ้นที่ตรงกับเงื่อนไขที่กำหนด กรุณาลองปรับลดเงื่อนไขการกรอง
+                    ไม่พบข้อมูลหุ้นที่ตรงกับเงื่อนไขการคัดกรอง — กรุณาปรับลดเงื่อนไขเพื่อค้นหาใหม่
                   </td>
                 </tr>
               <?php else: ?>
                 <?php foreach ($screenedStocks as $s): ?>
                   <tr>
-                    <td>
+                    <td class="font-bold">
                       <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
                         <?= e($s['symbol']) ?>
                       </a>
@@ -286,15 +221,8 @@ $screenedStocks = screenStocks($pdo, $filters);
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="app-footer">
-    <div class="container footer-bottom">
-      <p>© 2026 SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ</p>
-      <p>ข้อมูลเพื่อการศึกษาและวิเคราะห์สถิติเท่านั้น</p>
-    </div>
-  </footer>
-
-  <script>window.BASE_URL = '<?= e(BASE_URL) ?>';</script>
-  <script src="<?= e(JS_URL) ?>/main.js"></script>
-</body>
-</html>
+  <!-- Scripts & Footer Template -->
+  <?php
+  $extraScripts = '<script>window.BASE_URL = ' . json_encode(BASE_URL) . ';</script>';
+  require_once __DIR__ . '/../templates/footer.php';
+  ?>

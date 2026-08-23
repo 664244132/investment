@@ -30,6 +30,26 @@
 - **5.3 ปุ่มทองแบรนด์หลัก (`.btn-primary`):** ต้องใช้การไล่เฉดสีทองทรงคุณค่า `linear-gradient(180deg, #FFD633 0%, #FFCC00 100%)`, ตัวอักษรสี `#1A1300` ตัวหนา 700
 - **5.4 Glassmorphic Badges (`.badge`):** ป้ายกำกับสถานะทุกตัวต้องใช้เอฟเฟกต์กระจกเบลอ `backdrop-filter: blur(12px);`, พื้นหลังไล่เฉดโปร่งแสง (Translucent Tint), เส้นขอบบาง 1px, และ Micro Shadow `0 1px 3px rgba(0, 0, 0, 0.25)`
 
+### 🔴 กฎข้อ 6: การแยกไฟล์ CSS และห้ามใช้ Inline Styles (Zero Inline CSS Extraction)
+- **ห้ามเขียนโค้ด CSS แทรกอยู่ในแอตทริบิวต์ `style="..."` หรือแท็ก `<style>` ภายในไฟล์หน้าเว็บเด็ดขาด**
+- สไตล์การแสดงผลทั้งหมดต้องถูกดึงและจัดหมวดหมู่แยกออกไปเป็นไฟล์ `.css` สากล ได้แก่:
+  - [`css/variables.css`](../css/variables.css): Design Tokens, Color Palette 60-30-5-5, Safe Area Insets, Radius
+  - [`css/layout.css`](../css/layout.css): Global Reset, Grid, Flexbox, Header, Footer, Drawer, Viewport Containment
+  - [`css/components.css`](../css/components.css): Card, Buttons, Financial Table, Badges, Modals, Forms, Steppers, Dropdowns
+- ต้องตั้งชื่อคลาสแบบ Semantic และครอบคลุม เช่น `.watchlist-bar`, `.range-52w-card`, `.analysis-grid`, `.asset-allocation-card`
+
+### 🔴 กฎข้อ 7: สถาปัตยกรรมโมดูลาร์เทมเพลต (DRY Modular Template Architecture)
+- **ห้ามเขียนโค้ดโครงสร้างที่ซ้ำซ้อนกันในแต่ละหน้าเพจ (Don't Repeat Yourself - DRY)**
+- โค้ดส่วนหัว (`<head>`, `<header>`), ส่วนท้าย (`<footer>`), กล่องแจ้งเตือน (Flash Alerts), และหน้าต่างเทรดจำลอง (Trade Modal) ต้องแยกเป็นไฟล์เทมเพลตในโฟลเดอร์ `templates/` และเรียกใช้ซ้ำผ่าน `require_once`:
+  - `templates/header.php`: รวมศูนย์ Head, Viewport Meta, Stylesheets, Navigation Bar พร้อม Active State
+  - `templates/footer.php`: รวมศูนย์ Footer, Copyright, Script Bundle (`js/main.js`), และ `$extraScripts`
+  - `templates/flash.php`: แสดงผล Flash Message Alert สากล
+  - `templates/trade_modal.php`: คอมโพเนนต์หน้าต่างคำสั่งซื้อ-ขายจำลอง (Paper Trade)
+
+### 🔴 กฎข้อ 8: การจัดการ Assets และ SVG Vector Icons ในโปรเจกต์ 100% (Local Assets & Vector Icons Dictionary)
+- **ไฟล์ภาพ, ไอคอน, ฟอนต์ และสคริปต์ทั้งหมดต้องเก็บและเรียกใช้งานภายในโปรเจกต์ 100% (ห้ามใช้ CDN ภายนอก)**
+- หากมีการใช้งานไอคอนใหม่ ต้องเพิ่ม Path ลงในพจนานุกรมไอคอน [`functions/icons.php`](../functions/icons.php) เสมอ เพื่อให้เรียกใช้ผ่านฟังก์ชัน `icon('icon-name', $class, $size, $color)` ได้จากทุกจุดในระบบ และคงมาตรฐานความคมชัดแบบ Vector ไร้ Emoji
+
 ### 🔴 กฎข้อ 10: การจัดการฐานข้อมูล (Database Protocol)
 - **ห้ามนำข้อมูลเข้า หรือสร้าง table database เองโดยอัตโนมัติเด็ดขาด**
 - ต้องจัดเตรียมไฟล์คำสั่ง SQL (เช่น `database_schema.sql`) และแจ้งผู้ใช้ทราบ พร้อมส่งมอบโค้ดให้ผู้ใช้เป็นผู้นำไปกดรันผ่าน phpMyAdmin บนเครื่องของผู้ใช้เองเท่านั้น
