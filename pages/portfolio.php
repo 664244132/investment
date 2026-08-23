@@ -219,7 +219,7 @@ $flash = getFlashMessage();
             </span>
             <span style="display: flex; align-items: center; gap: 6px; color: var(--color-success); white-space: nowrap;">
               <span style="width: 10px; height: 10px; border-radius: var(--radius-xs); background: var(--color-success); display: inline-block;"></span>
-              ตราสารทุน (Equities): <?= number_format($stocksPct, 1) ?>% (<?= formatMoney($stocksVal) ?>)
+              หุ้น / ตราสารทุน (Stocks & Equities): <?= number_format($stocksPct, 1) ?>% (<?= formatMoney($stocksVal) ?>)
             </span>
           </div>
         </div>

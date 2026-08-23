@@ -305,4 +305,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initCustomDropdowns();
+
+  // ==============================================================================
+  // 7. 🌟 Custom Dark-Gold Number Stepper for all <input type="number">
+  // ==============================================================================
+  function initCustomNumberInputs() {
+    const numberInputs = document.querySelectorAll('input[type="number"].form-input');
+    numberInputs.forEach(input => {
+      if (input.dataset.stepperInitialized === 'true') return;
+      input.dataset.stepperInitialized = 'true';
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'number-stepper-wrapper';
+
+      const controls = document.createElement('div');
+      controls.className = 'stepper-controls';
+
+      // Up button (Increment)
+      const upBtn = document.createElement('button');
+      upBtn.type = 'button';
+      upBtn.className = 'stepper-btn stepper-btn-up';
+      upBtn.tabIndex = -1;
+      upBtn.setAttribute('aria-label', 'เพิ่มจำนวน');
+      upBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+
+      // Down button (Decrement)
+      const downBtn = document.createElement('button');
+      downBtn.type = 'button';
+      downBtn.className = 'stepper-btn stepper-btn-down';
+      downBtn.tabIndex = -1;
+      downBtn.setAttribute('aria-label', 'ลดจำนวน');
+      downBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+
+      const step = parseFloat(input.step) || 1;
+      const min = (input.min !== '') ? parseFloat(input.min) : -Infinity;
+      const max = (input.max !== '') ? parseFloat(input.max) : Infinity;
+
+      function updateVal(delta) {
+        let current = parseFloat(input.value);
+        if (isNaN(current)) {
+          current = (delta > 0) ? (min !== -Infinity ? min : 0) : (max !== Infinity ? max : 0);
+        } else {
+          current += delta;
+        }
+
+        // Precision calculation
+        const stepParts = step.toString().split('.');
+        const precision = (stepParts.length > 1) ? stepParts[1].length : 0;
+        current = parseFloat(current.toFixed(precision));
+
+        if (current < min) current = min;
+        if (current > max) current = max;
+
+        input.value = current;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      upBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        updateVal(step);
+      });
+
+      downBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        updateVal(-step);
+      });
+
+      controls.appendChild(upBtn);
+      controls.appendChild(downBtn);
+
+      input.parentNode.insertBefore(wrapper, input);
+      wrapper.appendChild(input);
+      wrapper.appendChild(controls);
+    });
+  }
+
+  initCustomNumberInputs();
 });

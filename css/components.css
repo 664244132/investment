@@ -567,6 +567,84 @@
   outline: none;
 }
 
+/* ==============================================================================
+   🌟 Custom Dark-Gold Number Stepper & Input Spinner Reset
+   ============================================================================== */
+
+/* 1. Reset / Hide default ugly white browser spin buttons */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* 2. Number Stepper Container */
+.number-stepper-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.number-stepper-wrapper input.form-input {
+  padding-right: 2.75rem;
+}
+
+/* 3. Custom Stepper Controls (▲ / ▼) */
+.stepper-controls {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  bottom: 5px;
+  width: 26px;
+  display: flex;
+  flex-direction: column;
+  background: #1B1414;
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.stepper-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #2A2020 0%, #201717 100%);
+  color: var(--accent-gold);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.stepper-btn:first-child {
+  border-bottom: 1px solid rgba(255, 204, 0, 0.15);
+}
+
+.stepper-btn:hover {
+  background: #3E2F2F;
+  color: #FFF099;
+}
+
+.stepper-btn:active {
+  background: #4E3939;
+  color: var(--accent-gold);
+}
+
+.stepper-btn svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  display: block;
+}
+
 /* Native Select Fallback (Matching Theme) */
 select.form-input {
   appearance: none;

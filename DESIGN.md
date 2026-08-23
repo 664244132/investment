@@ -91,14 +91,31 @@
   --border-focus: #FFCC00;     /* Accessible focus ring */
 
   /* --- Spacing & Radius Tokens --- */
+  --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
   
   /* --- Shadows (Flat & Stable - No Bloom Glow) --- */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
 }
 ```
+
+---
+
+## 📋 6. ระบบแบบฟอร์มและการควบคุมค่า (Custom Form Controls & Steppers)
+
+### 6.1 Custom Bespoke Dropdown System
+- ปิดการทำงานของ Native Browser Select UI ด้วย `appearance: none;`
+- ใช้ Trigger Button ที่มีกรอบโค้งมนนุ่มนวล (`border-radius: 10px`) พื้นหลังไล่เฉด Dark Glass (`#2A2020` -> `#1E1616`)
+- ไอคอนลูกศร SVG Chevron สีทอง `#FFCC00` ที่หมุน 180° เมื่อเปิดเมนู
+- เมนูป๊อปอัปแบบ Glassmorphism `backdrop-filter: blur(24px);` พร้อมไอคอน Checkmark แสดงตัวเลือกที่เลือกอยู่
+
+### 6.2 Custom Dark-Gold Number Steppers
+- ซ่อนปุ่ม Spin Button สี่เหลี่ยมสีขาวเดิมของเบราว์เซอร์ (`input[type="number"]::-webkit-inner-spin-button`)
+- ติดตั้งปุ่มเพิ่ม-ลดจำนวน (▲ / ▼) สไตล์ Dark Gold คัสตอมที่ขอบขวาของช่องกรอกตัวเลข
+- เชื่อมต่อการเพิ่ม-ลดค่าตาม `step`, `min`, `max` พร้อมยิง Event `input` / `change` สำหรับคำนวณแบบ Real-time ทันที
+

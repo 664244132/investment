@@ -17,10 +17,13 @@
 - พัฒนา UI Autocomplete Dropdown ใน [**`js/main.js`**](file:///c:/xampp/htdocs/investment/js/main.js) แสดงผลการค้นหาแบบ Real-time พร้อมชื่อบริษัท, ตลาดหลักทรัพย์, และราคาตลาด
 
 #### 3. ระบบนำเข้าและวิเคราะห์อัตโนมัติ (On-Demand Auto-Sync & AI Synthesis)
-- ปรับปรุง [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) ให้มีระบบ **Live Auto-Sync Fallback** เมื่อผู้ใช้ค้นหาหุ้นตัวใดในโลกที่ยังไม่มีในระบบ:
-  1. ระบบจะวิ่งไปดึงข้อมูลสดจากตลาดจริงทันที
-  2. สร้างรายการหุ้นในฐานข้อมูล MySQL อัตโนมัติ พร้อมคำนวณตัวชี้วัดทางการเงินและบทวิเคราะห์ AI Score
-  3. บันทึกแท่งเทียนย้อนหลังสำหรับเรนเดอร์กราฟ Chart.js ทันที พร้อมให้นำไปทดลองซื้อขายในพอร์ตจำลองได้ทันที
+- ปรับปรุง [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) ให้มีระบบ **Live Auto-Sync Fallback** เมื่อค้นหาหุ้นทั่วโลก
+- พัฒนาระบบประเมินบทวิเคราะห์ AI เชิงปริมาณ (Quantitative Executive Summary), จุดแข็ง (Catalysts) และจุดเสี่ยง (Risks) อัตโนมัติ
+
+#### 4. ระบบฟอร์มและการควบคุมค่า (Custom Dropdowns, Number Steppers & Rule 4)
+- เพิ่ม **Rule 4 ใน `markdowns/REFACTORCODE.md` และ `DESIGN.md`**: กำหนดให้ใช้ Custom Dropdown โค้งมน (`10px`), Backdrop Blur Glassmorphism, และ Custom Dark-Gold Number Steppers (▲ / ▼) ทั่วโปรเจกต์
+- ซ่อนปุ่มสี่เหลี่ยมสีขาวเดิมของเบราว์เซอร์ใน `<input type="number">` ป้องกันการทำลายธีมมืด
+- แก้ไขปัญหาข้อความขัดแย้งในส่วน AI Synthesis Card (`analysis-grid`) แสดงผลตรงกับความจริง 100%
 
 ---
 
