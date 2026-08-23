@@ -8,17 +8,21 @@
 .env.*.local
 *.env
 config/secrets.php
+config/*.local.php
 
-# --- 2. PHP & Server Logs / Runtime Dumps ---
+# --- 2. PHP & Web Server Logs, Dumps & Temp Files ---
 logs/
 *.log
 error_log
 php_errors.log
 php_error_log
+apache_errors.log
+mysql_error.log
 *.tmp
 *.temp
 tmp/
 temp/
+*.pid
 
 # --- 3. Package Managers & Dependency Directories ---
 node_modules/
@@ -26,10 +30,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.pnpm-store/
 vendor/
 composer.phar
 
-# --- 4. Frontend Prototype Build Caches (AI Stock folder) ---
+# --- 4. AI Agents & Local Coding Harness Tools ---
+.agents/
+.codex/
+.gemini/
+.claude/
+skills-lock.json
+.antigravityigore
+
+# --- 5. Frontend Prototype Build Caches (AI Stock folder) ---
 AI Stock/node_modules/
 AI Stock/dist/
 AI Stock/.next/
@@ -37,7 +50,7 @@ AI Stock/.parcel-cache/
 AI Stock/build/
 AI Stock/.cache/
 
-# --- 5. Operating System Generated Files ---
+# --- 6. Operating System Generated Files ---
 .DS_Store
 .DS_Store?
 ._*
@@ -46,8 +59,9 @@ AI Stock/.cache/
 ehthumbs.db
 Thumbs.db
 desktop.ini
+$RECYCLE.BIN/
 
-# --- 6. IDE & Code Editor Configurations ---
+# --- 7. IDE & Code Editor Configurations ---
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
@@ -57,10 +71,15 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
 *~
+.history/
+.directory
 
-# --- 7. Local Database Backups & Temporary SQL Dumps ---
+# --- 8. Local Database Backups & Temporary SQL Dumps ---
 *.sql.gz
 *.sql.bak
 dump.sql
 backup.sql
+*.dmp
