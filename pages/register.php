@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 /**
  * 📝 pages/register.php
- * หน้าสมัครสมาชิกใหม่ (Create Account)
- * ออกแบบตามมาตรฐาน: Icons Only (Zero Emojis), Local Assets Only (Zero External CDNs)
+ * SmartPort AI - User Registration & Instant Portfolio Provisioning
+ * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 
 require_once __DIR__ . '/../config/constants.php';
@@ -15,32 +15,30 @@ require_once __DIR__ . '/../functions/auth.php';
 
 startAppSession();
 
+// หากเข้าสู่ระบบอยู่แล้ว ให้เปลี่ยนเส้นทางไปยังหน้าหลัก
 if (isLoggedIn()) {
-    redirect('index.php');
+    redirect(BASE_URL . '/index.php');
 }
 
+$pdo = getDbConnection();
 $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fullName        = (string)($_POST['full_name'] ?? '');
-    $username        = (string)($_POST['username'] ?? '');
-    $email           = (string)($_POST['email'] ?? '');
-    $password        = (string)($_POST['password'] ?? '');
+    $username = trim((string)($_POST['username'] ?? ''));
+    $email    = trim((string)($_POST['email'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
     $confirmPassword = (string)($_POST['confirm_password'] ?? '');
-    $agreed          = isset($_POST['agreed']);
+    $fullName = trim((string)($_POST['full_name'] ?? ''));
 
-    if (!$agreed) {
-        $error = 'กรุณายินยอมรับข้อกำหนดในการใช้งานและนโยบายความเป็นส่วนตัว';
-    } elseif ($password !== $confirmPassword) {
+    if ($password !== $confirmPassword) {
         $error = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง';
     } else {
-        $pdo = getDbConnection();
         $result = registerUser($pdo, $username, $email, $password, $fullName);
-
         if ($result['success']) {
+            // ทำการ Login อัตโนมัติหลังลงทะเบียนสำเร็จ
             loginUser($pdo, $username, $password);
-            setFlashMessage('success', $result['message']);
-            redirect('index.php');
+            setFlashMessage('success', 'ยินดีต้อนรับสู่ SmartPort AI! ระบบได้สร้างพอร์ตจำลองเงินทุน 1,000,000 บาทให้คุณเรียบร้อยแล้ว');
+            redirect(BASE_URL . '/pages/portfolio.php');
         } else {
             $error = $result['message'];
         }
@@ -52,27 +50,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สมัครสมาชิกฟรี - <?= e(APP_TITLE) ?></title>
+  <title>สมัครสมาชิก - <?= e(APP_TITLE) ?></title>
   
-  <!-- CSS Stylesheets (Local Assets) -->
+  <!-- CSS Stylesheets (Local Assets 100%) -->
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Minimal Header -->
   <header class="app-header">
     <div class="container header-inner">
       <a href="<?= e(BASE_URL) ?>/index.php" class="brand-logo">
         <div class="brand-icon">
           <?= icon('chart-bar', '', 18, '#1D1616') ?>
         </div>
-        <span>AlphaVision AI</span>
+        <span>SmartPort AI</span>
       </a>
 
       <div class="header-actions">
-        <span style="font-size: 0.875rem; color: var(--text-muted);">มีบัญชีอยู่แล้ว?</span>
+        <span style="font-size: 0.875rem; color: var(--text-muted); white-space: nowrap;">มีบัญชีอยู่แล้ว?</span>
         <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm">
           เข้าสู่ระบบ
         </a>
@@ -89,14 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Left Column: Benefits & Value Proposition -->
         <div style="display: flex; flex-direction: column; justify-content: center; gap: 1.75rem;">
           <div>
-            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-full); background: var(--color-success-subtle); color: var(--color-success); border: 1px solid var(--color-success-border); font-size: 0.75rem; font-family: var(--font-mono); margin-bottom: 1rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); background: var(--color-success-subtle); color: var(--color-success); border: 1px solid var(--color-success-border); font-size: 0.75rem; font-family: var(--font-primary); margin-bottom: 1rem; white-space: nowrap;">
               <?= icon('zap', 'text-gain', 14) ?> พอร์ตจำลองเงินทุน 1,000,000 บาท ฟรี
             </div>
-            <h1 style="font-family: var(--font-serif); font-size: 2rem; line-height: 1.3; color: var(--text-primary); margin-bottom: 0.75rem;">
-              ตัดสินใจลงทุนอย่างชาญฉลาด<br>ด้วยพลังของ AI
+            <h1 style="font-size: 2rem; line-height: 1.3; color: var(--text-primary); margin-bottom: 0.75rem;">
+              ตัดสินใจลงทุนอย่างชาญฉลาดด้วยพลังของ AI
             </h1>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-              AlphaVision ช่วยกลั่นกรองงบการเงินที่ซับซ้อนให้กลายเป็นบทวิเคราะห์ที่ชัดเจนและนำไปใช้ได้จริง พร้อมทดลองเทรดในพอร์ตจำลองแบบ Real-time
+              SmartPort AI ช่วยกลั่นกรองงบการเงินที่ซับซ้อนให้กลายเป็นบทวิเคราะห์ที่ชัดเจนและนำไปใช้ได้จริง พร้อมทดลองเทรดในพอร์ตจำลองแบบ Real-time
             </p>
           </div>
 
@@ -106,13 +104,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $perks = [
                 'ฟรีเงินทุนจำลอง 1,000,000 บาท ทดลองซื้อขายหุ้นจริงแบบ Real-time',
                 'เข้าถึงบทวิเคราะห์เจาะลึกงบการเงิน 3 ด้าน (งบดุล, งบกำไรขาดทุน, งบกระแสเงินสด)',
-                'ระบบ AI สรุปจุดเด่น-จุดเสี่ยง และให้คะแนน AI Stock Score (0-100)',
+                'ระบบ AI สรุปจุดเด่น-จุดเสี่ยง และให้คะแนน SmartPort Composite Rating (0-100)',
                 'ตัวกรองคัดเลือกหุ้นคุณค่าและหุ้นเติบโต (Smart Stock Screener)'
             ];
             foreach ($perks as $perk):
             ?>
               <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--color-success-subtle); color: var(--color-success); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-top: 2px; flex-shrink: 0;">
+                <div style="width: 20px; height: 20px; border-radius: var(--radius-xs); background: var(--color-success-subtle); color: var(--color-success); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-top: 2px; flex-shrink: 0;">
                   <?= icon('check', 'text-gain', 12) ?>
                 </div>
                 <span style="color: var(--text-secondary); font-size: 0.875rem;"><?= e($perk) ?></span>
@@ -120,26 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endforeach; ?>
           </div>
 
-          <!-- Testimonial Box -->
-          <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.25rem;">
-            <div style="color: var(--accent-gold); margin-bottom: 0.5rem; display: flex; gap: 2px;">
-              <?= icon('star', 'text-gold', 14) ?>
-              <?= icon('star', 'text-gold', 14) ?>
-              <?= icon('star', 'text-gold', 14) ?>
-              <?= icon('star', 'text-gold', 14) ?>
-              <?= icon('star', 'text-gold', 14) ?>
+          <!-- Institutional Architecture & Security Highlights -->
+          <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-gold); font-size: 0.8rem; font-family: var(--font-primary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem; white-space: nowrap;">
+              <?= icon('shield', 'text-gold', 16) ?> มาตรฐานสถาปัตยกรรมระดับสถาบัน
             </div>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; font-style: italic; margin-bottom: 0.75rem;">
-              "ระบบ AI สรุปงบการเงินได้รวดเร็วมาก ช่วยประหยัดเวลาการแกะงบไปได้เยอะ และพอร์ตจำลองทำให้กล้าทดลองกลยุทธ์ใหม่ๆ"
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;">
+              ประมวลผลอัตราส่วนการเงินเชิงสถิติจริง (Deterministic Fundamentals) ร่วมกับคะแนนคุณภาพหุ้น 4 มิติ ทำงานบนสถาปัตยกรรม Native Zero-Latency โหลดเร็ว ปลอดภัย และเป็นส่วนตัว
             </p>
-            <div style="display: flex; align-items: center; gap: 0.65rem;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--accent-gold); color: var(--text-dark); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">
-                <?= icon('user', '', 14, '#1D1616') ?>
-              </div>
-              <div>
-                <p style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">คุณธนภัทร</p>
-                <p style="font-size: 0.7rem; color: var(--text-muted);">นักลงทุนอิสระ</p>
-              </div>
+            <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-primary); border-top: 1px solid var(--border-subtle); padding-top: 0.6rem; flex-wrap: wrap;">
+              <span style="display: flex; align-items: center; gap: 4px; white-space: nowrap;"><?= icon('check', 'text-gain', 12) ?> Zero CDN Dependency</span>
+              <span style="display: flex; align-items: center; gap: 4px; white-space: nowrap;"><?= icon('check', 'text-gain', 12) ?> 100% Privacy First</span>
             </div>
           </div>
         </div>
@@ -147,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Right Column: Registration Form -->
         <div>
           <div style="margin-bottom: 1.5rem;">
-            <h2 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
+            <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
               สร้างบัญชีผู้ใช้งานของคุณ
             </h2>
             <p style="color: var(--text-muted); font-size: 0.85rem;">

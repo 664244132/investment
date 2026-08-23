@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 /**
  * 💼 pages/portfolio.php
- * หน้าพอร์ตการลงทุนจำลอง (Simulated Real-time Portfolio Tracker)
- * ออกแบบตามมาตรฐาน: Icons Only (Zero Emojis), Local Assets Only (Zero External CDNs)
+ * SmartPort AI - Simulated Portfolio Engine & Transaction Management
+ * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 
 require_once __DIR__ . '/../config/constants.php';
@@ -16,16 +16,18 @@ require_once __DIR__ . '/../functions/stocks.php';
 require_once __DIR__ . '/../functions/portfolio.php';
 
 startAppSession();
+
+// บังคับให้เข้าสู่ระบบก่อนใช้งานพอร์ต (Guard Clause)
 requireLogin();
 
+$pdo = getDbConnection();
 $user = getCurrentUser();
 $userId = (int)$user['id'];
-$pdo = getDbConnection();
 
-// จัดการคำสั่งซื้อ-ขาย (POST Request)
+// ประมวลผลคำสั่งซื้อ-ขายจำลอง (POST Request)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'trade') {
     $stockId  = (int)($_POST['stock_id'] ?? 0);
-    $type     = (string)($_POST['trade_type'] ?? 'BUY');
+    $type     = strtoupper(trim((string)($_POST['trade_type'] ?? 'BUY')));
     $quantity = (int)($_POST['quantity'] ?? 0);
 
     $tradeResult = executeSimulatedTrade($pdo, $userId, $stockId, $type, $quantity);
@@ -36,28 +38,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         setFlashMessage('danger', $tradeResult['message']);
     }
 
-    redirect('pages/portfolio.php');
+    redirect(BASE_URL . '/pages/portfolio.php');
 }
 
-// ดึงข้อมูลพอร์ต
+// ดึงข้อมูลพอร์ตจำลอง
 $portfolio = getUserPortfolio($pdo, $userId);
 
-// หากยังไม่มีพอร์ต (เช่น ผู้ใช้เก่า) ให้สร้างให้อัตโนมัติ
+// หากไม่พบพอร์ต (กรณีเกิดปัญหา) ให้สร้างใหม่อัตโนมัติ
 if (!$portfolio) {
-    $createSql = "INSERT INTO portfolios (user_id, portfolio_name, initial_cash, cash_balance) 
-                  VALUES (:user_id, 'พอร์ตจำลองหลัก', :initial_cash, :cash_balance)";
-    $cStmt = $pdo->prepare($createSql);
-    $cStmt->execute([
-        ':user_id'      => $userId,
-        ':initial_cash' => DEFAULT_PORTFOLIO_CASH,
-        ':cash_balance' => DEFAULT_PORTFOLIO_CASH
-    ]);
+    createDefaultPortfolio($pdo, $userId, $user['username']);
     $portfolio = getUserPortfolio($pdo, $userId);
 }
 
-$holdings = getPortfolioHoldings($pdo, (int)$portfolio['id']);
-$transactions = getPortfolioTransactions($pdo, (int)$portfolio['id'], 30);
+$portfolioId = (int)$portfolio['id'];
+$holdings = getPortfolioHoldings($pdo, $portfolioId);
+$transactions = getPortfolioTransactions($pdo, $portfolioId);
 $allStocks = getAllStocks($pdo);
+
+// คำนวณสัดส่วน Asset Allocation (Cash vs Equities)
+$cashVal = (float)$portfolio['cash_balance'];
+$stocksVal = (float)$portfolio['total_stocks_value'];
+$totalNetVal = (float)$portfolio['total_portfolio_value'];
+$cashPct = ($totalNetVal > 0) ? ($cashVal / $totalNetVal) * 100 : 100;
+$stocksPct = ($totalNetVal > 0) ? ($stocksVal / $totalNetVal) * 100 : 0;
 
 $flash = getFlashMessage();
 ?>
@@ -82,7 +85,7 @@ $flash = getFlashMessage();
         <div class="brand-icon">
           <?= icon('chart-bar', '', 18, '#1D1616') ?>
         </div>
-        <span>AlphaVision AI</span>
+        <span>SmartPort AI</span>
       </a>
 
       <nav class="main-nav">
@@ -97,7 +100,7 @@ $flash = getFlashMessage();
           <input type="text" id="stockSearchInput" placeholder="ค้นหาหุ้น... (กด Enter)">
         </div>
 
-        <span style="font-size: 0.85rem; color: var(--text-muted); display: none; @media(min-width:768px){display:inline;}">
+        <span style="font-size: 0.85rem; color: var(--text-muted); display: none; @media(min-width:768px){display:inline;}; white-space: nowrap;">
           <?= icon('user', '', 14) ?> <?= e($user['full_name'] ?? $user['username']) ?>
         </span>
         <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm">
@@ -131,35 +134,35 @@ $flash = getFlashMessage();
         </div>
       <?php endif; ?>
 
-      <!-- Portfolio Header & Summary Cards -->
+      <!-- Portfolio Header & Summary Controls -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem;">
         <div>
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-            <h1 style="font-family: var(--font-serif); font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <h1 style="font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
               <?= icon('wallet', 'text-gold', 24) ?> <?= e($portfolio['portfolio_name']) ?>
             </h1>
-            <span class="badge badge-gold">Real-time Simulation</span>
+            <span class="badge badge-gold">จำลองตามราคาตลาดจริง</span>
           </div>
           <p style="color: var(--text-muted); font-size: 0.85rem;">
-            จำลองการซื้อ-ขายหุ้นอิงตามราคาตลาดสด (เงินทุนเริ่มต้น <?= formatMoney((float)$portfolio['initial_cash']) ?>)
+            เงินทุนเริ่มต้น <?= formatMoney((float)$portfolio['initial_cash']) ?> · ค่าธรรมเนียมจำลอง 0.157% ต่อรายการ
           </p>
         </div>
 
         <div style="display: flex; gap: 0.75rem;">
           <button type="button" class="btn btn-buy open-trade-modal-btn" data-trade-type="BUY">
-            <?= icon('plus', '', 14) ?> ซื้อหุ้นจำลอง (BUY)
+            <?= icon('plus', '', 14) ?> ส่งคำสั่งซื้อ (BUY)
           </button>
           <button type="button" class="btn btn-sell open-trade-modal-btn" data-trade-type="SELL">
-            <?= icon('minus', '', 14) ?> ขายหุ้นจำลอง (SELL)
+            <?= icon('minus', '', 14) ?> ส่งคำสั่งขาย (SELL)
           </button>
         </div>
       </div>
 
       <!-- Overview 4 Metrics Grid -->
-      <div class="metrics-grid" style="margin-bottom: 2rem;">
+      <div class="metrics-grid" style="margin-bottom: 1.5rem;">
         
         <div class="metric-card">
-          <span class="metric-label">มูลค่าพอร์ตรวม (Total Net Worth)</span>
+          <span class="metric-label">มูลค่าสินทรัพย์สุทธิ (Total Net Asset)</span>
           <span class="metric-value" style="color: var(--accent-gold);">
             <?= formatMoney((float)$portfolio['total_portfolio_value']) ?>
           </span>
@@ -177,12 +180,12 @@ $flash = getFlashMessage();
             <?= formatMoney((float)$portfolio['cash_balance']) ?>
           </span>
           <div class="metric-sub">
-            <span>พร้อมส่งคำสั่งซื้อหุ้น</span>
+            <span>สภาพคล่องพร้อมลงทุน</span>
           </div>
         </div>
 
         <div class="metric-card">
-          <span class="metric-label">มูลค่าหุ้นที่ถือครอง (Stock Value)</span>
+          <span class="metric-label">มูลค่าหุ้นที่ถือครอง (Equity Value)</span>
           <span class="metric-value">
             <?= formatMoney((float)$portfolio['total_stocks_value']) ?>
           </span>
@@ -203,13 +206,42 @@ $flash = getFlashMessage();
 
       </div>
 
+      <!-- Asset Allocation Progress Bar (Clean Rounded Rectangle) -->
+      <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-size: 0.8rem; font-family: var(--font-primary); color: var(--text-primary); text-transform: uppercase; font-weight: 700; white-space: nowrap;">
+            สัดส่วนการจัดสรรสินทรัพย์ (Asset Allocation)
+          </div>
+          <div style="display: flex; gap: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); flex-wrap: wrap;">
+            <span style="display: flex; align-items: center; gap: 6px; color: var(--accent-gold); white-space: nowrap;">
+              <span style="width: 10px; height: 10px; border-radius: var(--radius-xs); background: var(--accent-gold); display: inline-block;"></span>
+              เงินสด (Cash): <?= number_format($cashPct, 1) ?>% (<?= formatMoney($cashVal) ?>)
+            </span>
+            <span style="display: flex; align-items: center; gap: 6px; color: var(--color-success); white-space: nowrap;">
+              <span style="width: 10px; height: 10px; border-radius: var(--radius-xs); background: var(--color-success); display: inline-block;"></span>
+              ตราสารทุน (Equities): <?= number_format($stocksPct, 1) ?>% (<?= formatMoney($stocksVal) ?>)
+            </span>
+          </div>
+        </div>
+
+        <div style="height: 10px; background: rgba(255, 255, 255, 0.06); border-radius: var(--radius-xs); display: flex; overflow: hidden;">
+          <div style="width: <?= $cashPct ?>%; background: var(--accent-gold);" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
+          <div style="width: <?= $stocksPct ?>%; background: var(--color-success);" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
+        </div>
+      </div>
+
       <!-- Current Holdings Table Card -->
       <div class="card" style="margin-bottom: 2.5rem;">
         <div class="card-header">
-          <h2 class="card-title">
-            <?= icon('chart-bar', 'text-gold', 18) ?> รายการหุ้นที่ถือครองในพอร์ต (Current Holdings)
-          </h2>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">
+          <div>
+            <h2 class="card-title">
+              <?= icon('chart-bar', 'text-gold', 18) ?> รายการหุ้นที่ถือครองในพอร์ต (Current Holdings)
+            </h2>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+              คำนวณราคาเฉลี่ยถ่วงน้ำหนัก (Weighted Average Cost)
+            </p>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
             อัปเดตราคาแบบ Real-time
           </span>
         </div>
@@ -232,14 +264,14 @@ $flash = getFlashMessage();
               <?php if (empty($holdings)): ?>
                 <tr>
                   <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-                    ยังไม่มีหุ้นในพอร์ตจำลอง — คลิกปุ่ม <strong>"+ ซื้อหุ้นจำลอง"</strong> เพื่อเริ่มทดลองลงทุน
+                    ยังไม่มีหุ้นในพอร์ตจำลอง — คลิกปุ่ม <strong>"+ ส่งคำสั่งซื้อ"</strong> ด้านบนเพื่อเริ่มทดลองลงทุน
                   </td>
                 </tr>
               <?php else: ?>
                 <?php foreach ($holdings as $item): ?>
                   <tr>
                     <td>
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem;">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
                         <?= e($item['symbol']) ?>
                       </a>
                     </td>
@@ -267,7 +299,7 @@ $flash = getFlashMessage();
                     </td>
                     <td style="text-align: center;">
                       <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="btn btn-outline btn-sm">
-                        <?= icon('bot', '', 12) ?> วิเคราะห์ AI
+                        <?= icon('bot', '', 12) ?> วิเคราะห์
                       </a>
                     </td>
                   </tr>
@@ -281,9 +313,14 @@ $flash = getFlashMessage();
       <!-- Transaction History Card -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            <?= icon('history', 'text-gold', 18) ?> ประวัติคำสั่งซื้อ-ขายจำลอง (Order & Transaction History)
-          </h2>
+          <div>
+            <h2 class="card-title">
+              <?= icon('history', 'text-gold', 18) ?> ประวัติคำสั่งซื้อ-ขายจำลอง (Order & Transaction Audit)
+            </h2>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+              บันทึกประวัติการทำรายการย้อนหลังพร้อมค่าคอมมิชชัน
+            </p>
+          </div>
         </div>
 
         <div class="table-responsive">
@@ -310,7 +347,7 @@ $flash = getFlashMessage();
               <?php else: ?>
                 <?php foreach ($transactions as $trx): ?>
                   <tr>
-                    <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                    <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
                       <?= e(date('d/m/Y H:i', strtotime($trx['created_at']))) ?>
                     </td>
                     <td>
@@ -320,7 +357,7 @@ $flash = getFlashMessage();
                         <span class="badge badge-loss">SELL (ขาย)</span>
                       <?php endif; ?>
                     </td>
-                    <td style="font-weight: 700; font-family: var(--font-mono);">
+                    <td style="font-weight: 700; font-family: var(--font-mono); white-space: nowrap;">
                       <?= e($trx['symbol']) ?>
                     </td>
                     <td class="num">
@@ -373,7 +410,7 @@ $flash = getFlashMessage();
           <input type="hidden" id="trade_type" name="trade_type" value="BUY">
 
           <div class="form-group">
-            <label for="trade_stock_id" class="form-label">เลือกหุ้น</label>
+            <label for="trade_stock_id" class="form-label">เลือกหลักทรัพย์</label>
             <div class="form-input-wrapper">
               <select id="trade_stock_id" name="stock_id" class="form-input" style="cursor: pointer;" required>
                 <?php foreach ($allStocks as $s): ?>
@@ -386,8 +423,8 @@ $flash = getFlashMessage();
           </div>
 
           <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-card-elevated); border-radius: var(--radius-sm);">
-            <span style="color: var(--text-muted);">ราคาตลาดล่าสุด:</span>
-            <span id="modal_stock_price" data-price="<?= (float)($allStocks[0]['current_price'] ?? 0) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono);">
+            <span style="color: var(--text-muted); white-space: nowrap;">ราคาตลาดล่าสุด:</span>
+            <span id="modal_stock_price" data-price="<?= (float)($allStocks[0]['current_price'] ?? 0) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); white-space: nowrap;">
               ฿<?= number_format((float)($allStocks[0]['current_price'] ?? 0), 2) ?>
             </span>
           </div>
@@ -400,8 +437,8 @@ $flash = getFlashMessage();
           </div>
 
           <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1.5rem; padding: 0.75rem; border-top: 1px dashed var(--border-subtle);">
-            <span style="color: var(--text-muted);">มูลค่ารวมโดยประมาณ (+ค่าคอม 0.157%):</span>
-            <span id="modal_trade_total" style="font-weight: 700; font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-primary);">
+            <span style="color: var(--text-muted); white-space: nowrap;">มูลค่ารวมสุทธิ (+ค่าคอมมิชชัน 0.157%):</span>
+            <span id="modal_trade_total" style="font-weight: 700; font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-primary); white-space: nowrap;">
               ฿0.00
             </span>
           </div>
@@ -422,7 +459,7 @@ $flash = getFlashMessage();
   <!-- Footer -->
   <footer class="app-footer">
     <div class="container footer-bottom">
-      <p>© 2026 AlphaVision AI - ระบบวิเคราะห์และคัดเลือกหุ้นด้วย AI พร้อมพอร์ตจำลอง</p>
+      <p>© 2026 SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ</p>
       <p>ข้อมูลจำลองเพื่อการศึกษาและการวิเคราะห์ ไม่ถือเป็นคำแนะนำทางการเงิน</p>
     </div>
   </footer>

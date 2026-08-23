@@ -1,7 +1,7 @@
 /**
  * 🧩 css/components.css
  * Component Styles: Buttons, Cards, Badges, Charts, AI Gauges, Financial Tables & Modals
- * Designed according to DESIGN.md (Subtle Flat State: No Floating, No Bloom Glow)
+ * Designed for SmartPort AI (Unified Sans Typography, Clean Rounded Rectangles, No Floating, No Bloom Glow)
  */
 
 /* ==============================================================================
@@ -16,10 +16,12 @@
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 600;
+  font-family: var(--font-primary);
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   text-decoration: none;
   line-height: 1;
   position: relative;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -71,6 +73,7 @@
 .btn-sm {
   padding: 0.35rem 0.75rem;
   font-size: 0.8rem;
+  border-radius: var(--radius-sm);
 }
 
 .btn-lg {
@@ -104,13 +107,14 @@
 }
 
 .card-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-primary);
   font-size: 1.15rem;
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-wrap: balance;
 }
 
 .card-body {
@@ -118,7 +122,7 @@
 }
 
 /* ==============================================================================
-   3. Colors & Badges
+   3. Colors & Badges (Clean Rounded Rectangles — No Capsules)
    ============================================================================== */
 .text-gain { color: var(--color-success) !important; }
 .text-loss { color: var(--color-danger) !important; }
@@ -129,11 +133,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);  /* Clean Rounded Rectangle 4px */
   font-size: 0.75rem;
   font-weight: 600;
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .badge-gain {
@@ -179,20 +185,23 @@
 }
 
 .stock-symbol {
-  font-family: var(--font-mono);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
+  font-size: 2.25rem;
+  font-weight: 800;
+  font-family: var(--font-primary);
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .stock-price-val {
+  font-size: 2.5rem;
+  font-weight: 800;
   font-family: var(--font-mono);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.1;
-  text-align: right;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .stats-bar {
@@ -201,7 +210,7 @@
   gap: 1px;
   background: var(--border-subtle);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -228,8 +237,9 @@
 .stats-label {
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .stats-val {
@@ -237,6 +247,8 @@
   font-weight: 600;
   color: var(--text-primary);
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* ==============================================================================
@@ -257,7 +269,7 @@
 .metric-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -272,9 +284,10 @@
 .metric-label {
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .metric-value {
@@ -283,6 +296,8 @@
   color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .metric-sub {
@@ -321,6 +336,7 @@
   background: transparent;
   transition: background-color 0.15s ease, color 0.15s ease;
   border-right: 1px solid var(--border-subtle);
+  white-space: nowrap;
 }
 
 .timeframe-btn:last-child {
@@ -405,22 +421,23 @@
 }
 
 .score-label {
-  width: 120px;
+  width: 130px;
   color: var(--text-muted);
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .score-progress-track {
   flex: 1;
   height: 6px;
   background: rgba(255, 204, 0, 0.1);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs);
   overflow: hidden;
 }
 
 .score-progress-bar {
   height: 100%;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs);
   transition: width 0.8s ease;
 }
 
@@ -429,6 +446,7 @@
   text-align: right;
   font-family: var(--font-mono);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ==============================================================================
@@ -450,11 +468,12 @@
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.75rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
 }
 
 .financial-table td {
@@ -470,6 +489,8 @@
 .financial-table td.num {
   font-family: var(--font-mono);
   text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* ==============================================================================
@@ -488,7 +509,7 @@
   max-width: 440px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: 2.25rem;
   box-shadow: var(--shadow-md);
 }
@@ -508,9 +529,10 @@
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
+  white-space: nowrap;
 }
 
 .form-input-wrapper {
@@ -527,7 +549,7 @@
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 0.95rem;
-  font-family: inherit;
+  font-family: var(--font-primary);
   transition: border-color 0.15s ease;
 }
 
@@ -620,7 +642,7 @@
 .modal-content {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   width: 100%;
   max-width: 500px;
   box-shadow: var(--shadow-lg);

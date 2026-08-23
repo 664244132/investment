@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 /**
  * 🔐 pages/login.php
- * หน้าเข้าสู่ระบบ (Sign In)
- * ออกแบบตามมาตรฐาน: Icons Only (Zero Emojis), Local Assets Only (Zero External CDNs)
+ * SmartPort AI - User Authentication
+ * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 
 require_once __DIR__ . '/../config/constants.php';
@@ -17,7 +17,7 @@ startAppSession();
 
 // หากเข้าสู่ระบบอยู่แล้ว ให้ย้ายไปหน้า Dashboard ทันที (Early Return)
 if (isLoggedIn()) {
-    redirect('index.php');
+    redirect(BASE_URL . '/index.php');
 }
 
 $error = null;
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result['success']) {
         setFlashMessage('success', $result['message']);
-        redirect('index.php');
+        redirect(BASE_URL . '/index.php');
     } else {
         $error = $result['message'];
     }
@@ -61,7 +61,7 @@ $flash = getFlashMessage();
         <div class="brand-icon">
           <?= icon('chart-bar', '', 18, '#1D1616') ?>
         </div>
-        <span>AlphaVision AI</span>
+        <span>SmartPort AI</span>
       </a>
 
       <div class="header-actions">
@@ -78,10 +78,10 @@ $flash = getFlashMessage();
       
       <!-- Card Header -->
       <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--accent-gold-subtle); border: 1px solid var(--accent-gold-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
+        <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--accent-gold-subtle); border: 1px solid var(--accent-gold-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
           <?= icon('lock', 'text-gold', 24) ?>
         </div>
-        <h1 style="font-family: var(--font-serif); font-size: 1.65rem; color: var(--text-primary); margin-bottom: 0.25rem;">
+        <h1 style="font-size: 1.65rem; color: var(--text-primary); margin-bottom: 0.25rem;">
           ยินดีต้อนรับกลับมา
         </h1>
         <p style="color: var(--text-muted); font-size: 0.875rem;">
@@ -157,13 +157,13 @@ $flash = getFlashMessage();
       <!-- Divider -->
       <div style="display: flex; align-items: center; gap: 0.75rem; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.75rem;">
         <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-        <span>บัญชีทดสอบในระบบ</span>
+        <span style="white-space: nowrap;">บัญชีทดสอบในระบบ</span>
         <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
       </div>
 
       <!-- Quick Demo Account Box -->
       <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; font-size: 0.8rem; color: var(--text-muted);">
-        <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 4px;">
+        <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 4px; white-space: nowrap;">
           <?= icon('info', 'text-gold', 14) ?> บัญชี Demo สำหรับทดลองใช้:
         </p>
         <p>User: <code style="color: var(--text-primary);">investor_demo</code> | Pass: <code style="color: var(--text-primary);">password123</code></p>

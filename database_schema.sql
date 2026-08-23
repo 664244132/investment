@@ -200,8 +200,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 1. เพิ่มผู้ใช้งานทดสอบ (รหัสผ่านคือ: password123)
 -- Hash สร้างจาก password_hash('password123', PASSWORD_DEFAULT)
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `full_name`, `role`) VALUES
-(1, 'investor_demo', 'demo@investment.local', '$2y$10$w4r04D.o2U6bVb2m9Hk8beI8fE0nFmU7qjJ0a1wH6p1j5sQxQ6z9m', 'คุณนักลงทุน ตัวอย่าง', 'user'),
-(2, 'admin_master', 'admin@investment.local', '$2y$10$w4r04D.o2U6bVb2m9Hk8beI8fE0nFmU7qjJ0a1wH6p1j5sQxQ6z9m', 'ผู้ดูแลระบบ สูงสุด', 'admin');
+(1, 'investor_demo', 'demo@investment.local', '$2y$10$a6R0bmx9CyBzTVayaVAOpuUXbfqgKUSbKH8A4SNo/iB3RzU3vHjP.', 'คุณนักลงทุน ตัวอย่าง', 'user'),
+(2, 'admin_master', 'admin@investment.local', '$2y$10$a6R0bmx9CyBzTVayaVAOpuUXbfqgKUSbKH8A4SNo/iB3RzU3vHjP.', 'ผู้ดูแลระบบ สูงสุด', 'admin');
 
 -- 2. เพิ่มข้อมูลหุ้นชั้นนำในตลาด (SET & Global Tech)
 INSERT INTO `stocks` (`id`, `symbol`, `name_th`, `name_en`, `market`, `sector`, `current_price`, `previous_close`, `price_change`, `percent_change`, `day_high`, `day_low`, `volume`, `market_cap`) VALUES

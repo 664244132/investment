@@ -11,9 +11,9 @@ if (!defined('APP_INIT')) {
     define('APP_INIT', true);
 
     // ข้อมูลแอปพลิเคชัน
-    define('APP_NAME', 'AI Stock Analyst & Virtual Portfolio');
-    define('APP_TITLE', 'ระบบวิเคราะห์และคัดเลือกหุ้นด้วย AI');
-    define('APP_VERSION', '1.0.0');
+    define('APP_NAME', 'SmartPort AI');
+    define('APP_TITLE', 'SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ');
+    define('APP_VERSION', '1.2.0');
 
     // URL และ Path พื้นฐาน
     define('BASE_URL', '/investment');

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 /**
  * 🔍 pages/screener.php
- * หน้าคัดกรองหุ้นอัจฉริยะ (Smart Stock Screener)
- * ออกแบบตามมาตรฐาน: Icons Only (Zero Emojis), Local Assets Only (Zero External CDNs)
+ * SmartPort AI - Fundamental & Quantitative Stock Screener
+ * ออกแบบตามมาตรฐาน: Unified Sans Typography, Clean Rounded Rectangles, Icons Only, Zero External CDNs, Flat Subtle States
  */
 
 require_once __DIR__ . '/../config/constants.php';
@@ -18,15 +18,16 @@ startAppSession();
 
 $pdo = getDbConnection();
 $user = getCurrentUser();
+
 $sectors = getAllSectors($pdo);
 
-// รับค่าตัวกรองจาก Query Parameters (GET)
+// รับเงื่อนไขการคัดกรองจาก $_GET
 $filters = [
-    'sector'       => (string)($_GET['sector'] ?? 'all'),
-    'max_pe'       => !empty($_GET['max_pe']) ? (float)$_GET['max_pe'] : null,
-    'min_roe'      => !empty($_GET['min_roe']) ? (float)$_GET['min_roe'] : null,
-    'min_yield'    => !empty($_GET['min_yield']) ? (float)$_GET['min_yield'] : null,
-    'min_score'    => !empty($_GET['min_score']) ? (int)$_GET['min_score'] : null
+    'sector'    => (string)($_GET['sector'] ?? 'all'),
+    'max_pe'    => isset($_GET['max_pe']) && $_GET['max_pe'] !== '' ? (float)$_GET['max_pe'] : null,
+    'min_roe'   => isset($_GET['min_roe']) && $_GET['min_roe'] !== '' ? (float)$_GET['min_roe'] : null,
+    'min_yield' => isset($_GET['min_yield']) && $_GET['min_yield'] !== '' ? (float)$_GET['min_yield'] : null,
+    'min_score' => isset($_GET['min_score']) && $_GET['min_score'] !== '' ? (int)$_GET['min_score'] : null,
 ];
 
 $screenedStocks = screenStocks($pdo, $filters);
@@ -36,7 +37,7 @@ $screenedStocks = screenStocks($pdo, $filters);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>คัดกรองหุ้น (Stock Screener) - <?= e(APP_TITLE) ?></title>
+  <title>คัดกรองหุ้น - <?= e(APP_TITLE) ?></title>
   
   <!-- CSS Stylesheets (Local Assets) -->
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
@@ -52,7 +53,7 @@ $screenedStocks = screenStocks($pdo, $filters);
         <div class="brand-icon">
           <?= icon('chart-bar', '', 18, '#1D1616') ?>
         </div>
-        <span>AlphaVision AI</span>
+        <span>SmartPort AI</span>
       </a>
 
       <nav class="main-nav">
@@ -72,7 +73,7 @@ $screenedStocks = screenStocks($pdo, $filters);
             <?= icon('wallet', '', 14) ?> พอร์ตของฉัน
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm" style="color: var(--text-muted);">
-            ออก
+            ออกจากระบบ
           </a>
         <?php else: ?>
           <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm">
@@ -106,16 +107,32 @@ $screenedStocks = screenStocks($pdo, $filters);
   <main class="main-content">
     <div class="container">
       
-      <div style="margin-bottom: 2rem;">
+      <div style="margin-bottom: 1.5rem;">
         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-          <h1 style="font-family: var(--font-serif); font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
-            <?= icon('filter', 'text-gold', 24) ?> เครื่องมือคัดกรองหุ้น (Smart Stock Screener)
+          <h1 style="font-size: 1.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <?= icon('filter', 'text-gold', 24) ?> เครื่องมือคัดกรองหลักทรัพย์ (Quantitative Stock Screener)
           </h1>
-          <span class="badge badge-gold">AI-Powered</span>
+          <span class="badge badge-gold">Deterministic Filters</span>
         </div>
         <p style="color: var(--text-muted); font-size: 0.85rem;">
-          ค้นหาหุ้นคุณค่าและหุ้นเติบโตสูงตามเกณฑ์อัตราส่วนทางการเงินและคะแนน AI Score
+          คัดกรองหุ้นคุณค่าและหุ้นเติบโตตามตัวชี้วัดทางการเงินเชิงลึกและคะแนนคุณภาพ Composite Rating
         </p>
+      </div>
+
+      <!-- Quick Strategy Presets (Clean Rounded Rectangles) -->
+      <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; align-items: center;">
+        <span style="font-size: 0.75rem; font-family: var(--font-primary); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap;">
+          กลยุทธ์ยอดนิยม:
+        </span>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+          <?= icon('zap', 'text-gold', 12) ?> หุ้นปันผลสูง (Yield > 4%)
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+          <?= icon('trending-up', 'text-gain', 12) ?> หุ้นเติบโตราคาถูก (P/E < 20 & ROE > 15%)
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="badge badge-neutral" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm);">
+          <?= icon('star', 'text-gold', 12) ?> หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
+        </a>
       </div>
 
       <!-- Filters Card -->
@@ -124,8 +141,8 @@ $screenedStocks = screenStocks($pdo, $filters);
           <h2 class="card-title">
             <?= icon('sliders', 'text-gold', 18) ?> กำหนดเงื่อนไขการคัดกรอง
           </h2>
-          <a href="<?= e(BASE_URL) ?>/pages/screener.php" style="font-size: 0.8rem; color: var(--accent-gold);">
-            ล้างตัวกรองทั้งหมด
+          <a href="<?= e(BASE_URL) ?>/pages/screener.php" style="font-size: 0.8rem; color: var(--accent-gold); display: flex; align-items: center; gap: 4px; white-space: nowrap;">
+            <?= icon('close', '', 14) ?> ล้างตัวกรองทั้งหมด
           </a>
         </div>
 
@@ -160,7 +177,7 @@ $screenedStocks = screenStocks($pdo, $filters);
             </div>
 
             <div class="form-group" style="margin-bottom: 0;">
-              <label for="filter_score" class="form-label">AI Score ขั้นต่ำ (คะแนน)</label>
+              <label for="filter_score" class="form-label">Composite Rating ขั้นต่ำ</label>
               <input type="number" id="filter_score" name="min_score" class="form-input" placeholder="เช่น 75" min="0" max="100" value="<?= e((string)$filters['min_score']) ?>">
             </div>
 
@@ -180,8 +197,8 @@ $screenedStocks = screenStocks($pdo, $filters);
           <h2 class="card-title">
             <?= icon('chart-bar', 'text-gold', 18) ?> ผลการคัดกรอง (พบ <?= count($screenedStocks) ?> บริษัท)
           </h2>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">
-            เรียงตาม AI Score และ ROE
+          <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+            เรียงตาม Composite Rating และ ROE
           </span>
         </div>
 
@@ -196,9 +213,9 @@ $screenedStocks = screenStocks($pdo, $filters);
                 <th style="text-align: right;">P/E (x)</th>
                 <th style="text-align: right;">ROE (%)</th>
                 <th style="text-align: right;">Dividend Yield</th>
-                <th style="text-align: center;">AI Score</th>
-                <th style="text-align: center;">AI คำแนะนำ</th>
-                <th style="text-align: center;">ดูข้อมูล</th>
+                <th style="text-align: center;">คะแนนคุณภาพ</th>
+                <th style="text-align: center;">คำแนะนำ</th>
+                <th style="text-align: center;">จัดการ</th>
               </tr>
             </thead>
             <tbody>
@@ -212,7 +229,7 @@ $screenedStocks = screenStocks($pdo, $filters);
                 <?php foreach ($screenedStocks as $s): ?>
                   <tr>
                     <td>
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem;">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
                         <?= e($s['symbol']) ?>
                       </a>
                     </td>
@@ -255,7 +272,7 @@ $screenedStocks = screenStocks($pdo, $filters);
                     </td>
                     <td style="text-align: center;">
                       <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" class="btn btn-outline btn-sm">
-                        <?= icon('bot', '', 12) ?> วิเคราะห์ AI
+                        <?= icon('bot', '', 12) ?> วิเคราะห์
                       </a>
                     </td>
                   </tr>
@@ -272,7 +289,7 @@ $screenedStocks = screenStocks($pdo, $filters);
   <!-- Footer -->
   <footer class="app-footer">
     <div class="container footer-bottom">
-      <p>© 2026 AlphaVision AI - ระบบวิเคราะห์และคัดเลือกหุ้นด้วย AI พร้อมพอร์ตจำลอง</p>
+      <p>© 2026 SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ</p>
       <p>ข้อมูลเพื่อการศึกษาและวิเคราะห์สถิติเท่านั้น</p>
     </div>
   </footer>

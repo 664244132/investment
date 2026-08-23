@@ -40,8 +40,11 @@ function getAllStocks(PDO $pdo, ?string $sector = null, ?string $search = null):
 
     // ค้นหาตามชื่อย่อหุ้นหรือชื่อบริษัท
     if ($search !== null && trim($search) !== '') {
-        $sql .= " AND (s.symbol LIKE :search OR s.name_en LIKE :search OR s.name_th LIKE :search)";
-        $params[':search'] = '%' . trim($search) . '%';
+        $searchTerm = '%' . trim($search) . '%';
+        $sql .= " AND (s.symbol LIKE :search_sym OR s.name_en LIKE :search_en OR s.name_th LIKE :search_th)";
+        $params[':search_sym'] = $searchTerm;
+        $params[':search_en']  = $searchTerm;
+        $params[':search_th']  = $searchTerm;
     }
 
     $sql .= " ORDER BY s.market_cap DESC";

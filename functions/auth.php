@@ -57,11 +57,14 @@ function loginUser(PDO $pdo, string $usernameOrEmail, string $password): array
     // ค้นหาข้อมูลผู้ใช้ในฐานข้อมูลด้วย Prepared Statement ป้องกัน SQL Injection
     $sql = "SELECT id, username, email, password_hash, full_name, role 
             FROM users 
-            WHERE username = :identifier OR email = :identifier 
+            WHERE username = :identifier_user OR email = :identifier_email 
             LIMIT 1";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':identifier' => $usernameOrEmail]);
+    $stmt->execute([
+        ':identifier_user'  => $usernameOrEmail,
+        ':identifier_email' => $usernameOrEmail
+    ]);
     $user = $stmt->fetch();
 
     // Guard Clause 2: ตรวจสอบว่าพบผู้ใช้หรือไม่
