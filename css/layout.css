@@ -75,7 +75,8 @@ button {
   width: 100%;
   max-width: 1280px;
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding-inline: 1rem;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -87,7 +88,10 @@ button {
 /* Global Viewport Overflow Containment */
 html, body {
   overflow-x: hidden;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  box-sizing: border-box;
 }
 
 /* ==============================================================================
@@ -223,29 +227,28 @@ html, body {
   font-weight: 700;
 }
 
-/* Header Actions */
+/* Header Actions (Desktop Only) */
 .header-actions {
-  display: flex;
+  display: none;
   align-items: center;
   gap: clamp(0.35rem, 1vw, 0.75rem);
   flex-shrink: 0;
 }
 
-/* Responsive Action Buttons in Header: Hide on mobile < 992px (Pure Hamburger mode) */
-.btn-header-action {
-  white-space: nowrap;
-  display: none;
-}
-
 @media (min-width: 992px) {
-  .btn-header-action {
-    display: inline-flex;
+  .header-actions {
+    display: flex;
   }
 }
 
-/* Stock Search Box (Desktop vs Mobile) */
-.search-box {
-  display: none;
+/* Responsive Action Buttons in Header */
+.btn-header-action {
+  white-space: nowrap;
+}
+
+/* Desktop Stock Search Box */
+.header-actions .search-box {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
@@ -258,12 +261,6 @@ html, body {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
-}
-
-@media (min-width: 992px) {
-  .header-actions .search-box {
-    display: flex;
-  }
 }
 
 .header-actions .search-box:focus-within {
@@ -303,10 +300,18 @@ html, body {
   border: 1px solid rgba(255, 204, 0, 0.25);
   border-radius: var(--radius-sm);
   cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   padding: 0;
   margin-left: auto;
   z-index: 105;
+}
+
+.mobile-toggle * {
+  pointer-events: none;
 }
 
 .mobile-toggle:hover,

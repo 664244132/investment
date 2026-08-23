@@ -21,9 +21,27 @@ $currentUser = $currentUser ?? getCurrentUser();
   <title><?= e($pageTitle) ?></title>
   
   <!-- CSS Stylesheets (Local Assets 100%) -->
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css">
-  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css">
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css?v=<?= e(APP_VERSION) ?>">
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css?v=<?= e(APP_VERSION) ?>">
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css?v=<?= e(APP_VERSION) ?>">
+
+  <script>
+    window.BASE_URL = <?= json_encode(BASE_URL) ?>;
+    window.toggleMobileDrawer = function(e) {
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      var drawer = document.getElementById('mobileDrawer');
+      var btn = document.getElementById('mobileMenuBtn');
+      var iconMenu = document.querySelector('.toggle-icon-menu');
+      var iconClose = document.querySelector('.toggle-icon-close');
+      if (!drawer) return;
+      var isOpen = drawer.classList.toggle('open');
+      if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (iconMenu) iconMenu.style.display = isOpen ? 'none' : 'inline-block';
+      if (iconClose) iconClose.style.display = isOpen ? 'inline-block' : 'none';
+    };
+  </script>
 
   <?php if (!empty($extraHead)): ?>
     <?= $extraHead ?>
@@ -62,7 +80,7 @@ $currentUser = $currentUser ?? getCurrentUser();
         </a>
       </nav>
 
-      <!-- Search & Auth Controls -->
+      <!-- Desktop Search & Auth Controls -->
       <div class="header-actions">
         
         <!-- Stock Live Search Box -->
@@ -87,12 +105,13 @@ $currentUser = $currentUser ?? getCurrentUser();
           </a>
         <?php endif; ?>
 
-        <!-- Mobile Toggle Button -->
-        <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false">
-          <span class="toggle-icon-menu"><?= icon('menu', '', 20) ?></span>
-          <span class="toggle-icon-close" style="display: none;"><?= icon('close', '', 20) ?></span>
-        </button>
       </div>
+
+      <!-- Mobile Hamburger Toggle Button (Direct Child) -->
+      <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle Menu" aria-expanded="false" type="button" onclick="window.toggleMobileDrawer(event)">
+        <span class="toggle-icon-menu"><?= icon('menu', '', 20) ?></span>
+        <span class="toggle-icon-close" style="display: none;"><?= icon('close', '', 20) ?></span>
+      </button>
 
     </div>
 

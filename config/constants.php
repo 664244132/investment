@@ -13,7 +13,7 @@ if (!defined('APP_INIT')) {
     // ข้อมูลแอปพลิเคชัน
     define('APP_NAME', 'SmartPort AI');
     define('APP_TITLE', 'SmartPort AI - ระบบวิเคราะห์หุ้นและพอร์ตจำลองอัจฉริยะ');
-    define('APP_VERSION', '1.2.0');
+    define('APP_VERSION', '1.4.5');
 
     // URL และ Path พื้นฐาน
     define('BASE_URL', '/investment');

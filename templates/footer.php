@@ -80,7 +80,7 @@ declare(strict_types=1);
   </footer>
 
   <!-- Core JavaScript Interactivity (100% Local) -->
-  <script src="<?= e(JS_URL) ?>/main.js"></script>
+  <script src="<?= e(JS_URL) ?>/main.js?v=<?= e(APP_VERSION) ?>"></script>
 
   <?php if (!empty($extraScripts)): ?>
     <?= $extraScripts ?>

@@ -3,14 +3,15 @@
  * SmartPort AI - Core UI Interactions, Bespoke Luxury Dropdowns, Live Global Stock Search & Autocomplete, Password Toggles, and Trade Modal
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initSmartPort() {
   // 1. Mobile Drawer Toggle & Interaction
-  const mobileToggle = document.querySelector('.mobile-toggle');
+  const mobileToggle = document.getElementById('mobileMenuBtn') || document.querySelector('.mobile-toggle');
   const mobileDrawer = document.getElementById('mobileDrawer') || document.querySelector('.mobile-drawer');
   const toggleIconMenu = document.querySelector('.toggle-icon-menu');
   const toggleIconClose = document.querySelector('.toggle-icon-close');
 
-  function toggleMobileMenu(forceState) {
+  window.toggleMobileDrawer = function(e, forceState) {
+    if (e && e.stopPropagation) e.stopPropagation();
     if (!mobileDrawer) return;
     const isOpening = (forceState !== undefined) ? forceState : !mobileDrawer.classList.contains('open');
     
@@ -29,18 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (toggleIconClose) toggleIconClose.style.display = 'none';
       }
     }
-  }
+  };
 
-  if (mobileToggle && mobileDrawer) {
-    mobileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleMobileMenu();
-    });
-
+  if (mobileDrawer) {
     // Close when clicking any nav link inside drawer
     mobileDrawer.querySelectorAll('.nav-link, a').forEach(link => {
       link.addEventListener('click', () => {
-        toggleMobileMenu(false);
+        window.toggleMobileDrawer(null, false);
       });
     });
 
@@ -48,14 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
       const header = document.querySelector('.app-header');
       if (header && !header.contains(e.target) && mobileDrawer.classList.contains('open')) {
-        toggleMobileMenu(false);
+        window.toggleMobileDrawer(null, false);
       }
     });
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
-        toggleMobileMenu(false);
+        window.toggleMobileDrawer(null, false);
       }
     });
   }
@@ -468,4 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initCustomNumberInputs();
-});
+}
+
+// Fail-safe bootstrap for any document readyState
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSmartPort);
+} else {
+  initSmartPort();
+}

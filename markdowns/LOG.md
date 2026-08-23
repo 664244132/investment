@@ -4,6 +4,37 @@
 
 ---
 
+## 📌 [Version 1.4.6] - 2026-08-23
+### 🚀 Direct Inline Mobile Drawer Controller & Cache Busting (v1.4.5 / v1.4.6)
+
+#### 1. ระบบควบคุมการเปิด-ปิดเมนูแบบ Direct Inline Invocation
+- ผูกฟังก์ชัน [**`window.toggleMobileDrawer(event)`**](file:///c:/xampp/htdocs/investment/templates/header.php) ผ่านแอตทริบิวต์ `onclick` โดยตรงบนแท็ก `<button id="mobileMenuBtn">`
+- ทำงานทันทีโดยตรงในตัว Header ปราศจากการพึ่งพาการโหลดสคริปต์ภายนอกหรือความล่าช้าของ DOM Ready
+- ซิงก์การสลับไอคอนระหว่าง `menu` และ `close` SVG อย่างแม่นยำ
+
+#### 2. ล้างแคชเบราว์เซอร์อัตโนมัติ (Asset Cache Busting)
+- อัปเกรดค่าคงที่ [**`APP_VERSION`**](file:///c:/xampp/htdocs/investment/config/constants.php) และแนบพารามิเตอร์ `?v=<?= e(APP_VERSION) ?>` ต่อท้ายไฟล์ CSS ทุกไฟล์ (`variables.css`, `layout.css`, `components.css`) และไฟล์ JavaScript (`main.js`)
+- ป้องกันไม่ให้เบราว์เซอร์บนมือถือจำสคริปต์เวอร์ชันเก่าค้างอยู่ในแคช
+
+---
+
+## 📌 [Version 1.4.5] - 2026-08-23
+### 🛡️ Fail-safe Mobile Hamburger Touch Controller & Zero-Overflow Architecture
+
+#### 1. สถาปัตยกรรมแถบหัวเว็บแบบแยกเดี่ยว (Direct Child Isolation)
+- ปรับโครงสร้าง [**`templates/header.php`**](file:///c:/xampp/htdocs/investment/templates/header.php) ให้ปุ่ม Hamburger Menu (`.mobile-toggle#mobileMenuBtn`) เป็น **Direct Child** ของ `.header-inner` แยกขาดจาก `.header-actions`
+- ซ่อน `.header-actions` แบบ `display: none !important;` บนหน้าจอขนาด `< 992px` เพื่อขจัดองค์ประกอบที่ไม่เกี่ยวข้องออกจาก DOM layout
+- ทำให้แถบหัวเว็บบนมือถือมีเพียง 2 ส่วนเท่านั้น คือ โลโก้ทางซ้าย และปุ่ม Hamburger ทางขวา โดยไม่มีสิ่งใดเบียดดันกัน
+
+#### 2. ระบบ Event Listeners ป้องกัน Race Condition (Fail-safe Bootstrap)
+- ปรับปรุง [**`js/main.js`**](file:///c:/xampp/htdocs/investment/js/main.js) ให้ฟังก์ชัน `initSmartPort()` ตรวจสอบ `document.readyState` ทันที ป้องกันปัญหา Event `DOMContentLoaded` ข้ามผ่านไปก่อนที่สคริปต์จะถูกโหลด
+- เพิ่ม `pointer-events: none;` บนองค์ประกอบย่อยภายใน `.mobile-toggle *` และตั้งค่า `touch-action: manipulation;` พร้อม `pointer-events: auto;` บนตัวปุ่ม เพื่อให้จับสัญญาณแตะ/คลิกบนมือถือ (iOS/Android) ได้ 100% ไร้การหน่วง
+
+#### 3. ฝัง `window.BASE_URL` Global Variable
+- ฝัง `window.BASE_URL` ใน `<head>` ผ่าน JSON encode เพื่อให้การร้องขอ API Autocomplete และ Navigation บนมือถือทำงานได้อย่างถูกต้อง
+
+---
+
 ## 📌 [Version 1.4.4] - 2026-08-23
 ### 📱 Pure Hamburger Header Mode on Mobile/Tablet (< 992px)
 
