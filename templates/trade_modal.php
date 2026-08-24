@@ -21,10 +21,10 @@ if ($modalStock) {
        Reusable Trade Modal Dialog
        ============================================================================== -->
   <div id="tradeModal" class="modal-backdrop">
-    <div class="modal-content card">
+    <div class="modal-content">
       
-      <div class="card-header">
-        <h3 class="card-title modal-title-flex">
+      <div class="modal-header">
+        <h3 class="modal-title modal-title-flex">
           <?= icon('cart', 'text-gold', 20) ?>
           <span id="modal_trade_header_title">
             <?= $modalStock ? 'ส่งคำสั่งจำลอง: ' . e($modalStock['symbol']) : 'ส่งคำสั่งซื้อ-ขายจำลอง (Paper Trade)' ?>
@@ -35,7 +35,7 @@ if ($modalStock) {
         </button>
       </div>
 
-      <div class="card-body">
+      <div class="modal-body">
         <form action="<?= e(BASE_URL) ?>/pages/portfolio.php" method="POST">
           <?= getCsrfInputField() ?>
           <input type="hidden" name="action" value="trade">

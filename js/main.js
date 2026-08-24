@@ -83,6 +83,7 @@ function initSmartPort() {
   // 3. Password Strength Meter (บนหน้าสมัครสมาชิก)
   const passwordInput = document.getElementById('reg_password');
   const strengthSegments = document.querySelectorAll('.pw-strength-segment');
+  const strengthLabel = document.getElementById('pwStrengthLabel');
 
   if (passwordInput && strengthSegments.length > 0) {
     passwordInput.addEventListener('input', () => {
@@ -92,7 +93,7 @@ function initSmartPort() {
       if (val.length >= 6) score++;
       if (val.length >= 8) score++;
       if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
-      if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) score++;
+      if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score++;
 
       strengthSegments.forEach((seg, idx) => {
         if (idx < score) {
@@ -103,6 +104,22 @@ function initSmartPort() {
           seg.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
         }
       });
+
+      if (strengthLabel) {
+        if (val.length === 0) {
+          strengthLabel.textContent = 'ระดับความปลอดภัย: ขั้นต่ำ 6 ตัวอักษร';
+          strengthLabel.style.color = 'var(--text-muted)';
+        } else if (score <= 1) {
+          strengthLabel.textContent = 'ระดับความปลอดภัย: รหัสผ่านง่ายเกินไป';
+          strengthLabel.style.color = 'var(--color-danger)';
+        } else if (score <= 2) {
+          strengthLabel.textContent = 'ระดับความปลอดภัย: ปานกลาง';
+          strengthLabel.style.color = 'var(--accent-gold)';
+        } else {
+          strengthLabel.textContent = 'ระดับความปลอดภัย: ยอดเยี่ยม (ปลอดภัยสูงสุด)';
+          strengthLabel.style.color = 'var(--color-success)';
+        }
+      }
     });
   }
 
@@ -151,40 +168,51 @@ function initSmartPort() {
     });
   }
 
+  // ฟังก์ชันสากลสำหรับเปิด Trade Modal (เรียกใช้ได้ทั้งผ่าน JS และ Inline onclick)
+  window.openTradeModal = function(type = 'BUY', symbol = '', price = null, stockId = null) {
+    if (tradeTypeInput) tradeTypeInput.value = type;
+
+    const tradeStockSelect = document.getElementById('trade_stock_id');
+    if (stockId && tradeStockSelect) {
+      tradeStockSelect.value = stockId.toString();
+      tradeStockSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    if (price !== null && tradeStockPrice) {
+      const numPrice = parseFloat(price.toString()) || 0;
+      tradeStockPrice.setAttribute('data-price', numPrice.toString());
+      tradeStockPrice.textContent = '฿' + numPrice.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    const modalHeaderTitle = document.getElementById('modal_trade_header_title');
+    if (symbol && modalHeaderTitle) {
+      modalHeaderTitle.textContent = (type === 'SELL' ? 'ส่งคำสั่งขายจำลอง: ' : 'ส่งคำสั่งซื้อจำลอง: ') + symbol;
+    }
+
+    if (tradeSubmitBtn) {
+      if (type === 'SELL') {
+        tradeSubmitBtn.className = 'btn btn-sell btn-full modal-btn-submit';
+        tradeSubmitBtn.textContent = 'ยืนยันคำสั่งขาย (SELL)';
+      } else {
+        tradeSubmitBtn.className = 'btn btn-buy btn-full modal-btn-submit';
+        tradeSubmitBtn.textContent = 'ยืนยันคำสั่งซื้อ (BUY)';
+      }
+    }
+
+    calculateTradeTotal();
+    if (tradeModal) tradeModal.classList.add('open');
+  };
+
   openTradeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const type = btn.getAttribute('data-trade-type') || 'BUY';
-      if (tradeTypeInput) tradeTypeInput.value = type;
-      
       const stockId = btn.getAttribute('data-stock-id');
       const customPrice = btn.getAttribute('data-price');
-      const tradeStockSelect = document.getElementById('trade_stock_id');
-
-      if (stockId && tradeStockSelect) {
-        tradeStockSelect.value = stockId;
-        tradeStockSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-
-      if (customPrice && tradeStockPrice) {
-        tradeStockPrice.setAttribute('data-price', customPrice);
-        tradeStockPrice.textContent = '฿' + parseFloat(customPrice).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-      }
-
-      if (tradeSubmitBtn) {
-        if (type === 'BUY') {
-          tradeSubmitBtn.className = 'btn btn-buy btn-full';
-          tradeSubmitBtn.textContent = 'ยืนยันคำสั่งซื้อ (BUY)';
-        } else {
-          tradeSubmitBtn.className = 'btn btn-sell btn-full';
-          tradeSubmitBtn.textContent = 'ยืนยันคำสั่งขาย (SELL)';
-        }
-      }
-
-      calculateTradeTotal();
-      if (tradeModal) tradeModal.classList.add('open');
+      const symbol = btn.getAttribute('data-symbol') || '';
+      window.openTradeModal(type, symbol, customPrice, stockId);
     });
   });
 
@@ -509,7 +537,104 @@ function initSmartPort() {
 
   initCustomNumberInputs();
 
-  // 6. Global Watchlist Toggle Controller
+  // 6. Custom Themed Confirm Dialog (Promise-based)
+  window.showAppConfirm = function(options) {
+    return new Promise((resolve) => {
+      let config = {
+        title: 'ยืนยันการทำรายการ',
+        message: '',
+        confirmText: 'ยืนยัน',
+        cancelText: 'ยกเลิก',
+        type: 'danger'
+      };
+
+      if (typeof options === 'string') {
+        config.message = options;
+      } else if (typeof options === 'object' && options !== null) {
+        config = Object.assign({}, config, options);
+      }
+
+      const existing = document.getElementById('appConfirmModal');
+      if (existing) existing.remove();
+
+      const isDanger = config.type === 'danger';
+      const iconSvg = isDanger
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF5C5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
+      const modalBackdrop = document.createElement('div');
+      modalBackdrop.id = 'appConfirmModal';
+      modalBackdrop.className = 'modal-backdrop app-confirm-backdrop open';
+
+      modalBackdrop.innerHTML = `
+        <div class="modal-content app-confirm-card" role="dialog" aria-modal="true">
+          <div class="app-confirm-icon-box ${isDanger ? 'icon-box-danger' : 'icon-box-warning'}">
+            ${iconSvg}
+          </div>
+          <h3 class="app-confirm-title">${config.title}</h3>
+          <p class="app-confirm-message">${config.message}</p>
+          <div class="app-confirm-actions">
+            <button type="button" class="btn btn-outline app-confirm-cancel">${config.cancelText}</button>
+            <button type="button" class="btn ${isDanger ? 'btn-sell' : 'btn-primary'} app-confirm-ok">${config.confirmText}</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalBackdrop);
+
+      const cleanup = (result) => {
+        modalBackdrop.classList.remove('open');
+        setTimeout(() => {
+          if (modalBackdrop.parentNode) modalBackdrop.remove();
+        }, 200);
+        resolve(result);
+      };
+
+      modalBackdrop.querySelector('.app-confirm-cancel').addEventListener('click', () => cleanup(false));
+      modalBackdrop.querySelector('.app-confirm-ok').addEventListener('click', () => cleanup(true));
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) cleanup(false);
+      });
+    });
+  };
+
+  // 7. Custom Themed Toast Notification System
+  window.showAppToast = function(message, type = 'success') {
+    let toastContainer = document.getElementById('appToastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'appToastContainer';
+      toastContainer.className = 'app-toast-container';
+      document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `app-toast app-toast-${type}`;
+    
+    const iconSvg = type === 'success'
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#03C988" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5C5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+
+    toast.innerHTML = `
+      <div class="app-toast-icon">${iconSvg}</div>
+      <div class="app-toast-text">${message}</div>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+    });
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, 300);
+    }, 3200);
+  };
+
+  // 8. Global Watchlist Bookmark Toggle Controller (Support Bookmark icon toggle on detail & list views)
   window.toggleWatchlistStock = async function(stockId, btnElement) {
     if (!stockId) return;
     if (btnElement) btnElement.disabled = true;
@@ -523,7 +648,14 @@ function initSmartPort() {
 
       const result = await response.json();
       if (response.status === 401 && result.require_login) {
-        if (confirm(result.message + '\n\nคุณต้องการไปที่หน้าเข้าสู่ระบบหรือไม่?')) {
+        const goLogin = await window.showAppConfirm({
+          title: 'ต้องเข้าสู่ระบบก่อน',
+          message: result.message + '<br><br>คุณต้องการไปที่หน้าเข้าสู่ระบบหรือไม่?',
+          confirmText: 'เข้าสู่ระบบ',
+          cancelText: 'ยกเลิก',
+          type: 'warning'
+        });
+        if (goLogin) {
           window.location.href = (window.BASE_URL || '') + '/pages/login.php';
         }
         if (btnElement) btnElement.disabled = false;
@@ -546,15 +678,19 @@ function initSmartPort() {
             filledIcon.style.display = isBookmarked ? '' : 'none';
           }
         }
+        window.showAppToast(result.message || 'อัปเดต Watchlist เรียบร้อย', 'success');
       } else {
-        alert(result.message || 'เกิดข้อผิดพลาดในการทำรายการ');
+        window.showAppToast(result.message || 'เกิดข้อผิดพลาดในการทำรายการ', 'error');
       }
     } catch (err) {
-      alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+      window.showAppToast('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
     } finally {
       if (btnElement) btnElement.disabled = false;
     }
   };
+
+  // Alias for backwards compatibility
+  window.toggleWatchlist = window.toggleWatchlistStock;
 }
 
 // Fail-safe bootstrap for any document readyState

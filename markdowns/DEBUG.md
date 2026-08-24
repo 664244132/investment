@@ -10,7 +10,7 @@
 
 ### 1.1 Automated CLI Test Suite Runner (`tests/run_tests.php`)
 รันการทดสอบ 32 รายการครอบคลุม:
-1. **Strict Types:** ตรวจสอบ `declare(strict_types=1);` ในไฟล์ PHP ทุกไฟล์
+1. **Strict Types:** ตรวจสอบ `declare(strict_types=1);` ในไฟล์ PHP ทุกไฟล์ (37 ไฟล์รวม `errors/`)
 2. **De Morgan's Laws:** ตรวจสอบเงื่อนไข Boolean ปราศจาก `!(A && B)` หรือ `!(A || B)`
 3. **Zero External CDN:** ยืนยันว่าไม่มีการเรียกใช้งาน Assets จากภายนอก
 4. **Security & Escaping:** ทดสอบฟังก์ชัน `e()`, CSRF Token Generation & Verification, `getCsrfInputField()`
@@ -47,6 +47,16 @@ Get-ChildItem -Recurse -Filter *.php | ForEach-Object { & C:\xampp\php\php.exe -
   3. **Local Assets (Zero CDN):** `css/variables.css`, `css/layout.css`, `css/components.css`, `css/fonts.css`, `js/main.js`, `js/chart.umd.min.js`, Favicons
   4. **Financial Calculation Engines:** Altman Z-Score, Piotroski F-Score, Composite Score, DCA Simulator, Stock Comparison
   5. **Security & Session:** CSRF Token Generator, BCRYPT Cost 12 Hashing, Session Writable, XSS Escaping
+
+---
+
+### 1.4 การตรวจสอบหน้าจัดการข้อผิดพลาด (Error Views Verification)
+ทดสอบความสมบูรณ์และไวยากรณ์ของหน้า Error Handling Views:
+```powershell
+C:\xampp\php\php.exe -l errors/403.php
+C:\xampp\php\php.exe -l errors/404.php
+C:\xampp\php\php.exe -l errors/500.php
+```
 
 ---
 

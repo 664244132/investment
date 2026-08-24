@@ -270,8 +270,12 @@ require_once __DIR__ . '/../templates/header.php';
                   </button>
                 </div>
 
-                <button type="button" class="btn btn-buy btn-sm" 
-                        onclick="openTradeModal('BUY', '<?= e($item['symbol']) ?>', <?= $currentPrice ?>, <?= e((string)$item['stock_id']) ?>)">
+                <button type="button" class="btn btn-buy btn-sm open-trade-modal-btn" 
+                        data-trade-type="BUY"
+                        data-symbol="<?= e($item['symbol']) ?>"
+                        data-price="<?= (float)$currentPrice ?>"
+                        data-stock-id="<?= e((string)$item['stock_id']) ?>"
+                        onclick="openTradeModal('BUY', '<?= e($item['symbol']) ?>', <?= (float)$currentPrice ?>, <?= e((string)$item['stock_id']) ?>)">
                   <?= icon('cart', '', 13) ?> เทรด
                 </button>
               </div>
@@ -293,8 +297,8 @@ require_once __DIR__ . '/../templates/header.php';
       
       <div class="modal-header">
         <div class="modal-title-flex">
-          <?= icon('crosshair', 'text-gold', 18) ?>
-          <span class="modal-title" id="targetModalTitle">ตั้งราคาเป้าหมาย & โน้ต</span>
+          <?= icon('crosshair', 'text-gold', 20) ?>
+          <span class="modal-title" id="targetModalTitle">ตั้งราคาเป้าหมาย &amp; โน้ต</span>
           <span class="badge badge-gold" id="targetModalStockSymbol">STOCK</span>
         </div>
         <button type="button" class="modal-close-btn" onclick="closeTargetEditModal()" aria-label="Close Modal">
@@ -307,30 +311,41 @@ require_once __DIR__ . '/../templates/header.php';
 
         <div class="modal-body">
           
-          <div class="form-group">
-            <label class="form-label" for="targetBuyInput">ราคาเป้าหมายที่ต้องการซื้อ (Target Buy Price - บาท)</label>
-            <div class="form-input-wrapper">
-              <input type="number" step="0.25" min="0" class="form-input" id="targetBuyInput" name="target_buy" placeholder="เช่น 140.00">
+          <div class="modal-grid-2">
+            <div class="form-group">
+              <label class="form-label d-flex align-center gap-xs" for="targetBuyInput">
+                <?= icon('crosshair', 'text-gain', 14) ?>
+                <span>เป้าซื้อ (Target Buy - บาท)</span>
+              </label>
+              <div class="form-input-wrapper">
+                <input type="number" step="0.25" min="0" class="form-input" id="targetBuyInput" name="target_buy" placeholder="เช่น 140.00">
+              </div>
+              <span class="form-hint-xs">แจ้งเตือนเมื่อราคาย่อลงมาใกล้เป้าหมาย</span>
             </div>
-            <span class="text-xs text-muted">ระบบจะแจ้งเตือนเมื่อราคาตลาดลงมาแตะหรือใกล้ราคาที่ตั้งไว้</span>
+
+            <div class="form-group">
+              <label class="form-label d-flex align-center gap-xs" for="targetSellInput">
+                <?= icon('trending-up', 'text-gold', 14) ?>
+                <span>เป้าขาย (Take Profit - บาท)</span>
+              </label>
+              <div class="form-input-wrapper">
+                <input type="number" step="0.25" min="0" class="form-input" id="targetSellInput" name="target_sell" placeholder="เช่น 165.00">
+              </div>
+              <span class="form-hint-xs">แจ้งเตือนเมื่อราคาขึ้นถึงเป้าทำกำไร</span>
+            </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="targetSellInput">ราคาเป้าหมายที่ต้องการขาย (Target Take-Profit - บาท)</label>
-            <div class="form-input-wrapper">
-              <input type="number" step="0.25" min="0" class="form-input" id="targetSellInput" name="target_sell" placeholder="เช่น 165.00">
-            </div>
-            <span class="form-hint-xs">ระบบจะแจ้งเตือนเมื่อราคาตลาดขึ้นไปถึงเป้าหมายทำกำไร</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="targetNotesInput">บันทึกช่วยจำส่วนตัว (Personal Investment Notes)</label>
+            <label class="form-label d-flex align-center gap-xs" for="targetNotesInput">
+              <?= icon('edit', 'text-secondary', 14) ?>
+              <span>บันทึกช่วยจำส่วนตัว (Personal Investment Notes)</span>
+            </label>
             <textarea class="form-input textarea-resizable" id="targetNotesInput" name="notes" rows="3" placeholder="เช่น รอรับเมื่อย่อตัวแถวแนวรับ EMA50, พื้นฐานงบ Q3 โตต่อเนื่อง..."></textarea>
           </div>
 
         </div>
 
-        <div class="modal-footer modal-actions-row">
+        <div class="modal-footer">
           <button type="button" class="btn btn-outline modal-btn-cancel" onclick="closeTargetEditModal()">
             ยกเลิก
           </button>
@@ -390,20 +405,47 @@ require_once __DIR__ . '/../templates/header.php';
 
         var result = await response.json();
         if (result.success) {
-          window.location.reload();
+          closeTargetEditModal();
+          if (typeof window.showAppToast === 'function') {
+            window.showAppToast('บันทึกราคาเป้าหมาย & โน้ต เรียบร้อยแล้ว', 'success');
+          }
+          setTimeout(function() {
+            window.location.reload();
+          }, 600);
         } else {
-          alert(result.message || 'เกิดข้อผิดพลาดในการบันทึก');
+          if (typeof window.showAppToast === 'function') {
+            window.showAppToast(result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
+          } else {
+            alert(result.message || 'เกิดข้อผิดพลาดในการบันทึก');
+          }
           if (btn) btn.disabled = false;
         }
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+        if (typeof window.showAppToast === 'function') {
+          window.showAppToast('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+        } else {
+          alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+        }
         if (btn) btn.disabled = false;
       }
     }
 
-    // ลบหุ้นออกจาก Watchlist
+    // ลบหุ้นออกจาก Watchlist พร้อม Confirm Dialog สวยงามตาม Theme
     async function removeWatchlistItem(stockId, symbol) {
-      if (!confirm('คุณต้องการนำหุ้น ' + symbol + ' ออกจาก Watchlist ใช่หรือไม่?')) {
+      var confirmed = true;
+      if (typeof window.showAppConfirm === 'function') {
+        confirmed = await window.showAppConfirm({
+          title: 'ลบหุ้นออกจาก Watchlist?',
+          message: 'คุณต้องการนำหุ้น <strong class="text-gold">' + symbol + '</strong> ออกจากรายการติดตามใช่หรือไม่?',
+          confirmText: 'ลบออกจากรายการ',
+          cancelText: 'ยกเลิก',
+          type: 'danger'
+        });
+      } else {
+        confirmed = confirm('คุณต้องการนำหุ้น ' + symbol + ' ออกจาก Watchlist ใช่หรือไม่?');
+      }
+
+      if (!confirmed) {
         return;
       }
 
@@ -419,19 +461,35 @@ require_once __DIR__ . '/../templates/header.php';
 
         var result = await response.json();
         if (result.success) {
+          if (typeof window.showAppToast === 'function') {
+            window.showAppToast('นำ ' + symbol + ' ออกจาก Watchlist เรียบร้อยแล้ว', 'success');
+          }
           var card = document.getElementById('watchlist-card-' + stockId);
           if (card) {
-            card.remove();
-          }
-          var remainingCards = document.querySelectorAll('.watchlist-card');
-          if (remainingCards.length === 0) {
-            window.location.reload();
+            card.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.92)';
+            setTimeout(function() {
+              card.remove();
+              var remainingCards = document.querySelectorAll('.watchlist-card');
+              if (remainingCards.length === 0) {
+                window.location.reload();
+              }
+            }, 350);
           }
         } else {
-          alert(result.message || 'ลบไม่สำเร็จ');
+          if (typeof window.showAppToast === 'function') {
+            window.showAppToast(result.message || 'ลบไม่สำเร็จ', 'error');
+          } else {
+            alert(result.message || 'ลบไม่สำเร็จ');
+          }
         }
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+        if (typeof window.showAppToast === 'function') {
+          window.showAppToast('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+        } else {
+          alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+        }
       }
     }
 

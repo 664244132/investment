@@ -2,130 +2,138 @@
 
 เอกสารนี้ใช้บันทึกประวัติการเปลี่ยนแปลง รายการปรับปรุงฟีเจอร์ และการแก้ไขโค้ด (Release Notes & Audit Log) ของโปรเจกต์ **SmartPort AI**
 
+---
+
+## 📌 [Version 1.19.8] - 2026-08-24
+### ✨ Impeccable Form UX/UI & Ergonomics Enhancement
+
+- **ยกระดับความสะดวกสบายและการเข้าถึง (Usability & Ergonomics) ของ [`pages/register.php`](file:///c:/xampp/htdocs/investment/pages/register.php):**
+  - เพิ่ม **Input Prefix Vector Icons** (User, ID, Mail, Lock) สวยงาม ชัดเจน และเปลี่ยนเป็นสีทองอัตโนมัติเมื่อ Focus (`.form-input-wrapper:focus-within .input-icon-left`)
+  - เพิ่ม Attribute `autocomplete` มาตรฐาน (`username`, `name`, `email`, `new-password`) อำนวยความสะดวกให้เบราว์เซอร์กรอกอัตโนมัติได้อย่างแม่นยำ
+  - พัฒนาระบบแสดงผลความแข็งแรงของรหัสผ่านแบบ Real-time Text Feedback แนะนำผู้ใช้แบบละเอียด
+  - เพิ่มไอคอน `mail` และ `user-check` ในโมดูล [`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php)
+
+---
+
+## 📌 [Version 1.19.7] - 2026-08-24
+### 🎯 Streamlined Register Form Layout (Single Auth Card)
+
+- **ปรับปรุงหน้าสมัครสมาชิก ([`pages/register.php`](file:///c:/xampp/htdocs/investment/pages/register.php)) เป็นแบบ Single Card:**
+  - คงไว้เฉพาะส่วน `.auth-card.auth-form-card` กึ่งกลางหน้าจออย่างสะอาดตา สะดวกและรวดเร็วต่อการสมัครสมาชิก
+  - จัดวางฟอร์ม 2 คอลัมน์สำหรับชื่อผู้ใช้/ชื่อ-นามสกุล และ รหัสผ่าน/ยืนยันรหัสผ่าน
+  - ปรับขนาดความกว้าง `.auth-form-card` ให้พอดี (`max-width: 540px;`) พร้อมเงา Depth Shadow และ Dark Glassmorphism Theme
+
+---
+
+## 📌 [Version 1.19.6] - 2026-08-24
+### 💎 Complete Auth Card Wide & Register UX/UI Redesign
+
+- **ยกเครื่องการออกแบบ UX/UI หน้าสมัครสมาชิก (`.auth-card-wide` ใน [`pages/register.php`](file:///c:/xampp/htdocs/investment/pages/register.php)):**
+  - ออกแบบการ์ดด้วยสไตล์ Luxury Dark Glassmorphism พร้อมเงา Depth Shadow และเส้นขอบประกายทอง
+  - **ฝั่งซ้าย (Showcase Column):** เพิ่ม Brand Badge Pill พร้อม Live Dot Pulse, การ์ดแสดงเงินทุนจำลองเริ่มต้น ฿1,000,000 บาท, รายการฟีเจอร์เด่น 3 มิติพร้อมกล่องไอคอน และแถบการันตีความปลอดภัย
+  - **ฝั่งขวา (Form Column):** จัดเรียงฟอร์มใหม่ให้กะทัดรัดและสวยงามด้วยโครงสร้าง 2 คอลัมน์ (`.auth-row-2`) สำหรับ Username/ชื่อ-นามสกุล และ รหัสผ่าน/ยืนยันรหัสผ่าน
+  - เพิ่มคลาส CSS `.auth-brand-pill`, `.auth-capital-card`, `.auth-perks-list`, `.auth-form-card`, `.auth-row-2` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) และปรับปรุง `.register-grid` ใน [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css)
+
+---
+
+## 📌 [Version 1.19.5] - 2026-08-24
+### 🐞 JavaScript Syntax & Controller Consolidation
+
+- **แก้ไขข้อผิดพลาด `Uncaught SyntaxError: Missing catch or finally after try`:**
+  - จัดระเบียบลำดับฟังก์ชันและปิดบล็อก `try ... catch ... finally` ใน [`js/main.js`](file:///c:/xampp/htdocs/investment/js/main.js) ให้ถูกต้อง 100%
+  - ตรวจสอบความถูกต้องของไวยากรณ์ด้วย `node -c js/main.js` ผ่านเรียบร้อย 0 errors
+
+---
+
+## 📌 [Version 1.19.4] - 2026-08-24
+### ✨ Custom Themed Confirm Dialog & Toast Notifications
+
+- **พัฒนาระบบแจ้งเตือนและยืนยันการทำรายการตาม Theme มืด-ทองของระบบ:**
+  - สร้าง `window.showAppConfirm` (Promise-based) สำหรับกล่องข้อความยืนยันการลบ/ทำรายการ พร้อมไอคอน SVG คมชัด และปุ่มกดดีไซน์เฉพาะ
+  - สร้าง `window.showAppToast` สำหรับการแจ้งเตือนความสำเร็จหรือข้อผิดพลาดแบบ Toast Notification
+  - เพิ่มคลาส CSS `.app-confirm-backdrop`, `.app-confirm-card`, `.app-confirm-icon-box`, `.app-toast-container`, `.app-toast` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
+  - นำไปใช้งานกับปุ่มลบหุ้นออกจาก Watchlist (`.btn-outline.btn-sm.text-loss`) ใน [`pages/watchlist.php`](file:///c:/xampp/htdocs/investment/pages/watchlist.php) พร้อมแอนิเมชันการยุบการ์ดที่นุ่มนวล
+
+---
+
+## 📌 [Version 1.19.3] - 2026-08-24
+### 🎨 Modal Layout Polish & Content Expansion
+
+- **ขยายขนาดและจัดระเบียบโครงสร้าง Modal Dialog ทั่วทั้งระบบ:**
+  - ขยาย `.modal-content` เป็น `max-width: 620px;` พร้อมเงา Depth Shadow และเส้นขอบสีทองพรีเมียมใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
+  - เพิ่มสไตล์โครงสร้าง `.modal-header`, `.modal-body`, `.modal-footer` และ `.modal-grid-2`
+  - ปรับปรุงหน้าต่างตั้งราคาเป้าหมาย & โน้ตใน [`pages/watchlist.php`](file:///c:/xampp/htdocs/investment/pages/watchlist.php) ให้เป้าซื้อและเป้าขายจัดวางเป็น 2 คอลัมน์อย่างสมดุล พร้อมคำอธิบายและไอคอนกำกับ
+  - ซิงค์โครงสร้างหน้าต่าง [`templates/trade_modal.php`](file:///c:/xampp/htdocs/investment/templates/trade_modal.php) ให้ใช้มาตรฐานเดียวกัน
+
+---
+
+## 📌 [Version 1.19.2] - 2026-08-24
+### 🐞 Global openTradeModal ReferenceError Fix
+
+- **แก้ไขข้อผิดพลาด `Uncaught ReferenceError: openTradeModal is not defined`:**
+  - ประกาศฟังก์ชัน `window.openTradeModal(type, symbol, price, stockId)` แบบ Global ใน [`js/main.js`](file:///c:/xampp/htdocs/investment/js/main.js) เพื่อรองรับการเรียกใช้ผ่าน Inline `onclick` และ Event Listeners
+  - ปรับปรุงปุ่มส่งคำสั่งซื้อ-ขายใน [`pages/watchlist.php`](file:///c:/xampp/htdocs/investment/pages/watchlist.php) และ [`pages/compare.php`](file:///c:/xampp/htdocs/investment/pages/compare.php) ให้มีทั้งคลาส `.open-trade-modal-btn` และส่ง Data Attributes อย่างถูกต้อง
+
+---
+
+## 📌 [Version 1.19.1] - 2026-08-24
+### 📐 Watchlist Price Box Wrap & Word-Break Prevention
+
+- **ปรับปรุง Layout ส่วนแสดงราคาในการ์ด Watchlist (`.watchlist-price-box` / `.watchlist-price-main`):**
+  - เพิ่ม `flex-shrink: 0; white-space: nowrap; word-break: keep-all;` ให้กับ `.watchlist-price-box` และ `.watchlist-price-main` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
+  - กำหนด `flex: 1 1 auto; min-width: 0;` ให้กับ `.watchlist-stock-info` และกำหนด `max-width: 100%;` สำหรับ `.watchlist-company-name`
+  - ป้องกันปัญหาตัวเลขราคาและสกุลเงิน (เช่น `34.50 THB`) ตกบรรทัดหรือฉีกคำบนทุกขนาดหน้าจออย่างสมบูรณ์แบบ
+  - ปรับ `.watchlist-target-val` และ `.watchlist-target-row` ให้ไม่ฉีกคำเช่นเดียวกัน
+
+---
+
+## 📌 [Version 1.19.0] - 2026-08-24
+### 🛡️ Error Views Layer, Documentation Sync & Project Hardening
+
+- **เพิ่มโมดูล Error Handling Views มาตรฐาน (`errors/`):**
+  - สร้าง [`errors/403.php`](file:///c:/xampp/htdocs/investment/errors/403.php): หน้าแจ้งเตือนการเข้าถึงถูกปฏิเสธ (Forbidden Access)
+  - สร้าง [`errors/404.php`](file:///c:/xampp/htdocs/investment/errors/404.php): หน้าแจ้งเตือนไม่พบหน้าที่ต้องการ (Page Not Found)
+  - สร้าง [`errors/500.php`](file:///c:/xampp/htdocs/investment/errors/500.php): หน้าแจ้งเตือนเซิร์ฟเวอร์ขัดข้อง (Internal Server Error)
+  - ออกแบบเป็น **Standalone Full-Screen View** แสดงเฉพาะ Error Icon, รหัส Error, และข้อความอธิบาย (นำ `brand-logo` และ `error-actions` ออกทั้งหมด)
+  - กำหนด HTTP Status Code ที่ถูกต้อง (403, 404, 500) และใช้ดีไซน์ Dark Glassmorphic Theme สอดคล้องกับระบบ
+- **นำลิงก์ Health Check ออกจาก UI ทั่วทั้งโปรเจกต์ (`templates/footer.php`):**
+  - ลบลิงก์ `pages/health_check.php` ออกจาก Footer เพื่อให้เข้าถึงได้เฉพาะการพิมพ์ URL โดยตรงบนเบราว์เซอร์เท่านั้น
+- **เพิ่มสไตล์ Error Pages ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):**
+  - เพิ่มคลาส `.error-page-container`, `.error-card`, `.error-icon-wrapper`, `.error-code-number`, `.error-heading`, `.error-message` (ขยายเต็มหน้าจอ 100vh)
+- **อัปเดตชุดเอกสารสถาปัตยกรรมระบบใน `markdowns/`:**
+  - ซิงค์โครงสร้างโปรเจกต์ โฟลเดอร์ และตารางฐานข้อมูลใน [`markdowns/aboutProject.md`](file:///c:/xampp/htdocs/investment/markdowns/aboutProject.md)
+  - ยกระดับแนวทางการดีบั๊กและ Troubleshooting Playbook ใน [`markdowns/DEBUG.md`](file:///c:/xampp/htdocs/investment/markdowns/DEBUG.md)
+  - จัดระเบียบและเคลียร์ประวัติเก่าใน [`markdowns/LOG.md`](file:///c:/xampp/htdocs/investment/markdowns/LOG.md)
+- **ชุดทดสอบอัตโนมัติ (`tests/run_tests.php`):**
+  - ยืนยัน Strict Types ครบทั้ง 37 ไฟล์ และการทดสอบผ่าน 32/32 รายการ (100.0% Green)
+
+---
+
 ## 📌 [Version 1.18.2] - 2026-08-24
 ### 📊 Live 52-Week Range & Stats Bar Real-time API Integration
 
 - **เชื่อมต่อข้อมูล 52-Week Range เข้ากับ Live Market API จริง 100%:**
   - เพิ่มการดึงค่า `fiftyTwoWeekHigh` และ `fiftyTwoWeekLow` ใน `fetchLiveMarketQuote` ใน [`functions/market_api.php`](file:///c:/xampp/htdocs/investment/functions/market_api.php)
-  - เพิ่มฟังก์ชัน `calculateStock52WeekRange(PDO $pdo, array $stock): array` ใน [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) คำนวณช่วงราคาต่ำสุด-สูงสุดรอบ 52 สัปดาห์ และสัดส่วนตำแหน่งปัจจุบันสัมพันธ์กับราคาตลาดสดอย่างแม่นยำ
-  - ปรับปรุงการแสดงผลใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) ให้รองรับสัญลักษณ์สกุลเงินแบบ Dynamic (`฿` สำหรับหุ้นไทย และ `$` สำหรับหุ้นสากล)
+  - เพิ่มฟังก์ชัน `calculateStock52WeekRange(PDO $pdo, array $stock): array` ใน [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) คำนวณช่วงราคาต่ำสุด-สูงสุดรอบ 52 สัปดาห์ และสัดส่วนตำแหน่งปัจจุบันสัมพันธ์กับราคาตลาดสด
+  - ปรับปรุงการแสดงผลใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) ให้รองรับสัญลักษณ์สกุลเงินแบบ Dynamic (`฿` และ `$`)
 - **ตรวจสอบการทำงานของ `.stats-bar` และ `.range-52w-track`:**
-  - ยืนยันข้อมูลทั้ง 7 เมตริกในแถบสถิติ (Open, Day High, Day Low, Volume, Market Cap, P/E, ROE) ดึงจาก Live API และฐานข้อมูลครบถ้วนถูกต้อง 100%
+  - ยืนยันข้อมูลทั้ง 7 เมตริกในแถบสถิติดึงจาก Live API และฐานข้อมูลครบถ้วนถูกต้อง 100%
 
 ---
 
-## 📌 [Version 1.18.1] - 2026-08-24
-### 📐 Button Size Synchronization (.btn-sm vs .btn-bookmark)
-
-- **ปรับปรุงขนาดกรอบปุ่ม `.btn-sm` ให้เท่ากับ `.btn-bookmark` สมบูรณ์แบบ:**
-  - กำหนดความสูง `height: 36px; min-height: 36px; box-sizing: border-box;` และ `padding: 0 0.95rem;` ให้กับคลาส `.btn-sm` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
-  - ส่งผลให้ปุ่ม `.btn.btn-outline.btn-sm` (เช่น ปุ่มเปรียบเทียบคู่แข่ง) มีขนาดความสูง 36px, กรอบมุมมน `border-radius: 6px` และกึ่งกลางแนวตั้งตรงกันกับปุ่ม `.btn-bookmark` (36px x 36px) อย่างสวยงามและสมดุล
-
----
-
-## 📌 [Version 1.18.0] - 2026-08-24
-### 💎 Full Project Refactoring, Rule 6 CSS Custom Properties & Architecture Docs Overhaul
+## 📌 [Version 1.18.0 - 1.18.1] - 2026-08-24
+### 💎 Full Project Refactoring, Rule 6 CSS Custom Properties & UI Polish
 
 - **RefactorCode ตามกฎ Rule 6 (Zero Inline CSS 100%):**
-  - แปลงการกำหนดความกว้าง Dynamic Progress Bars ใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) (ช่วงราคา 52W, แถบคะแนน AI Composite 4 ด้าน, แถบคะแนน Piotroski F) และ [`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php) (Asset Allocation Bar) ให้ส่งผ่าน **CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)**
-  - เพิ่มสไตล์ `.asset-alloc-seg`, `.asset-alloc-gold`, `.asset-alloc-gain` และอัปเดต `.range-52w-fill`, `.score-progress-bar` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
-- **อัปเดตสถาปัตยกรรมระบบใน [`markdowns/aboutProject.md`](file:///c:/xampp/htdocs/investment/markdowns/aboutProject.md):**
-  - ปรับปรุงโครงสร้างโปรเจกต์ทั้ง 10 โมดูล, แผนผัง System Architecture, โครงสร้างโฟลเดอร์ 14 โฟลเดอร์, และตารางฐานข้อมูล 11 ตารางให้ตรงกับสภาพปัจจุบัน 100%
-- **ยกระดับ Playbook สำหรับ AI Agents ใน [`markdowns/DEBUG.md`](file:///c:/xampp/htdocs/investment/markdowns/DEBUG.md):**
-  - เพิ่มแนวทางการรัน Automated CLI Test Suite (32/32 Passed), การตรวจไวยากรณ์ PHP, การทดสอบ API Endpoints, ตารางตำแหน่ง Log Files ใน XAMPP, และ Troubleshooting Matrix 6 ปัญหาหลัก
-- **เคลียร์และจัดระเบียบ [`markdowns/LOG.md`](file:///c:/xampp/htdocs/investment/markdowns/LOG.md):**
-  - รวมประวัติรุ่นเก่าให้กระชับ ชัดเจน และอ่านง่าย
+  - แปลงการกำหนดความกว้าง Dynamic Progress Bars ใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) และ [`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php) ให้ส่งผ่าน CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)
+- **Button Sizing & UI Polish:**
+  - ซิงค์ขนาดปุ่ม `.btn-sm` และ `.btn-bookmark` ให้มีความสูง 36px และจัดแนวสมดุล
+  - แก้ไขการฉีกคำในตารางสรุปผลกลยุทธ์ และจัดตำแหน่งหัวข้อการ์ดโมเดลสถิติ
 
 ---
 
-## 📌 [Version 1.17.7] - 2026-08-24
-### 🛡️ Ignore Files Optimization (.antigravityignore & .gitignore)
+## 📌 [Version 1.0.0 - 1.17.7] - สรุปภาพรวมการพัฒนาเวอร์ชันเริ่มต้น (Milestones Archive)
 
-- **อัปเดตไฟล์กำหนดขอบเขตการทำงานของ AI (`.antigravityignore`):**
-  - จัดหมวดหมู่ 5 กลุ่มอย่างเป็นระเบียบ: Version Control, Dependencies, Temp/Logs/Scratch, Binary Dumps และ OS/IDE Files
-  - เพิ่มการละเว้นโฟลเดอร์ `scratch/` และไฟล์ระบบ `.history/`, `ehthumbs.db`, `$RECYCLE.BIN/`
-- **อัปเดตไฟล์ความปลอดภัยสำหรับ Git Repository (`.gitignore`):**
-  - แก้ไขตัวสะกด `.antigravityignore` ให้ถูกต้อง
-  - ละเว้นไฟล์ Sensitive Configurations, Error Logs, Scratch Files, Dependencies และ Local Database Dumps ป้องกันข้อมูลรั่วไหลขึ้น GitHub
-
----
-
-## 📌 [Version 1.17.6] - 2026-08-24
-### 📈 Performance KPI Text-Base Word Wrap Prevention
-
-- **ปรับปรุง Layout การ์ดกำไรเฉลี่ย/ขาดทุนเฉลี่ย (`.perf-val.text-base` / `.perf-sub`):**
-  - เพิ่มคลาส `.nowrap` ให้กับตัวเลขกำไรเฉลี่ย (`+฿...`) และขาดทุนเฉลี่ย (`-฿...`) ใน [`pages/journal.php`](file:///c:/xampp/htdocs/investment/pages/journal.php) เพื่อป้องกันตัวเลขและสัญลักษณ์สกุลเงินฉีกขาดจากกัน
-  - ปรับ Responsive Grid ของ `.performance-kpi-grid` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) ให้ขยายคอลัมน์อย่างเหมาะสม (1 คอลัมน์บนมือถือเล็ก, 2 คอลัมน์บนแท็บเล็ต, 4 คอลัมน์บนเดสก์ท็อป)
-  - กำหนด `word-break: keep-all;` สำหรับ `.perf-label` และ `.perf-sub` ป้องกันข้อความภาษาไทยฉีกคำอย่างสมบูรณ์แบบ
-
----
-
-## 📌 [Version 1.17.5] - 2026-08-24
-### 📊 Strategy Breakdown Card & Data Table Full-width Layout Enhancement
-
-- **ปรับปรุง Layout ตารางสรุปผลกลยุทธ์การลงทุน (`.strategy-breakdown-card` / `.data-table`):**
-  - กำหนดสไตล์ `.strategy-breakdown-card` และ `.data-table` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) ให้ขยายกว้างเต็มกรอบ 100%
-  - เพิ่ม Padding ให้กับเซลล์ตาราง (`th`, `td`) เป็น `0.95rem 1.25rem` และ `1rem 1.25rem` พร้อมจัดตำแหน่งตัวเลขและข้อความตรงกลาง/ชิดขวาอย่างสมดุล ไม่เบียดเสียด
-  - เพิ่ม Effect การ Hover แถวตารางอย่างนุ่มนวลเพื่อให้อ่านข้อมูลสถิติได้ง่ายและสบายตา
-
----
-
-## 📌 [Version 1.17.4] - 2026-08-24
-### 📐 Model Card Header & Icon Alignment Fix
-
-- **ปรับปรุง Layout ส่วนหัวการ์ดโมเดลสถิติ (`.model-card-title-group` / `.model-card-title` / `.model-card-subtitle`):**
-  - จัดโครงสร้างหัวข้อใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) ให้แยกชื่อโมเดลหลัก (Altman Z-Score / Piotroski F-Score) อยู่ในบรรทัดเดียวกับไอคอน Shield / Star โดยกำหนด `white-space: nowrap` และ `flex-shrink: 0` สำหรับ SVG
-  - ย้ายคำอธิบายรอง (ความเสี่ยงการล้มละลาย / คุณภาพงบการเงิน 9 ด้าน) ลงมาเป็น `.model-card-subtitle` ด้านล่างอย่างเป็นระเบียบ
-  - ป้องกันปัญหาข้อความและไอคอนตกบรรทัดหรือซ้อนทับกันอย่างสมบูรณ์แบบบนทุกขนาดหน้าจอ
-
----
-
-## 📌 [Version 1.17.3] - 2026-08-24
-### 🧹 Clean Watchlist Bar Chips (Icons Removal)
-
-- **นำ Icons ออกจากแถบ Quick Preset Chips (`.watchlist-bar` และ `.watchlist-bar.section-mb-md`):**
-  - ลบไอคอนออกจากชิปเปรียบเทียบใน [`pages/compare.php`](file:///c:/xampp/htdocs/investment/pages/compare.php)
-  - ลบไอคอนออกจากชิปแผนออมหุ้นยอดนิยมใน [`pages/dca.php`](file:///c:/xampp/htdocs/investment/pages/dca.php)
-  - ลบไอคอนออกจากชิปกรองตามกลยุทธ์ใน [`pages/journal.php`](file:///c:/xampp/htdocs/investment/pages/journal.php)
-  - ลบไอคอนออกจากชิปกลยุทธ์ยอดนิยมใน [`pages/screener.php`](file:///c:/xampp/htdocs/investment/pages/screener.php)
-  - ทำให้ UI ดูโปร่ง สะอาด เรียบง่าย และสบายตาตามความต้องการ
-
----
-
-## 📌 [Version 1.17.2] - 2026-08-24
-### 🎯 Watchlist Score Color Helpers Fix & Multi-item Bookmark Rendering
-
-- **แก้ไข Fatal Error `getScoreColorClass()` ใน Watchlist Rendering:**
-  - เพิ่มฟังก์ชัน `getScoreColorClass(int|float $score): string` และ `getScoreBadgeClass(int|float $score): string` ใน [`functions/helpers.php`](file:///c:/xampp/htdocs/investment/functions/helpers.php)
-  - แก้ไขปัญหา Fatal error ที่ทำให้ PHP หยุดการเรนเดอร์กลางคัน ส่งผลให้การ์ดหุ้นใน Watchlist ทุกตัวที่ผู้ใช้กด Bookmark (เช่น NVDA, AAPL และตัวอื่นๆ) แสดงผลครบถ้วนใน `.watchlist-grid` 100%
-- **ขยายชุดทดสอบอัตโนมัติ (`tests/run_tests.php`):**
-  - เพิ่มการทดสอบ `getScoreColorClass` และ `getScoreBadgeClass` ผ่านการทดสอบ 32/32 รายการ (100.0% Pass)
-
----
-
-## 📌 [Version 1.17.0 - 1.17.1] - 2026-08-24
-### 🛡️ Schema Sync, CSRF Security, Stats Bar Layout & Bookmark Query Enhancement
-
-- **ซิงค์โครงสร้างฐานข้อมูล (`database_schema.sql` - Rule 10 Compliance):** เพิ่มตาราง `user_watchlists` และ `trading_journals` ครบถ้วน
-- **ยกระดับความปลอดภัย CSRF:** เพิ่ม `getCsrfInputField()` และการตรวจสอบ `verifyCsrfToken()` ในฟอร์ม POST ทั้งหมด
-- **ปรับปรุง Layout แถบสถิติสรุป KPI (`.stats-bar-4` / `.stat-card`):** จัดคอลัมน์ 4 ช่อง พร้อมป้องกันการฉีกคำ
-- **เพิ่มประสิทธิภาพการดึงข้อมูล Bookmark (`getUserWatchlist`):** ใช้ Subquery เชื่อมต่อเมตริกการเงินและ AI Score
-
----
-
-## 📌 [Version 1.15.0 - 1.16.2] - 2026-08-24
-### 🎨 Local Webfonts Engine, UI Icon Audit & Project-Wide Hardening
-
-- **Local Webfonts 100% (Rule 2):** ติดตั้งชุดฟอนต์ WOFF2 **Prompt** และ **JetBrains Mono** รวม 34 ไฟล์ใน [`assets/fonts/`](file:///c:/xampp/htdocs/investment/assets/fonts)
-- **ตรวจสอบไอคอนซ้อนกัน (Project-wide Dual-icon Audit):** แก้ไขสถานะไอคอนเมนูมือถือ (`.mobile-toggle`) และปุ่ม Bookmark (`.btn-bookmark`) ป้องกันการแสดงผลไอคอนซ้อนกัน
-- **Zero Inline CSS Overhaul (Rule 6):** สกัดสไตล์ออกจากทุกหน้าเว็บและเทมเพลตไปยัง [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) และ [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css)
-
----
-
-## 📌 [Version 1.0.0 - 1.14.5] - 2026-08-23 ถึง 2026-08-24
-### 🏛️ Initial Architecture & Core Features Milestone
-
-- **Live Market Data & Multi-Timeframe Chart:** ดึงราคาสดและกราฟ 6 ช่วงเวลา (1H, 1D, 1W, 1M, 1Y, ALL) พร้อมแคช 60 วินาทีใน MySQL
-- **10 Core Investment Modules:** Dashboard หุ้นรายตัว, งบการเงิน 3 ด้าน, Statistical Models (Altman Z & Piotroski F), Screener, Compare, DCA Simulator, Watchlist, Journal, Simulated Portfolio ฿1,000,000 และ Statement Export A4
-- **Automated Health Check:** ระบบตรวจสุขภาพอัตโนมัติ 23 รายการใน `pages/health_check.php`
-- **Security & Standards:** Strict Types 100%, PDO Prepared Statements, De Morgan's Laws, BCRYPT Hashing, และ Session Hardening
+- **10 Core Modules:** ระบบวิเคราะห์หุ้นและกราฟเรียลไทม์ 6 Timeframes, งบการเงิน 3 ด้าน, Statistical Models (Altman Z & Piotroski F), AI Screener, Compare, DCA Simulator, Watchlist, Journal, Virtual Portfolio ฿1,000,000 และ Statement Export A4
+- **Local Assets & Security:** ติดตั้ง Local Webfonts (Prompt & JetBrains Mono รวม 34 ไฟล์), SVG Vector Icons Dictionary 100%, CSRF Protection, PDO Prepared Statements, BCRYPT Cost 12 Hashing, และ Session Hardening
+- **Automated Testing & QA:** ชุดทดสอบอัตโนมัติ `tests/run_tests.php` และหน้าตรวจสุขภาพระบบ 23 รายการ `pages/health_check.php`

@@ -517,8 +517,12 @@ require_once __DIR__ . '/../templates/header.php';
                   $currentPrice = (float)$s['current_price'];
                 ?>
                   <td class="stock-val-cell">
-                    <button type="button" class="btn btn-buy btn-sm btn-w-full"
-                            onclick="openTradeModal('BUY', '<?= e($s['symbol']) ?>', <?= $currentPrice ?>, <?= e((string)$s['id']) ?>)">
+                    <button type="button" class="btn btn-buy btn-sm btn-w-full open-trade-modal-btn"
+                            data-trade-type="BUY"
+                            data-symbol="<?= e($s['symbol']) ?>"
+                            data-price="<?= (float)$currentPrice ?>"
+                            data-stock-id="<?= e((string)$s['id']) ?>"
+                            onclick="openTradeModal('BUY', '<?= e($s['symbol']) ?>', <?= (float)$currentPrice ?>, <?= e((string)$s['id']) ?>)">
                       <?= icon('cart', '', 13) ?> ซื้อ <?= e($s['symbol']) ?>
                     </button>
                   </td>

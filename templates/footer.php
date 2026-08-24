@@ -124,11 +124,6 @@ declare(strict_types=1);
                 </a>
               </li>
             <?php endif; ?>
-            <li class="footer-link-item">
-              <a href="<?= e(BASE_URL) ?>/pages/health_check.php" class="footer-link">
-                <?= icon('check', 'text-gain', 13) ?> ตรวจสอบระบบ (Health Check)
-              </a>
-            </li>
           </ul>
         </div>
 

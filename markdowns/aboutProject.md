@@ -104,6 +104,9 @@
 |   | - pages/login.php        | - helpers.php           |                  |   |
 |   | - pages/register.php     | - icons.php             |                  |   |
 |   | - pages/logout.php       | - export.php            |                  |   |
+|   | - errors/403.php         |                         |                  |   |
+|   | - errors/404.php         |                         |                  |   |
+|   | - errors/500.php         |                         |                  |   |
 |   +--------------------------+-------------------------+------------------+   |
 |                                                                               |
 |   Security & Quality Assurance Layer:                                         |
