@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD633" />
+      <stop offset="100%" stop-color="#FFCC00" />
+    </linearGradient>
+  </defs>
+  <!-- Brand Icon Rounded Container -->
+  <rect x="0.75" y="0.75" width="34.5" height="34.5" rx="8" ry="8" fill="url(#goldGradient)" stroke="#FFE066" stroke-width="1.5" />
+  <!-- Chart Bar Vector Glyph -->
+  <g stroke="#1A1300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(6, 6)">
+    <line x1="12" y1="20" x2="12" y2="10"></line>
+    <line x1="18" y1="20" x2="18" y2="4"></line>
+    <line x1="6" y1="20" x2="6" y2="16"></line>
+  </g>
+</svg>

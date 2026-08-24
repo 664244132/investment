@@ -58,21 +58,18 @@ require_once __DIR__ . '/../templates/header.php';
       <div class="register-grid">
         
         <!-- Left Column: Benefits & Value Proposition -->
-        <div style="display: flex; flex-direction: column; justify-content: center; gap: 1.75rem;">
+        <div class="d-flex flex-column gap-lg">
           <div>
-            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); background: var(--color-success-subtle); color: var(--color-success); border: 1px solid var(--color-success-border); font-size: 0.75rem; font-family: var(--font-primary); margin-bottom: 1rem; white-space: nowrap;">
-              <?= icon('zap', 'text-gain', 14) ?> พอร์ตจำลองเงินทุน 1,000,000 บาท ฟรี
-            </div>
-            <h1 style="font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.3; color: var(--text-primary); margin-bottom: 0.75rem;">
+            <h1 class="auth-title font-bold text-left section-mb-xs">
               ตัดสินใจลงทุนอย่างชาญฉลาดด้วยพลังของ AI
             </h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            <p class="auth-subtitle text-sm line-height-relaxed">
               SmartPort AI ช่วยกลั่นกรองงบการเงินที่ซับซ้อนให้กลายเป็นบทวิเคราะห์ที่ชัดเจนและนำไปใช้ได้จริง พร้อมทดลองเทรดในพอร์ตจำลองแบบ Real-time
             </p>
           </div>
 
           <!-- Feature Perks -->
-          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <div class="d-flex flex-column gap-sm">
             <?php
             $perks = [
                 'ฟรีเงินทุนจำลอง 1,000,000 บาท ทดลองซื้อขายหุ้นจริงแบบ Real-time',
@@ -82,39 +79,24 @@ require_once __DIR__ . '/../templates/header.php';
             ];
             foreach ($perks as $perk):
             ?>
-              <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                <div style="width: 20px; height: 20px; border-radius: var(--radius-xs); background: var(--color-success-subtle); color: var(--color-success); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-top: 2px; flex-shrink: 0;">
+              <div class="auth-perk-row">
+                <div class="auth-perk-icon">
                   <?= icon('check', 'text-gain', 12) ?>
                 </div>
-                <span style="color: var(--text-secondary); font-size: 0.875rem;"><?= e($perk) ?></span>
+                <span class="auth-perk-text"><?= e($perk) ?></span>
               </div>
             <?php endforeach; ?>
-          </div>
-
-          <!-- Institutional Architecture & Security Highlights -->
-          <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-gold); font-size: 0.8rem; font-family: var(--font-primary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem; white-space: nowrap;">
-              <?= icon('shield', 'text-gold', 16) ?> มาตรฐานสถาปัตยกรรมระดับสถาบัน
-            </div>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;">
-              ระบบแยก Logic, Views และ Data Layer อย่างปลอดภัยตามมาตรฐาน <code>PHP Strict Types</code> พร้อมการเข้ารหัสรหัสผ่านด้วย <code>BCRYPT (Cost 12)</code>
-            </p>
-            <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); flex-wrap: wrap;">
-              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> Zero CDN Dependency</span>
-              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> Local Vector Icons</span>
-              <span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><?= icon('check', 'text-gain', 12) ?> CSRF & SQL Prepared</span>
-            </div>
           </div>
         </div>
 
         <!-- Right Column: Registration Form -->
         <div>
           
-          <div style="margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
+          <div class="section-mb-md">
+            <h2 class="auth-title font-bold text-left section-mb-xs">
               สร้างบัญชีผู้ใช้ใหม่
             </h2>
-            <p style="color: var(--text-muted); font-size: 0.875rem;">
+            <p class="auth-subtitle text-sm line-height-relaxed">
               กรอกข้อมูลเพื่อเริ่มต้นใช้งานฟรี ไม่มีค่าใช้จ่ายแอบแฝง
             </p>
           </div>
@@ -199,7 +181,7 @@ require_once __DIR__ . '/../templates/header.php';
                 <div class="pw-strength-segment"></div>
                 <div class="pw-strength-segment"></div>
               </div>
-              <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+              <span class="text-xs text-muted">
                 แนะนำ: มีตัวพิมพ์ใหญ่-เล็ก ตัวเลข และสัญลักษณ์
               </span>
             </div>
@@ -221,11 +203,11 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
             </div>
 
-            <div style="margin-bottom: 1.25rem;">
-              <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer;">
-                <input type="checkbox" name="agreed" value="1" <?= isset($_POST['agreed']) ? 'checked' : '' ?> style="margin-top: 3px; accent-color: var(--accent-gold);" required>
+            <div class="section-mb-md">
+              <label class="auth-terms-label">
+                <input type="checkbox" name="agreed" value="1" <?= isset($_POST['agreed']) ? 'checked' : '' ?> class="form-checkbox-input" required>
                 <span>
-                  ฉันยอมรับ <span style="color: var(--accent-gold);">เงื่อนไขการให้บริการ</span> และ <span style="color: var(--accent-gold);">นโยบายความเป็นส่วนตัว</span>
+                  ฉันยอมรับ <span class="text-gold">เงื่อนไขการให้บริการ</span> และ <span class="text-gold">นโยบายความเป็นส่วนตัว</span>
                 </span>
               </label>
             </div>
@@ -236,9 +218,9 @@ require_once __DIR__ . '/../templates/header.php';
 
           </form>
 
-          <p style="text-align: center; margin-top: 1.25rem; font-size: 0.875rem; color: var(--text-muted);">
+          <p class="auth-footer-text">
             มีบัญชีอยู่แล้ว? 
-            <a href="<?= e(BASE_URL) ?>/pages/login.php" style="color: var(--accent-gold); font-weight: 600;">
+            <a href="<?= e(BASE_URL) ?>/pages/login.php" class="auth-footer-link">
               เข้าสู่ระบบที่นี่
             </a>
           </p>

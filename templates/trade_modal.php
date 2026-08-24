@@ -92,7 +92,7 @@ if ($modalStock) {
           <div class="form-group">
             <label for="trade_rationale" class="form-label">เหตุผลในการตัดสินใจเทรด (Trading Rationale)</label>
             <div class="form-input-wrapper">
-              <textarea id="trade_rationale" name="rationale" class="form-input" rows="2" placeholder="เช่น กราฟเบรกแนวต้าน, P/E ต่ำกว่ากลุ่ม, AI Score 85+..." style="resize: vertical; font-size: 0.85rem;"></textarea>
+              <textarea id="trade_rationale" name="rationale" class="form-input trade-rationale-textarea" rows="2" placeholder="เช่น กราฟเบรกแนวต้าน, P/E ต่ำกว่ากลุ่ม, AI Score 85+..."></textarea>
             </div>
           </div>
 

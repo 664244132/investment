@@ -67,8 +67,8 @@ function initSmartPort() {
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
       btn.innerHTML = isPassword 
-        ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>' 
-        : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>';
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon-svg"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>' 
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon-svg"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>';
     });
   });
 
@@ -209,60 +209,96 @@ function initSmartPort() {
     containerEl.appendChild(dropdown);
 
     let debounceTimer = null;
+    let abortController = null;
+    const searchCache = new Map();
+
+    const renderResults = (results, query) => {
+      const baseUrl = window.BASE_URL || '';
+      if (results && results.length > 0) {
+        dropdown.innerHTML = '';
+        results.forEach(item => {
+          const row = document.createElement('a');
+          row.className = 'search-dropdown-item';
+          row.href = `${baseUrl}/index.php?symbol=${encodeURIComponent(item.symbol)}`;
+
+          const isThai = (item.market === 'SET' || item.market === 'mai');
+          const currencySymbol = isThai ? '฿' : '$';
+          const priceText = (item.current_price !== null && item.current_price !== undefined && item.current_price > 0)
+            ? `${currencySymbol}${Number(item.current_price).toFixed(2)}`
+            : (item.market || 'GLOBAL');
+
+          const changeHtml = (item.percent_change !== null && item.percent_change !== undefined)
+            ? `<div class="${item.percent_change >= 0 ? 'search-result-item-gain' : 'search-result-item-loss'}">
+                ${item.percent_change >= 0 ? '+' : ''}${Number(item.percent_change).toFixed(2)}%
+               </div>`
+            : `<div class="text-xs text-muted">${item.market || 'GLOBAL'}</div>`;
+
+          row.innerHTML = `
+            <div>
+              <div class="search-result-symbol-link">
+                ${item.symbol}
+                <span class="search-result-market-tag">(${item.market || 'GLOBAL'})</span>
+              </div>
+              <div class="search-result-item-name">${item.name}</div>
+            </div>
+            <div class="th-right">
+              <div class="search-result-price-main">${priceText}</div>
+              ${changeHtml}
+            </div>
+          `;
+
+          dropdown.appendChild(row);
+        });
+        dropdown.classList.add('d-block');
+      } else {
+        dropdown.innerHTML = `
+          <div class="search-result-empty-msg">
+            กด Enter เพื่อค้นหาและซิงค์หุ้น "${query.toUpperCase()}" จากตลาดโลกแบบสดๆ
+          </div>
+        `;
+        dropdown.classList.add('d-block');
+      }
+    };
 
     inputEl.addEventListener('input', () => {
       clearTimeout(debounceTimer);
       const query = inputEl.value.trim();
 
       if (query.length === 0) {
+        if (abortController) abortController.abort();
         dropdown.style.display = 'none';
         dropdown.innerHTML = '';
         return;
       }
 
+      // ตรวจสอบ Memory Cache ก่อน (0ms Instant Render)
+      if (searchCache.has(query.toUpperCase())) {
+        renderResults(searchCache.get(query.toUpperCase()), query);
+        return;
+      }
+
       debounceTimer = setTimeout(async () => {
         try {
+          if (abortController) abortController.abort();
+          abortController = new AbortController();
+
           const baseUrl = window.BASE_URL || '';
-          const res = await fetch(`${baseUrl}/api/search.php?q=${encodeURIComponent(query)}`);
+          const res = await fetch(`${baseUrl}/api/search.php?q=${encodeURIComponent(query)}`, {
+            signal: abortController.signal
+          });
           if (!res.ok) return;
 
           const data = await res.json();
-          if (data.success && data.results && data.results.length > 0) {
-            dropdown.innerHTML = '';
-            data.results.forEach(item => {
-              const row = document.createElement('a');
-              row.className = 'search-dropdown-item';
-              row.href = `${baseUrl}/index.php?symbol=${encodeURIComponent(item.symbol)}`;
-
-              const priceText = (item.current_price !== null && item.current_price !== undefined)
-                ? `฿${Number(item.current_price).toFixed(2)}`
-                : (item.market || 'GLOBAL');
-
-              row.innerHTML = `
-                <div>
-                  <div style="font-weight: 700; font-family: var(--font-mono); color: var(--accent-gold);">${item.symbol}</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name}</div>
-                </div>
-                <div style="text-align: right;">
-                  <span class="badge badge-neutral" style="font-size: 0.7rem;">${priceText}</span>
-                </div>
-              `;
-
-              dropdown.appendChild(row);
-            });
-            dropdown.style.display = 'block';
-          } else {
-            dropdown.innerHTML = `
-              <div style="padding: 0.75rem; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
-                กด Enter เพื่อดึงข้อมูลหุ้น "${query.toUpperCase()}" จากตลาดโลก
-              </div>
-            `;
-            dropdown.style.display = 'block';
+          if (data.success) {
+            searchCache.set(query.toUpperCase(), data.results || []);
+            renderResults(data.results || [], query);
           }
         } catch (err) {
-          console.error('Search error:', err);
+          if (err.name !== 'AbortError') {
+            console.error('Search error:', err);
+          }
         }
-      }, 250);
+      }, 200);
     });
 
     document.addEventListener('click', (e) => {

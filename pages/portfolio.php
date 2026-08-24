@@ -78,19 +78,19 @@ require_once __DIR__ . '/../templates/header.php';
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Portfolio Header & Summary Controls -->
-      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem;">
+      <div class="portfolio-header-row">
         <div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
-            <h1 style="font-size: clamp(1.4rem, 4vw, 1.85rem); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          <div class="d-flex align-center gap-sm section-mb-xs flex-wrap">
+            <h1 class="portfolio-header-title">
               <?= icon('wallet', 'text-gold', 24) ?> <?= e($portfolio['portfolio_name']) ?>
             </h1>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">
+          <p class="text-sm text-muted">
             เงินทุนเริ่มต้น <?= formatMoney((float)$portfolio['initial_cash']) ?> · ค่าธรรมเนียมจำลอง 0.157% ต่อรายการ
           </p>
         </div>
 
-        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <div class="d-flex gap-sm flex-wrap">
           <a href="<?= e(BASE_URL) ?>/pages/export.php" class="btn btn-outline" title="ส่งออกรายงานและใบแจ้งยอดพอร์ต">
             <?= icon('file-text', 'text-gold', 14) ?> ส่งออกรายงาน (Export)
           </a>
@@ -104,11 +104,11 @@ require_once __DIR__ . '/../templates/header.php';
       </div>
 
       <!-- Overview 4 Metrics Grid -->
-      <div class="metrics-grid" style="margin-bottom: 1.5rem;">
+      <div class="metrics-grid section-mb-md">
         
         <div class="metric-card">
           <span class="metric-label">มูลค่าสินทรัพย์สุทธิ (Total Net Asset)</span>
-          <span class="metric-value" style="color: var(--accent-gold);">
+          <span class="metric-value text-gold">
             <?= formatMoney((float)$portfolio['total_portfolio_value']) ?>
           </span>
           <div class="metric-sub">
@@ -158,35 +158,35 @@ require_once __DIR__ . '/../templates/header.php';
             สัดส่วนการจัดสรรสินทรัพย์ (Asset Allocation)
           </div>
           <div class="asset-allocation-legend">
-            <span class="asset-legend-item" style="color: var(--accent-gold);">
-              <span class="asset-dot" style="background: var(--accent-gold);"></span>
+            <span class="asset-legend-item asset-legend-gold">
+              <span class="asset-dot asset-dot-gold"></span>
               เงินสด (Cash): <?= number_format($cashPct, 1) ?>% (<?= formatMoney($cashVal) ?>)
             </span>
-            <span class="asset-legend-item" style="color: var(--color-success);">
-              <span class="asset-dot" style="background: var(--color-success);"></span>
+            <span class="asset-legend-item asset-legend-gain">
+              <span class="asset-dot asset-dot-gain"></span>
               หุ้น / ตราสารทุน (Stocks & Equities): <?= number_format($stocksPct, 1) ?>% (<?= formatMoney($stocksVal) ?>)
             </span>
           </div>
         </div>
 
         <div class="asset-allocation-bar">
-          <div style="width: <?= $cashPct ?>%; background: var(--accent-gold);" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
-          <div style="width: <?= $stocksPct ?>%; background: var(--color-success);" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
+          <div class="asset-dot-gold" style="width: <?= $cashPct ?>%;" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
+          <div class="asset-dot-gain" style="width: <?= $stocksPct ?>%;" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
         </div>
       </div>
 
       <!-- Current Holdings Table Card -->
-      <div class="card" style="margin-bottom: 2.5rem;">
+      <div class="card section-mb-lg">
         <div class="card-header">
           <div>
             <h2 class="card-title">
               <?= icon('chart-bar', 'text-gold', 18) ?> รายการหุ้นที่ถือครองในพอร์ต (Current Holdings)
             </h2>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+            <p class="metric-subtitle-meta">
               คำนวณราคาเฉลี่ยถ่วงน้ำหนัก (Weighted Average Cost)
             </p>
           </div>
-          <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+          <span class="text-xs text-muted nowrap">
             อัปเดตราคาแบบ Real-time
           </span>
         </div>
@@ -197,18 +197,18 @@ require_once __DIR__ . '/../templates/header.php';
               <tr>
                 <th>ชื่อย่อหุ้น</th>
                 <th>บริษัท / ตลาด</th>
-                <th style="text-align: right;">จำนวนหุ้น</th>
-                <th style="text-align: right;">ราคาต้นทุนเฉลี่ย</th>
-                <th style="text-align: right;">ราคาตลาดล่าสุด</th>
-                <th style="text-align: right;">มูลค่าตลาด</th>
-                <th style="text-align: right;">กำไร / ขาดทุน (P&L)</th>
-                <th style="text-align: center;">จัดการ</th>
+                <th class="th-right">จำนวนหุ้น</th>
+                <th class="th-right">ราคาต้นทุนเฉลี่ย</th>
+                <th class="th-right">ราคาตลาดล่าสุด</th>
+                <th class="th-right">มูลค่าตลาด</th>
+                <th class="th-right">กำไร / ขาดทุน (P&L)</th>
+                <th class="th-center">จัดการ</th>
               </tr>
             </thead>
             <tbody>
               <?php if (empty($holdings)): ?>
                 <tr>
-                  <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                  <td colspan="8" class="table-empty-cell">
                     ยังไม่มีหุ้นในพอร์ตจำลอง — คลิกปุ่ม <strong>"+ ส่งคำสั่งซื้อ"</strong> ด้านบนเพื่อเริ่มทดลองลงทุน
                   </td>
                 </tr>
@@ -216,13 +216,13 @@ require_once __DIR__ . '/../templates/header.php';
                 <?php foreach ($holdings as $item): ?>
                   <tr>
                     <td>
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="link-gold-mono">
                         <?= e($item['symbol']) ?>
                       </a>
                     </td>
                     <td>
-                      <div style="font-weight: 500;"><?= e($item['name_th'] ?: $item['name_en']) ?></div>
-                      <div style="font-size: 0.75rem; color: var(--text-muted);"><?= e($item['market']) ?> · <?= e($item['sector']) ?></div>
+                      <div class="font-medium"><?= e($item['name_th'] ?: $item['name_en']) ?></div>
+                      <div class="text-xs text-muted"><?= e($item['market']) ?> · <?= e($item['sector']) ?></div>
                     </td>
                     <td class="num font-bold">
                       <?= number_format((int)$item['quantity']) ?>
@@ -233,17 +233,17 @@ require_once __DIR__ . '/../templates/header.php';
                     <td class="num font-bold">
                       <?= number_format((float)$item['current_price'], 2) ?>
                     </td>
-                    <td class="num font-bold" style="color: var(--text-primary);">
+                    <td class="num font-bold text-primary">
                       <?= number_format((float)$item['market_value'], 2) ?>
                     </td>
                     <td class="num <?= getPnlColorClass((float)$item['unrealized_pnl']) ?>">
                       <strong><?= ((float)$item['unrealized_pnl'] >= 0 ? '+' : '') . number_format((float)$item['unrealized_pnl'], 2) ?></strong>
-                      <div style="font-size: 0.75rem;">
+                      <div class="text-xs">
                         (<?= formatPercent((float)$item['return_percent']) ?>)
                       </div>
                     </td>
-                    <td style="text-align: right; white-space: nowrap;">
-                      <div style="display: inline-flex; gap: 0.35rem;">
+                    <td class="th-right nowrap">
+                      <div class="d-inline-flex gap-xs">
                         <button type="button" class="btn btn-buy btn-sm open-trade-modal-btn" data-trade-type="BUY" data-stock-id="<?= (int)$item['stock_id'] ?>" data-price="<?= (float)$item['current_price'] ?>">
                           <?= icon('plus', '', 12) ?> ซื้อ
                         </button>
@@ -270,11 +270,11 @@ require_once __DIR__ . '/../templates/header.php';
             <h2 class="card-title">
               <?= icon('history', 'text-gold', 18) ?> ประวัติการทำรายการซื้อขาย (Transaction History)
             </h2>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+            <p class="metric-subtitle-meta">
               บันทึกคำสั่งซื้อขายล่าสุดและค่าธรรมเนียมจริงในระบบจำลอง
             </p>
           </div>
-          <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+          <span class="text-xs text-muted nowrap">
             <?= count($transactions) ?> รายการ
           </span>
         </div>
@@ -286,25 +286,25 @@ require_once __DIR__ . '/../templates/header.php';
                 <th>วันที่ / เวลา</th>
                 <th>ประเภท</th>
                 <th>หลักทรัพย์</th>
-                <th style="text-align: right;">จำนวนหุ้น</th>
-                <th style="text-align: right;">ราคาที่ทำรายการ</th>
-                <th style="text-align: right;">มูลค่ารวม</th>
-                <th style="text-align: right;">ค่าธรรมเนียม</th>
-                <th style="text-align: right;">ยอดเงินสุทธิ</th>
+                <th class="th-right">จำนวนหุ้น</th>
+                <th class="th-right">ราคาที่ทำรายการ</th>
+                <th class="th-right">มูลค่ารวม</th>
+                <th class="th-right">ค่าธรรมเนียม</th>
+                <th class="th-right">ยอดเงินสุทธิ</th>
               </tr>
             </thead>
             <tbody>
               <?php if (empty($transactions)): ?>
                 <tr>
-                  <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                  <td colspan="8" class="table-empty-cell">
                     ยังไม่มีประวัติการทำรายการในพอร์ตนี้
                   </td>
                 </tr>
               <?php else: ?>
                 <?php foreach ($transactions as $tx): ?>
                   <tr>
-                    <td style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
-                      <?= date('d/m/Y H:i', strtotime($tx['executed_at'])) ?>
+                    <td class="text-xs text-muted nowrap">
+                      <?= date('d/m/Y H:i', strtotime((string)($tx['created_at'] ?? $tx['executed_at'] ?? 'now'))) ?>
                     </td>
                     <td>
                       <span class="badge <?= ($tx['transaction_type'] === 'BUY') ? 'badge-gain' : 'badge-loss' ?>">
@@ -312,7 +312,7 @@ require_once __DIR__ . '/../templates/header.php';
                       </span>
                     </td>
                     <td class="font-bold">
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($tx['symbol']) ?>" style="color: var(--text-primary); font-family: var(--font-mono);">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($tx['symbol']) ?>" class="text-primary font-mono">
                         <?= e($tx['symbol']) ?>
                       </a>
                     </td>
@@ -325,11 +325,15 @@ require_once __DIR__ . '/../templates/header.php';
                     <td class="num">
                       ฿<?= number_format((float)$tx['total_amount'], 2) ?>
                     </td>
-                    <td class="num" style="color: var(--text-muted);">
+                    <td class="num text-muted">
                       ฿<?= number_format((float)$tx['fee'], 2) ?>
                     </td>
                     <td class="num font-bold <?= ($tx['transaction_type'] === 'BUY') ? 'text-loss' : 'text-gain' ?>">
-                      <?= ($tx['transaction_type'] === 'BUY' ? '-' : '+') ?>฿<?= number_format((float)$tx['net_amount'], 2) ?>
+                      <?php
+                        $isBuy = ($tx['transaction_type'] === 'BUY');
+                        $netAmt = $isBuy ? ((float)$tx['total_amount'] + (float)$tx['fee']) : ((float)$tx['total_amount'] - (float)$tx['fee']);
+                      ?>
+                      <?= ($isBuy ? '-' : '+') ?>฿<?= number_format($netAmt, 2) ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>

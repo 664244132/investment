@@ -20,6 +20,11 @@ $currentUser = $currentUser ?? getCurrentUser();
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title><?= e($pageTitle) ?></title>
   
+  <!-- Favicon Icons (Native Brand Icon) -->
+  <link rel="icon" type="image/svg+xml" href="<?= e(BASE_URL) ?>/favicon.svg">
+  <link rel="icon" type="image/png" href="<?= e(BASE_URL) ?>/favicon.png">
+  <link rel="apple-touch-icon" href="<?= e(BASE_URL) ?>/favicon.png">
+
   <!-- CSS Stylesheets (Local Assets 100%) -->
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css?v=<?= e(APP_VERSION) ?>">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css?v=<?= e(APP_VERSION) ?>">
@@ -121,7 +126,7 @@ $currentUser = $currentUser ?? getCurrentUser();
       <!-- Mobile Hamburger Toggle Button (Direct Child) -->
       <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle Menu" aria-expanded="false" type="button" onclick="window.toggleMobileDrawer(event)">
         <span class="toggle-icon-menu"><?= icon('menu', '', 20) ?></span>
-        <span class="toggle-icon-close" style="display: none;"><?= icon('close', '', 20) ?></span>
+        <span class="toggle-icon-close d-none"><?= icon('close', '', 20) ?></span>
       </button>
 
     </div>
@@ -139,43 +144,43 @@ $currentUser = $currentUser ?? getCurrentUser();
       <!-- Mobile Navigation Links -->
       <div class="mobile-nav-links">
         <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link <?= ($activeNav === 'index') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('chart-bar', 'text-gold', 16) ?> หน้าหลัก / วิเคราะห์หุ้น
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link <?= ($activeNav === 'screener') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('filter', 'text-gold', 16) ?> คัดกรองหุ้น (Screener)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/compare.php" class="nav-link <?= ($activeNav === 'compare') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('scale', 'text-gold', 16) ?> เปรียบเทียบหุ้น (Compare)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/dca.php" class="nav-link <?= ($activeNav === 'dca') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('repeat', 'text-gold', 16) ?> จำลองออมหุ้น (DCA)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/watchlist.php" class="nav-link <?= ($activeNav === 'watchlist') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('bookmark', 'text-gold', 16) ?> รายการติดตาม (Watchlist)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/journal.php" class="nav-link <?= ($activeNav === 'journal') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('book-open', 'text-gold', 16) ?> บันทึกการเทรด (Journal)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link <?= ($activeNav === 'portfolio') ? 'active' : '' ?>">
-          <span style="display: flex; align-items: center; gap: 8px;">
+          <span class="mobile-nav-item">
             <?= icon('wallet', 'text-gold', 16) ?> พอร์ตจำลอง (Portfolio)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
@@ -186,25 +191,25 @@ $currentUser = $currentUser ?? getCurrentUser();
       <div class="mobile-auth-section">
         <?php if ($isUserLoggedIn): ?>
           <div class="mobile-user-info">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 28px; height: 28px; border-radius: var(--radius-xs); background: var(--accent-gold-subtle); display: flex; align-items: center; justify-content: center;">
+            <div class="d-flex align-center gap-xs">
+              <div class="mobile-user-avatar">
                 <?= icon('user', 'text-gold', 16) ?>
               </div>
               <div>
-                <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;"><?= e($currentUser['full_name'] ?: $currentUser['username']) ?></div>
-                <div style="font-size: 0.72rem; color: var(--text-muted);"><?= e($currentUser['email'] ?? '') ?></div>
+                <div class="font-bold text-primary text-sm"><?= e($currentUser['full_name'] ?: $currentUser['username']) ?></div>
+                <div class="text-xs text-muted"><?= e($currentUser['email'] ?? '') ?></div>
               </div>
             </div>
-            <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm text-loss" style="border-color: rgba(255, 0, 0, 0.3);">
+            <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="btn btn-outline btn-sm text-loss">
               <?= icon('close', 'text-loss', 12) ?> ออกจากระบบ
             </a>
           </div>
         <?php else: ?>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
-            <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm" style="justify-content: center;">
+          <div class="grid-2col-gap-sm">
+            <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-outline btn-sm btn-justify-center">
               เข้าสู่ระบบ
             </a>
-            <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm" style="justify-content: center;">
+            <a href="<?= e(BASE_URL) ?>/pages/register.php" class="btn btn-primary btn-sm btn-justify-center">
               สมัครสมาชิกฟรี
             </a>
           </div>

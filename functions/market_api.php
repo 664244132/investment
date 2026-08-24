@@ -182,23 +182,37 @@ function searchLiveGlobalMarket(string $query): array
 }
 
 /**
- * ซิงค์ข้อมูลราคาหุ้นจริงเข้าสู่ฐานข้อมูล MySQL อัตโนมัติ (Live Auto-Sync & Provisioning)
+ * ซิงค์ข้อมูลราคาหุ้นจริงเข้าสู่ฐานข้อมูล MySQL อัตโนมัติ (Live Auto-Sync & Provisioning with Smart TTL Cache)
  *
  * @param PDO $pdo การเชื่อมต่อฐานข้อมูล
  * @param string $symbol ชื่อย่อหุ้น
+ * @param bool $forceRefresh บังคับดึงข้อมูลใหม่โดยไม่ใช้ Cache
  * @return array|null ข้อมูลหุ้นพร้อมใช้งาน
  */
-function syncStockToDatabase(PDO $pdo, string $symbol): ?array
+function syncStockToDatabase(PDO $pdo, string $symbol, bool $forceRefresh = false): ?array
 {
     $cleanSymbol = strtoupper(trim($symbol));
     if ($cleanSymbol === '') {
         return null;
     }
 
-    // ดึงข้อมูลสดจากตลาดจริง
+    // Performance Optimization: ตรวจสอบ Smart Cache 60 วินาทีในฐานข้อมูลเพื่อลด Network Latency
+    if (!$forceRefresh) {
+        $checkStmt = $pdo->prepare("SELECT id, updated_at, TIMESTAMPDIFF(SECOND, updated_at, NOW()) AS age_sec FROM stocks WHERE symbol = :symbol LIMIT 1");
+        $checkStmt->execute([':symbol' => $cleanSymbol]);
+        $existingRecord = $checkStmt->fetch();
+
+        if ($existingRecord && $existingRecord['updated_at'] !== null && isset($existingRecord['age_sec']) && (int)$existingRecord['age_sec'] < 60) {
+            // ข้อมูลยังสดใหม่ (< 60 วินาที) โหลดตรงจากฐานข้อมูลทันทีด้วยความเร็วหลัก Millisecond
+            return getStockBySymbol($pdo, $cleanSymbol, false);
+        }
+    }
+
+    // ดึงข้อมูลสดจากตลาดจริง (เมื่อข้อมูลหมดอายุหรือเป็นหุ้นใหม่)
     $liveData = fetchLiveMarketQuote($cleanSymbol);
     if (!$liveData) {
-        return null;
+        // หากเครือข่ายขัดข้อง ให้ Fallback ไปยังข้อมูลเดิมที่มีในฐานข้อมูล
+        return getStockBySymbol($pdo, $cleanSymbol, false);
     }
 
     // ตรวจสอบว่ามีหุ้นนี้ในระบบแล้วหรือไม่
@@ -326,6 +340,102 @@ function syncStockToDatabase(PDO $pdo, string $symbol): ?array
         }
     }
 
-    // คืนค่าข้อมูลหุ้นที่พร้อมแสดงผล
-    return getStockBySymbol($pdo, $cleanSymbol);
+    // คืนค่าข้อมูลหุ้นที่พร้อมแสดงผลโดยตรงจากฐานข้อมูลหลังซิงค์
+    return getStockBySymbol($pdo, $cleanSymbol, false);
+}
+
+/**
+ * ดึงข้อมูลประวัติราคากราฟแท่งเทียนตาม Timeframe ที่กำหนดจาก Live Market API (100% Real-Time Live Gateway)
+ *
+ * @param string $symbol ชื่อย่อหุ้น เช่น 'DELTA', 'TSLA', 'AAPL'
+ * @param string $timeframe '1H' (รายชั่วโมง), '1D' (รายวัน), '1W' (รายอาทิตย์), '1M' (1 เดือน), '1Y' (1 ปี), '5Y' (5 ปี)
+ * @return array
+ */
+function fetchLiveChartData(string $symbol, string $timeframe = '1M'): array
+{
+    $cleanSymbol = strtoupper(trim($symbol));
+    if ($cleanSymbol === '') {
+        return [];
+    }
+
+    // กำหนด Parameter สำหรับ Yahoo Finance Chart API ตาม Timeframe แต่ละช่วงเวลาให้แตกต่างและถูกต้อง
+    $tfMap = [
+        '1H' => ['interval' => '2m',  'range' => '1d',  'label_format' => 'H:i'],
+        '1D' => ['interval' => '5m',  'range' => '1d',  'label_format' => 'H:i'],
+        '1W' => ['interval' => '1h',  'range' => '5d',  'label_format' => 'd M H:i'],
+        '1M' => ['interval' => '1d',  'range' => '1mo', 'label_format' => 'd M'],
+        '1Y' => ['interval' => '1wk', 'range' => '1y',  'label_format' => 'd M Y'],
+        '5Y' => ['interval' => '1mo', 'range' => '5y',  'label_format' => 'M Y'],
+    ];
+
+    $cfg = $tfMap[strtoupper($timeframe)] ?? $tfMap['1M'];
+    $candidates = [$cleanSymbol];
+    if (!str_contains($cleanSymbol, '.')) {
+        $candidates[] = $cleanSymbol . '.BK';
+    }
+
+    foreach ($candidates as $targetSymbol) {
+        $url = sprintf(
+            'https://query1.finance.yahoo.com/v8/finance/chart/%s?interval=%s&range=%s',
+            urlencode($targetSymbol),
+            urlencode($cfg['interval']),
+            urlencode($cfg['range'])
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200 || !$response) {
+            continue;
+        }
+
+        $data = json_decode((string)$response, true);
+        $result = $data['chart']['result'][0] ?? null;
+        if (!$result) {
+            continue;
+        }
+
+        $timestamps = $result['timestamp'] ?? [];
+        $quotes = $result['indicators']['quote'][0] ?? [];
+        $closePrices = $quotes['close'] ?? [];
+        $openPrices  = $quotes['open'] ?? [];
+        $highPrices  = $quotes['high'] ?? [];
+        $lowPrices   = $quotes['low'] ?? [];
+        $volumes     = $quotes['volume'] ?? [];
+
+        $chartData = [];
+        $count = count($timestamps);
+        for ($i = 0; $i < $count; $i++) {
+            $close = $closePrices[$i] ?? null;
+            if ($close === null || $close <= 0) {
+                continue;
+            }
+            $ts = (int)$timestamps[$i];
+            $chartData[] = [
+                'timestamp'    => $ts,
+                'date'         => date('Y-m-d H:i', $ts),
+                'display_date' => date($cfg['label_format'], $ts),
+                'open'         => round((float)($openPrices[$i] ?? $close), 2),
+                'high'         => round((float)($highPrices[$i] ?? $close), 2),
+                'low'          => round((float)($lowPrices[$i] ?? $close), 2),
+                'close'        => round((float)$close, 2),
+                'volume'       => (int)($volumes[$i] ?? 0)
+            ];
+        }
+
+        if (!empty($chartData)) {
+            return $chartData;
+        }
+    }
+
+    return [];
 }

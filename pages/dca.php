@@ -82,19 +82,19 @@ require_once __DIR__ . '/../templates/header.php';
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Header Section -->
-      <div class="section-heading-row" style="margin-bottom: 1.5rem;">
+      <div class="section-heading-row section-mb-md">
         <div>
           <h1 class="section-heading-title">
             <?= icon('repeat', 'text-gold', 24) ?> เครื่องมือจำลองการออมหุ้น DCA (Growth & Compounding Calculator)
           </h1>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          <p class="chart-subtitle-meta">
             คำนวณพลังดอกเบี้ยทบต้นจากการลงทุนสม่ำเสมอรายเดือน (Dollar-Cost Averaging) พร้อมเปรียบเทียบกับเงินฝากและดัชนีตลาด
           </p>
         </div>
       </div>
 
       <!-- Quick Strategy Preset Bar -->
-      <div class="watchlist-bar" style="margin-bottom: 2rem;">
+      <div class="watchlist-bar section-mb-md">
         <span class="watchlist-label">แผนออมหุ้นยอดนิยม:</span>
         <a href="<?= e(BASE_URL) ?>/pages/dca.php?symbol=<?= e($selectedSymbol) ?>&monthly_amount=3000&years=5&growth_rate=8&dividend_yield=3&drip=1" class="watchlist-chip <?= ($monthlyAmount == 3000 && $years == 5) ? 'active' : '' ?>">
           <?= icon('zap', 'text-gold', 12) ?> มือใหม่เริ่มออม (฿3,000/ด. · 5 ปี)
@@ -112,14 +112,14 @@ require_once __DIR__ . '/../templates/header.php';
         <!-- Left Column: DCA Input Configuration Form -->
         <div>
           <div class="dca-form-card">
-            <h2 style="font-size: 1.15rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+            <h2 class="card-title-sm d-flex align-center gap-sm dca-card-title-head">
               <?= icon('sliders', 'text-gold', 18) ?> กำหนดพารามิเตอร์จำลอง
             </h2>
 
-            <form action="<?= e(BASE_URL) ?>/pages/dca.php" method="GET" style="display: flex; flex-direction: column; gap: 1.15rem;">
+            <form action="<?= e(BASE_URL) ?>/pages/dca.php" method="GET" class="form-flex-col">
               
               <!-- Stock Universe Selector -->
-              <div class="form-group" style="margin-bottom: 0;">
+              <div class="form-group mb-none">
                 <label for="dca_symbol" class="form-label">เลือกหลักทรัพย์เป้าหมาย</label>
                 <div class="form-input-wrapper">
                   <select id="dca_symbol" name="symbol" class="form-input" onchange="this.form.submit()">
@@ -133,7 +133,7 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
 
               <!-- Monthly DCA Amount -->
-              <div class="form-group" style="margin-bottom: 0;">
+              <div class="form-group mb-none">
                 <label for="dca_monthly" class="form-label">เงินออมถัวเฉลี่ยรายเดือน (บาท/เดือน)</label>
                 <div class="form-input-wrapper">
                   <input type="number" id="dca_monthly" name="monthly_amount" class="form-input" min="100" step="500" value="<?= (int)$monthlyAmount ?>" required>
@@ -141,7 +141,7 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
 
               <!-- Investment Horizon (Years) -->
-              <div class="form-group" style="margin-bottom: 0;">
+              <div class="form-group mb-none">
                 <label for="dca_years" class="form-label">ระยะเวลาลงทุนสะสม (ปี)</label>
                 <div class="form-input-wrapper">
                   <select id="dca_years" name="years" class="form-input">
@@ -155,7 +155,7 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
 
               <!-- Expected Capital Growth Rate (CAGR %) -->
-              <div class="form-group" style="margin-bottom: 0;">
+              <div class="form-group mb-none">
                 <label for="dca_growth" class="form-label">คาดการณ์กำไรส่วนต่างราคาต่อปี (% CAGR)</label>
                 <div class="form-input-wrapper">
                   <input type="number" id="dca_growth" name="growth_rate" class="form-input" min="-30" max="100" step="0.5" value="<?= $growthRate ?>" required>
@@ -163,7 +163,7 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
 
               <!-- Dividend Yield Rate (%) -->
-              <div class="form-group" style="margin-bottom: 0;">
+              <div class="form-group mb-none">
                 <label for="dca_yield" class="form-label">อัตราเงินปันผลตอบแทนต่อปี (Yield %)</label>
                 <div class="form-input-wrapper">
                   <input type="number" id="dca_yield" name="dividend_yield" class="form-input" min="0" max="30" step="0.1" value="<?= $dividendYield ?>" required>
@@ -171,14 +171,14 @@ require_once __DIR__ . '/../templates/header.php';
               </div>
 
               <!-- DRIP Toggle -->
-              <div style="display: flex; align-items: center; gap: 0.75rem; background: rgba(0, 0, 0, 0.2); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                <input type="checkbox" id="dca_drip" name="drip" value="1" <?= $reinvestDividends ? 'checked' : '' ?> style="width: 18px; height: 18px; accent-color: var(--accent-gold); cursor: pointer;">
-                <label for="dca_drip" style="font-size: 0.85rem; color: var(--text-primary); cursor: pointer; user-select: none;">
+              <div class="form-checkbox-row">
+                <input type="checkbox" id="dca_drip" name="drip" value="1" <?= $reinvestDividends ? 'checked' : '' ?> class="form-checkbox-input">
+                <label for="dca_drip" class="form-checkbox-label">
                   นำเงินปันผลกลับมาลงทุนต่อ (DRIP - Reinvestment)
                 </label>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+              <button type="submit" class="btn btn-primary btn-w-full mt-sm">
                 <?= icon('calculator', '', 16) ?> คำนวณแบบจำลอง DCA ใหม่
               </button>
 
@@ -193,12 +193,12 @@ require_once __DIR__ . '/../templates/header.php';
           <div class="dca-summary-grid">
             <div class="dca-summary-card">
               <span class="dca-summary-label">เงินต้นสะสมทั้งหมด</span>
-              <span class="dca-summary-val" style="color: var(--text-muted);">
+              <span class="dca-summary-val text-muted">
                 ฿<?= number_format($simResult['total_principal'], 0) ?>
               </span>
             </div>
 
-            <div class="dca-summary-card" style="border-color: var(--accent-gold);">
+            <div class="dca-summary-card dca-card-featured">
               <span class="dca-summary-label">มูลค่าพอร์ตสุทธิ ณ สิ้นสุด</span>
               <span class="dca-summary-val text-gold">
                 ฿<?= number_format($simResult['final_stock_value'], 0) ?>
@@ -229,7 +229,7 @@ require_once __DIR__ . '/../templates/header.php';
               <div class="dca-benchmark-val text-gold">
                 ฿<?= number_format($simResult['final_stock_value'], 0) ?>
               </div>
-              <div style="font-size: 0.75rem; color: var(--color-success); font-weight: 700;">
+              <div class="text-gain font-bold text-xs">
                 ผลตอบแทนรวม: <?= sprintf('%+.1f%%', $simResult['total_return_pct']) ?>
               </div>
             </div>
@@ -238,10 +238,10 @@ require_once __DIR__ . '/../templates/header.php';
               <div class="dca-benchmark-title">
                 <?= icon('activity', 'text-muted', 14) ?> ดัชนีตลาดเฉลี่ย (SET Index 7.0%)
               </div>
-              <div class="dca-benchmark-val" style="color: #00B4D8;">
+              <div class="dca-benchmark-val text-blue">
                 ฿<?= number_format($simResult['final_index_value'], 0) ?>
               </div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">
+              <div class="text-muted text-xs">
                 ส่วนต่าง: ฿<?= number_format($simResult['final_stock_value'] - $simResult['final_index_value'], 0) ?>
               </div>
             </div>
@@ -250,25 +250,25 @@ require_once __DIR__ . '/../templates/header.php';
               <div class="dca-benchmark-title">
                 <?= icon('shield', 'text-muted', 14) ?> เงินฝากประจำธนาคาร (1.5%)
               </div>
-              <div class="dca-benchmark-val" style="color: var(--text-muted);">
+              <div class="dca-benchmark-val text-muted">
                 ฿<?= number_format($simResult['final_bank_value'], 0) ?>
               </div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">
+              <div class="text-muted text-xs">
                 ส่วนต่าง: ฿<?= number_format($simResult['final_stock_value'] - $simResult['final_bank_value'], 0) ?>
               </div>
             </div>
           </div>
 
           <!-- Interactive Chart.js Multi-Line Growth Trajectory Chart -->
-          <div class="card" style="margin-bottom: 2rem;">
+          <div class="card section-mb-md">
             <div class="card-header">
               <h3 class="card-title">
                 <?= icon('chart-line', 'text-gold', 18) ?> แผนภูมิการเติบโตสะสมรายปี (Wealth Growth Trajectory)
               </h3>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">ระยะเวลา <?= $years ?> ปี (<?= $years * 12 ?> งวด)</span>
+              <span class="metric-subtitle-meta">ระยะเวลา <?= $years ?> ปี (<?= $years * 12 ?> งวด)</span>
             </div>
             <div class="card-body">
-              <div style="position: relative; height: 320px; width: 100%;">
+              <div class="chart-wrapper-320">
                 <canvas id="dcaGrowthChart"></canvas>
               </div>
             </div>
@@ -286,22 +286,22 @@ require_once __DIR__ . '/../templates/header.php';
                 <thead>
                   <tr>
                     <th>สิ้นปีที่</th>
-                    <th style="text-align: right;">เงินต้นสะสม</th>
-                    <th style="text-align: right;">ปันผลประจำปี</th>
-                    <th style="text-align: right;">กำไรสะสม (Capital Gain)</th>
-                    <th style="text-align: right;">มูลค่าพอร์ตสุทธิ</th>
-                    <th style="text-align: center;">ROI รวม</th>
+                    <th class="th-right">เงินต้นสะสม</th>
+                    <th class="th-right">ปันผลประจำปี</th>
+                    <th class="th-right">กำไรสะสม (Capital Gain)</th>
+                    <th class="th-right">มูลค่าพอร์ตสุทธิ</th>
+                    <th class="th-center">ROI รวม</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($simResult['yearly_breakdown'] as $row): ?>
                     <tr>
                       <td class="font-bold">ปีที่ <?= $row['year'] ?></td>
-                      <td class="num" style="color: var(--text-muted);">฿<?= number_format($row['principal'], 0) ?></td>
-                      <td class="num" style="color: var(--accent-gold);">+฿<?= number_format($row['annual_dividend'], 0) ?></td>
+                      <td class="num text-muted">฿<?= number_format($row['principal'], 0) ?></td>
+                      <td class="num text-gold">+฿<?= number_format($row['annual_dividend'], 0) ?></td>
                       <td class="num text-gain">+฿<?= number_format($row['capital_gain'], 0) ?></td>
-                      <td class="num font-bold text-gold" style="font-size: 1rem;">฿<?= number_format($row['stock_value'], 0) ?></td>
-                      <td style="text-align: center;" class="font-bold <?= ($row['roi_pct'] >= 0) ? 'text-gain' : 'text-loss' ?>">
+                      <td class="num font-bold text-gold text-base">฿<?= number_format($row['stock_value'], 0) ?></td>
+                      <td class="num th-center font-bold <?= ($row['roi_pct'] >= 0) ? 'text-gain' : 'text-loss' ?>">
                         <?= sprintf('%+.1f%%', $row['roi_pct']) ?>
                       </td>
                     </tr>

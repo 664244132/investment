@@ -58,12 +58,12 @@ require_once __DIR__ . '/../templates/header.php';
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Header Section -->
-      <div class="section-heading-row" style="margin-bottom: 1.5rem;">
+      <div class="section-heading-row section-mb-md">
         <div>
           <h1 class="section-heading-title">
             <?= icon('book-open', 'text-gold', 24) ?> สมุดบันทึกการเทรด & วิเคราะห์พฤติกรรม (Trading Journal)
           </h1>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          <p class="chart-subtitle-meta">
             ติดตามผลลัพธ์การตัดสินใจ บันทึกเหตุผลการเข้าทำรายการ สถิติ Win Rate และการสะท้อนบทเรียนหลังปิดออเดอร์
           </p>
         </div>
@@ -80,13 +80,13 @@ require_once __DIR__ . '/../templates/header.php';
           <div class="empty-watchlist-icon">
             <?= icon('book-open', '', 28) ?>
           </div>
-          <h2 style="font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+          <h2 class="empty-state-title">
             เข้าสู่ระบบเพื่อเริ่มใช้งาน Trading Journal
           </h2>
-          <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 480px; margin: 0 auto 1.5rem auto; line-height: 1.6;">
+          <p class="empty-state-desc">
             บันทึกเหตุผลการเทรด แท็กกลยุทธ์ และวิเคราะห์ประสิทธิภาพ Win Rate ของการเทรดพอร์ตจำลองอย่างเป็นระบบ
           </p>
-          <div style="display: flex; justify-content: center; gap: 1rem;">
+          <div class="d-flex justify-center gap-md">
             <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-primary">
               <?= icon('user', '', 14) ?> เข้าสู่ระบบ
             </a>
@@ -144,9 +144,9 @@ require_once __DIR__ . '/../templates/header.php';
             <div class="perf-label">
               <?= icon('activity', 'text-gold', 14) ?> กำไรเฉลี่ย / ขาดทุนเฉลี่ย
             </div>
-            <div class="perf-val" style="font-size: 1.15rem;">
+            <div class="perf-val text-base">
               <span class="text-gain">+฿<?= number_format($perfMetrics['avg_win'], 2) ?></span>
-              <span style="color: var(--text-muted); font-size: 0.85rem;"> / </span>
+              <span class="text-muted text-sm"> / </span>
               <span class="text-loss">-฿<?= number_format($perfMetrics['avg_loss'], 2) ?></span>
             </div>
             <div class="perf-sub">
@@ -169,11 +169,11 @@ require_once __DIR__ . '/../templates/header.php';
                 <thead>
                   <tr>
                     <th>กลยุทธ์ (Strategy Tag)</th>
-                    <th style="text-align: center;">จำนวนออเดอร์</th>
-                    <th style="text-align: center;">ชนะ (Win)</th>
-                    <th style="text-align: center;">แพ้ (Loss)</th>
-                    <th style="text-align: center;">Win Rate (%)</th>
-                    <th style="text-align: right;">กำไร/ขาดทุนสะสม</th>
+                    <th class="th-center">จำนวนออเดอร์</th>
+                    <th class="th-center">ชนะ (Win)</th>
+                    <th class="th-center">แพ้ (Loss)</th>
+                    <th class="th-center">Win Rate (%)</th>
+                    <th class="th-right">กำไร/ขาดทุนสะสม</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -184,10 +184,10 @@ require_once __DIR__ . '/../templates/header.php';
                           <?= e($strat['tag']) ?>
                         </span>
                       </td>
-                      <td style="text-align: center; font-family: var(--font-mono);"><?= (int)$strat['total_trades'] ?></td>
-                      <td style="text-align: center; font-family: var(--font-mono); color: var(--color-success);"><?= (int)$strat['wins'] ?></td>
-                      <td style="text-align: center; font-family: var(--font-mono); color: var(--color-danger);"><?= (int)$strat['losses'] ?></td>
-                      <td style="text-align: center; font-family: var(--font-mono); font-weight: 700;" class="<?= ($strat['win_rate'] >= 50) ? 'text-gain' : 'text-loss' ?>">
+                      <td class="th-center font-mono"><?= (int)$strat['total_trades'] ?></td>
+                      <td class="th-center font-mono text-gain"><?= (int)$strat['wins'] ?></td>
+                      <td class="th-center font-mono text-loss"><?= (int)$strat['losses'] ?></td>
+                      <td class="th-center font-mono font-bold <?= ($strat['win_rate'] >= 50) ? 'text-gain' : 'text-loss' ?>">
                         <?= number_format((float)$strat['win_rate'], 1) ?>%
                       </td>
                       <td class="num <?= getPnlColorClass((float)$strat['total_pnl']) ?>">
@@ -202,7 +202,7 @@ require_once __DIR__ . '/../templates/header.php';
         <?php endif; ?>
 
         <!-- Strategy Filter Bar -->
-        <div class="watchlist-bar" style="margin-bottom: 1.75rem;">
+        <div class="watchlist-bar section-mb-md">
           <span class="watchlist-label">กรองตามกลยุทธ์:</span>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=all" class="watchlist-chip <?= ($selectedStrategy === 'all') ? 'active' : '' ?>">
             <?= icon('layers', '', 12) ?> ทั้งหมด
@@ -230,10 +230,10 @@ require_once __DIR__ . '/../templates/header.php';
             <div class="empty-watchlist-icon">
               <?= icon('book-open', '', 28) ?>
             </div>
-            <h2 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+            <h2 class="empty-state-title">
               ยังไม่มีประวัติการบันทึกใน Trading Journal
             </h2>
-            <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 460px; margin: 0 auto 1.5rem auto; line-height: 1.6;">
+            <p class="empty-state-desc">
               เมื่อคุณส่งคำสั่งซื้อหรือขายหุ้นในพอร์ตจำลอง ระบบจะให้คุณระบุกลยุทธ์และบันทึกเหตุผลการเทรดเพื่อนำมาวิเคราะห์ในหน้านี้
             </p>
             <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-primary">
@@ -251,30 +251,30 @@ require_once __DIR__ . '/../templates/header.php';
                 <!-- Card Header -->
                 <div class="journal-card-header">
                   <div class="journal-stock-group">
-                    <span class="badge <?= $isBuy ? 'badge-gain' : 'badge-loss' ?>" style="font-size: 0.8rem; font-weight: 700;">
+                    <span class="badge <?= $isBuy ? 'badge-gain' : 'badge-loss' ?> badge-sm font-bold">
                       <?= $isBuy ? icon('arrow-up-right', 'text-gain', 12) . ' BUY' : icon('arrow-down-right', 'text-loss', 12) . ' SELL' ?>
                     </span>
                     <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($j['symbol']) ?>" class="journal-symbol">
                       <?= e($j['symbol']) ?>
                     </a>
-                    <span style="font-size: 0.85rem; color: var(--text-muted);">
+                    <span class="text-sm text-muted">
                       <?= e($j['name_th'] ?: $j['name_en']) ?>
                     </span>
-                    <span class="badge badge-gold" style="font-size: 0.72rem;">
+                    <span class="badge badge-gold badge-xs">
                       <?= e($j['strategy_tag']) ?>
                     </span>
                   </div>
 
-                  <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <span style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-primary);">
+                  <div class="d-flex align-center gap-md flex-wrap">
+                    <span class="font-mono text-sm text-primary">
                       <?= number_format((int)$j['quantity']) ?> หุ้น @ ฿<?= number_format((float)$j['price'], 2) ?>
                     </span>
                     <?php if ($pnl !== null): ?>
-                      <span class="badge <?= ($pnl >= 0) ? 'badge-gain' : 'badge-loss' ?>" style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;">
+                      <span class="badge <?= ($pnl >= 0) ? 'badge-gain' : 'badge-loss' ?> font-mono badge-sm font-bold">
                         Realized P&L: <?= ($pnl >= 0 ? '+' : '') ?>฿<?= number_format($pnl, 2) ?>
                       </span>
                     <?php endif; ?>
-                    <span style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                    <span class="text-xs text-muted d-flex align-center gap-xs">
                       <?= icon('clock', '', 12) ?> <?= date('d M Y H:i', strtotime($j['trade_date'])) ?>
                     </span>
                   </div>
@@ -303,15 +303,15 @@ require_once __DIR__ . '/../templates/header.php';
                 <?php endif; ?>
 
                 <!-- Form to Add/Edit Lessons Learned -->
-                <details style="font-size: 0.82rem; color: var(--text-muted);">
-                  <summary style="cursor: pointer; color: var(--accent-gold); user-select: none; display: inline-flex; align-items: center; gap: 4px;">
+                <details class="journal-summary-details">
+                  <summary class="journal-summary-btn">
                     <?= icon('edit', '', 12) ?> <?= empty($j['lessons_learned']) ? '+ เพิ่มบทเรียนที่ได้รับ (Post-trade Reflection)' : 'แก้ไขบทเรียนที่ได้รับ' ?>
                   </summary>
-                  <form action="<?= e(BASE_URL) ?>/pages/journal.php" method="POST" style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                  <form action="<?= e(BASE_URL) ?>/pages/journal.php" method="POST" class="form-flex-col-sm mt-sm">
                     <input type="hidden" name="action" value="update_lesson">
                     <input type="hidden" name="journal_id" value="<?= (int)$j['journal_id'] ?>">
-                    <textarea name="lessons_learned" class="form-input" rows="2" placeholder="บันทึกข้อคิด เช่น ทำตามแผนได้ดี, อารมณ์ FOMO เข้าแทรก, ขายเร็วเกินไป..." style="font-size: 0.85rem;"><?= e($j['lessons_learned'] ?? '') ?></textarea>
-                    <div style="display: flex; justify-content: flex-end;">
+                    <textarea name="lessons_learned" class="form-input text-sm" rows="2" placeholder="บันทึกข้อคิด เช่น ทำตามแผนได้ดี, อารมณ์ FOMO เข้าแทรก, ขายเร็วเกินไป..."><?= e($j['lessons_learned'] ?? '') ?></textarea>
+                    <div class="d-flex justify-end">
                       <button type="submit" class="btn btn-primary btn-sm">
                         <?= icon('check', '', 12) ?> บันทึกบทเรียน
                       </button>

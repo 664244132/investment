@@ -67,17 +67,17 @@ require_once __DIR__ . '/../templates/header.php';
 
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
-      <!-- Section Header -->
-      <div class="section-heading-row" style="margin-bottom: 2rem;">
+      <!-- Header Section -->
+      <div class="section-heading-row section-mb-md">
         <div>
           <h1 class="section-heading-title">
-            <?= icon('bookmark', 'text-gold', 24) ?> รายการหุ้นที่ติดตาม (My Watchlist)
+            <?= icon('bookmark', 'text-gold', 24) ?> รายการหลักทรัพย์ที่สนใจ (Stock Watchlist)
           </h1>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          <p class="chart-subtitle-meta">
             ติดตามความเคลื่อนไหวราคาหุ้นโปรด กำหนดราคาเป้าหมายซื้อ-ขาย พร้อมระบบแจ้งเตือนเชิงสถิติ Real-time
           </p>
         </div>
-        <div style="display: flex; gap: 0.75rem;">
+        <div class="d-flex gap-sm">
           <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-outline btn-sm">
             <?= icon('filter', '', 14) ?> ค้นหาหุ้นใน Screener
           </a>
@@ -93,11 +93,11 @@ require_once __DIR__ . '/../templates/header.php';
           <div class="empty-watchlist-icon">
             <?= icon('lock', 'text-gold', 28) ?>
           </div>
-          <h2 style="font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">เข้าสู่ระบบเพื่อใช้งาน Watchlist</h2>
-          <p style="color: var(--text-secondary); max-width: 440px; margin: 0 auto 1.5rem auto; font-size: 0.9rem; line-height: 1.6;">
+          <h2 class="empty-state-title">เข้าสู่ระบบเพื่อใช้งาน Watchlist</h2>
+          <p class="empty-state-desc">
             บันทึกหุ้นที่คุณสนใจ กำหนดราคาเป้าหมายซื้อ/ขาย และรับการแจ้งเตือนสถิติราคาแบบเรียลไทม์ได้ฟรี
           </p>
-          <div style="display: inline-flex; gap: 0.75rem;">
+          <div class="d-inline-flex gap-sm">
             <a href="<?= e(BASE_URL) ?>/pages/login.php" class="btn btn-primary">
               <?= icon('user', '', 14) ?> เข้าสู่ระบบ
             </a>
@@ -113,8 +113,8 @@ require_once __DIR__ . '/../templates/header.php';
           <div class="empty-watchlist-icon">
             <?= icon('bookmark', 'text-gold', 28) ?>
           </div>
-          <h2 style="font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">ยังไม่มีหุ้นใน Watchlist ของคุณ</h2>
-          <p style="color: var(--text-secondary); max-width: 460px; margin: 0 auto 1.5rem auto; font-size: 0.9rem; line-height: 1.6;">
+          <h2 class="empty-state-title">ยังไม่มีหุ้นใน Watchlist ของคุณ</h2>
+          <p class="empty-state-desc">
             คุณสามารถกดไอคอน Bookmark <?= icon('bookmark', 'text-gold', 14) ?> บนหน้าวิเคราะห์หุ้น หรือคัดกรองหุ้นจาก Screener เพื่อเพิ่มเข้ามาในรายการติดตาม
           </p>
           <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-primary">
@@ -125,28 +125,28 @@ require_once __DIR__ . '/../templates/header.php';
       <?php else: ?>
 
         <!-- KPI Summary Cards Bar -->
-        <div class="stats-bar" style="margin-bottom: 2rem;">
+        <div class="stats-bar section-mb-md">
           <div class="stat-card">
             <span class="stat-label">หุ้นใน Watchlist</span>
-            <span class="stat-value text-gold"><?= e((string)$stats['total']) ?> <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">บริษัท</span></span>
+            <span class="stat-value text-gold"><?= e((string)$stats['total']) ?> <span class="text-xs text-muted font-normal">บริษัท</span></span>
             <span class="stat-desc">ที่กำลังติดตามความเคลื่อนไหว</span>
           </div>
 
           <div class="stat-card">
             <span class="stat-label">แตะราคาเป้าหมายซื้อ</span>
-            <span class="stat-value text-gain"><?= e((string)$stats['hit_buy']) ?> <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">ตัว</span></span>
+            <span class="stat-value text-gain"><?= e((string)$stats['hit_buy']) ?> <span class="text-xs text-muted font-normal">ตัว</span></span>
             <span class="stat-desc">ราคาลงถึงหรือต่ำกว่าเป้า</span>
           </div>
 
           <div class="stat-card">
             <span class="stat-label">ใกล้เข้าเขตซื้อ (≤ 3%)</span>
-            <span class="stat-value text-gold"><?= e((string)$stats['near_buy']) ?> <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">ตัว</span></span>
+            <span class="stat-value text-gold"><?= e((string)$stats['near_buy']) ?> <span class="text-xs text-muted font-normal">ตัว</span></span>
             <span class="stat-desc">อยู่ในระยะน่าจับตามอง</span>
           </div>
 
           <div class="stat-card">
             <span class="stat-label">หุ้นคุณภาพสูง (Score 80+)</span>
-            <span class="stat-value text-gold"><?= e((string)$stats['high_score']) ?> <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">ตัว</span></span>
+            <span class="stat-value text-gold"><?= e((string)$stats['high_score']) ?> <span class="text-xs text-muted font-normal">ตัว</span></span>
             <span class="stat-desc">ผ่านเกณฑ์คะแนน AI รอบด้าน</span>
           </div>
         </div>
@@ -164,25 +164,25 @@ require_once __DIR__ . '/../templates/header.php';
                 <!-- Card Header -->
                 <div class="watchlist-card-head">
                   <div class="watchlist-stock-info">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="d-flex align-center gap-sm">
                       <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="watchlist-symbol-link">
                         <?= e($item['symbol']) ?>
                       </a>
-                      <span class="badge badge-gold" style="font-size: 0.7rem;"><?= e($item['market']) ?></span>
+                      <span class="badge badge-gold badge-xs"><?= e($item['market']) ?></span>
                     </div>
                     <span class="watchlist-company-name"><?= e($item['name_th'] ?: $item['name_en']) ?></span>
                   </div>
 
                   <div class="watchlist-price-box">
                     <span class="watchlist-price-main"><?= formatMoney($currentPrice) ?></span>
-                    <span class="badge <?= getPnlBadgeClass($pctChange) ?>" style="font-size: 0.75rem;">
+                    <span class="badge <?= getPnlBadgeClass($pctChange) ?> badge-sm">
                       <?= formatPercent($pctChange) ?>
                     </span>
                   </div>
                 </div>
 
                 <!-- Metrics Bar -->
-                <div class="watchlist-metrics-bar" style="margin-top: 1rem;">
+                <div class="watchlist-metrics-bar mt-md">
                   <div class="watchlist-metric-item">
                     <span class="watchlist-metric-label">P/E Ratio</span>
                     <span class="watchlist-metric-val"><?= $item['pe_ratio'] ? formatNumber((float)$item['pe_ratio']) . 'x' : 'N/A' ?></span>
@@ -198,7 +198,7 @@ require_once __DIR__ . '/../templates/header.php';
                 </div>
 
                 <!-- Price Targets Section -->
-                <div class="watchlist-targets-container" style="margin-top: 1rem;">
+                <div class="watchlist-targets-container mt-md">
                   
                   <!-- Target Buy Row -->
                   <div class="watchlist-target-row target-buy-row">
@@ -206,7 +206,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?= icon('crosshair', 'text-gain', 14) ?>
                       <span class="watchlist-target-label">เป้าซื้อ:</span>
                       <span class="watchlist-target-val">
-                        <?= $item['target_buy_price'] ? formatMoney((float)$item['target_buy_price']) : '<span style="color: var(--text-muted); font-weight: normal;">ไม่ได้ตั้ง</span>' ?>
+                        <?= $item['target_buy_price'] ? formatMoney((float)$item['target_buy_price']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
                       </span>
                     </div>
                     <div>
@@ -215,7 +215,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?php elseif ($item['buy_status'] === 'near'): ?>
                         <span class="badge-target-near">ใกล้เป้าซื้อ (<?= sprintf('+%.1f%%', $item['buy_diff_pct']) ?>)</span>
                       <?php elseif ($item['target_buy_price']): ?>
-                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                        <span class="text-xs text-muted font-mono">
                           <?= sprintf('%+.1f%%', $item['buy_diff_pct']) ?>
                         </span>
                       <?php endif; ?>
@@ -228,7 +228,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?= icon('trending-up', 'text-loss', 14) ?>
                       <span class="watchlist-target-label">เป้าขาย:</span>
                       <span class="watchlist-target-val">
-                        <?= $item['target_sell_price'] ? formatMoney((float)$item['target_sell_price']) : '<span style="color: var(--text-muted); font-weight: normal;">ไม่ได้ตั้ง</span>' ?>
+                        <?= $item['target_sell_price'] ? formatMoney((float)$item['target_sell_price']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
                       </span>
                     </div>
                     <div>
@@ -237,7 +237,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?php elseif ($item['sell_status'] === 'near'): ?>
                         <span class="badge-target-near">ใกล้เป้าขาย (<?= sprintf('%.1f%%', $item['sell_diff_pct']) ?>)</span>
                       <?php elseif ($item['target_sell_price']): ?>
-                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                        <span class="text-xs text-muted font-mono">
                           <?= sprintf('%+.1f%%', $item['sell_diff_pct']) ?>
                         </span>
                       <?php endif; ?>
@@ -248,7 +248,7 @@ require_once __DIR__ . '/../templates/header.php';
 
                 <!-- Personal Notes (if any) -->
                 <?php if (!empty($item['notes'])): ?>
-                  <div class="watchlist-notes-box" style="margin-top: 0.75rem;">
+                  <div class="watchlist-notes-box mt-sm">
                     "<?= e($item['notes']) ?>"
                   </div>
                 <?php endif; ?>
@@ -257,7 +257,7 @@ require_once __DIR__ . '/../templates/header.php';
 
               <!-- Card Actions -->
               <div class="watchlist-card-actions">
-                <div style="display: flex; gap: 0.35rem;">
+                <div class="d-flex gap-xs">
                   <button type="button" class="btn btn-outline btn-sm" 
                           onclick="openTargetEditModal(<?= e((string)$item['stock_id']) ?>, '<?= e($item['symbol']) ?>', '<?= e((string)($item['target_buy_price'] ?? '')) ?>', '<?= e((string)($item['target_sell_price'] ?? '')) ?>', '<?= e(addslashes($item['notes'] ?? '')) ?>')"
                           title="แก้ไขราคาเป้าหมายและโน้ต">
@@ -265,7 +265,7 @@ require_once __DIR__ . '/../templates/header.php';
                   </button>
                   <button type="button" class="btn btn-outline btn-sm text-loss" 
                           onclick="removeWatchlistItem(<?= e((string)$item['stock_id']) ?>, '<?= e($item['symbol']) ?>')"
-                          title="ลบออกจาก Watchlist" style="border-color: rgba(255, 0, 0, 0.25);">
+                          title="ลบออกจาก Watchlist">
                     <?= icon('trash', 'text-loss', 13) ?>
                   </button>
                 </div>
@@ -312,7 +312,7 @@ require_once __DIR__ . '/../templates/header.php';
             <div class="form-input-wrapper">
               <input type="number" step="0.25" min="0" class="form-input" id="targetBuyInput" name="target_buy" placeholder="เช่น 140.00">
             </div>
-            <span style="font-size: 0.72rem; color: var(--text-muted);">ระบบจะแจ้งเตือนเมื่อราคาตลาดลงมาแตะหรือใกล้ราคาที่ตั้งไว้</span>
+            <span class="text-xs text-muted">ระบบจะแจ้งเตือนเมื่อราคาตลาดลงมาแตะหรือใกล้ราคาที่ตั้งไว้</span>
           </div>
 
           <div class="form-group">
@@ -320,12 +320,12 @@ require_once __DIR__ . '/../templates/header.php';
             <div class="form-input-wrapper">
               <input type="number" step="0.25" min="0" class="form-input" id="targetSellInput" name="target_sell" placeholder="เช่น 165.00">
             </div>
-            <span style="font-size: 0.72rem; color: var(--text-muted);">ระบบจะแจ้งเตือนเมื่อราคาตลาดขึ้นไปถึงเป้าหมายทำกำไร</span>
+            <span class="form-hint-xs">ระบบจะแจ้งเตือนเมื่อราคาตลาดขึ้นไปถึงเป้าหมายทำกำไร</span>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="targetNotesInput">บันทึกช่วยจำส่วนตัว (Personal Investment Notes)</label>
-            <textarea class="form-input" id="targetNotesInput" name="notes" rows="3" placeholder="เช่น รอรับเมื่อย่อตัวแถวแนวรับ EMA50, พื้นฐานงบ Q3 โตต่อเนื่อง..." style="resize: vertical;"></textarea>
+            <textarea class="form-input textarea-resizable" id="targetNotesInput" name="notes" rows="3" placeholder="เช่น รอรับเมื่อย่อตัวแถวแนวรับ EMA50, พื้นฐานงบ Q3 โตต่อเนื่อง..."></textarea>
           </div>
 
         </div>

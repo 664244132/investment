@@ -62,13 +62,24 @@ function getAllStocks(PDO $pdo, ?string $sector = null, ?string $search = null):
  * @param string $symbol ชื่อย่อหุ้น เช่น 'NVDA', 'DELTA', 'PTT'
  * @return array|null
  */
-function getStockBySymbol(PDO $pdo, string $symbol): ?array
+function getStockBySymbol(PDO $pdo, string $symbol, bool $syncWithMarket = true): ?array
 {
     $symbol = strtoupper(trim($symbol));
 
     // Guard Clause 1: หากไม่มี symbol ให้ส่งคืน null ทันที
     if ($symbol === '') {
         return null;
+    }
+
+    // เรียกใช้ Live Market API Gateway เพื่อซิงค์และดึงราคาตลาดจริงแบบ Real-Time
+    if ($syncWithMarket) {
+        require_once __DIR__ . '/market_api.php';
+        if (function_exists('syncStockToDatabase')) {
+            $liveStock = syncStockToDatabase($pdo, $symbol);
+            if ($liveStock !== null) {
+                return $liveStock;
+            }
+        }
     }
 
     $sql = "SELECT s.id, s.symbol, s.name_th, s.name_en, s.market, s.sector, 
@@ -91,11 +102,6 @@ function getStockBySymbol(PDO $pdo, string $symbol): ?array
     $stock = $stmt->fetch();
 
     if (!$stock) {
-        // Fallback: ดึงข้อมูลสดจากตลาดโลกและซิงค์เข้าฐานข้อมูลอัตโนมัติ
-        require_once __DIR__ . '/market_api.php';
-        if (function_exists('syncStockToDatabase')) {
-            return syncStockToDatabase($pdo, $symbol);
-        }
         return null;
     }
 
@@ -290,10 +296,14 @@ function generateDynamicAiAnalysis(array $stock): array
 function getStockPriceHistory(PDO $pdo, int $stockId, int $limit = 30): array
 {
     $sql = "SELECT trade_date, open_price, high_price, low_price, close_price, volume
-            FROM stock_price_history
-            WHERE stock_id = :stock_id
-            ORDER BY trade_date ASC
-            LIMIT :limit";
+            FROM (
+                SELECT trade_date, open_price, high_price, low_price, close_price, volume
+                FROM stock_price_history
+                WHERE stock_id = :stock_id
+                ORDER BY trade_date DESC
+                LIMIT :limit
+            ) sub
+            ORDER BY trade_date ASC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':stock_id', $stockId, PDO::PARAM_INT);

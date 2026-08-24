@@ -194,17 +194,17 @@ require_once __DIR__ . '/../templates/header.php';
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Header Section -->
-      <div class="section-heading-row" style="margin-bottom: 1.5rem;">
+      <div class="section-heading-row section-mb-md">
         <div>
           <h1 class="section-heading-title">
             <?= icon('activity', 'text-gold', 24) ?> การตรวจสุขภาพระบบ (System Health & Self-Diagnosis)
           </h1>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          <p class="chart-subtitle-meta">
             ตรวจสอบความพร้อมของสภาพแวดล้อม PHP, ฐานข้อมูล, ไลบรารี Local Assets, โมเดลการเงิน และระบบความปลอดภัย
           </p>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <span class="badge <?= $allPassed ? 'badge-gain' : 'badge-loss' ?>" style="font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+        <div class="d-flex gap-sm align-center">
+          <span class="badge <?= $allPassed ? 'badge-gain' : 'badge-loss' ?> badge-health-pill">
             <?= $allPassed ? icon('check-circle', '', 14) . ' ทุกระบบทำงานปกติ (100% Operational)' : icon('alert', '', 14) . ' พบข้อผิดพลาด' ?>
           </span>
           <a href="<?= e(BASE_URL) ?>/pages/health_check.php" class="btn btn-outline btn-sm">
@@ -214,7 +214,7 @@ require_once __DIR__ . '/../templates/header.php';
       </div>
 
       <!-- Overview Stats Grid -->
-      <div class="metrics-grid" style="margin-bottom: 2rem;">
+      <div class="metrics-grid section-mb-md">
         <div class="metric-card">
           <span class="metric-label">จำนวนการทดสอบทั้งหมด</span>
           <span class="metric-value"><?= $totalTests ?> การทดสอบ</span>
@@ -238,7 +238,7 @@ require_once __DIR__ . '/../templates/header.php';
       </div>
 
       <!-- Diagnostics Groups -->
-      <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+      <div class="diagnostics-list-col">
 
         <!-- Group 1: Environment -->
         <div class="card">
@@ -251,7 +251,7 @@ require_once __DIR__ . '/../templates/header.php';
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 40px; text-align: center;">สถานะ</th>
+                  <th class="th-col-num">สถานะ</th>
                   <th>หัวข้อการตรวจสอบ</th>
                   <th>รายละเอียด</th>
                 </tr>
@@ -259,11 +259,11 @@ require_once __DIR__ . '/../templates/header.php';
               <tbody>
                 <?php foreach ($diagnostics['environment'] as $test): ?>
                   <tr>
-                    <td style="text-align: center;">
+                    <td class="th-center">
                       <?= $test['passed'] ? icon('check-circle', 'text-gain', 18) : icon('close', 'text-loss', 18) ?>
                     </td>
                     <td class="font-bold"><?= e($test['title']) ?></td>
-                    <td style="color: var(--text-muted);"><?= e($test['detail']) ?></td>
+                    <td class="text-muted"><?= e($test['detail']) ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -282,7 +282,7 @@ require_once __DIR__ . '/../templates/header.php';
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 40px; text-align: center;">สถานะ</th>
+                  <th class="th-col-num">สถานะ</th>
                   <th>หัวข้อการตรวจสอบ</th>
                   <th>รายละเอียด</th>
                 </tr>
@@ -290,11 +290,11 @@ require_once __DIR__ . '/../templates/header.php';
               <tbody>
                 <?php foreach ($diagnostics['database'] as $test): ?>
                   <tr>
-                    <td style="text-align: center;">
+                    <td class="th-center">
                       <?= $test['passed'] ? icon('check-circle', 'text-gain', 18) : icon('close', 'text-loss', 18) ?>
                     </td>
                     <td class="font-bold"><?= e($test['title']) ?></td>
-                    <td style="color: var(--text-muted);"><?= e($test['detail']) ?></td>
+                    <td class="text-muted"><?= e($test['detail']) ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -313,7 +313,7 @@ require_once __DIR__ . '/../templates/header.php';
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 40px; text-align: center;">สถานะ</th>
+                  <th class="th-col-num">สถานะ</th>
                   <th>หัวข้อการตรวจสอบ</th>
                   <th>รายละเอียด</th>
                 </tr>
@@ -321,11 +321,11 @@ require_once __DIR__ . '/../templates/header.php';
               <tbody>
                 <?php foreach ($diagnostics['assets'] as $test): ?>
                   <tr>
-                    <td style="text-align: center;">
+                    <td class="th-center">
                       <?= $test['passed'] ? icon('check-circle', 'text-gain', 18) : icon('close', 'text-loss', 18) ?>
                     </td>
                     <td class="font-bold"><?= e($test['title']) ?></td>
-                    <td style="color: var(--text-muted);"><?= e($test['detail']) ?></td>
+                    <td class="text-muted"><?= e($test['detail']) ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -344,7 +344,7 @@ require_once __DIR__ . '/../templates/header.php';
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 40px; text-align: center;">สถานะ</th>
+                  <th class="th-col-num">สถานะ</th>
                   <th>หัวข้อการตรวจสอบ</th>
                   <th>รายละเอียด</th>
                 </tr>
@@ -352,11 +352,11 @@ require_once __DIR__ . '/../templates/header.php';
               <tbody>
                 <?php foreach ($diagnostics['engines'] as $test): ?>
                   <tr>
-                    <td style="text-align: center;">
+                    <td class="th-center">
                       <?= $test['passed'] ? icon('check-circle', 'text-gain', 18) : icon('close', 'text-loss', 18) ?>
                     </td>
                     <td class="font-bold"><?= e($test['title']) ?></td>
-                    <td style="color: var(--text-muted);"><?= e($test['detail']) ?></td>
+                    <td class="text-muted"><?= e($test['detail']) ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -375,7 +375,7 @@ require_once __DIR__ . '/../templates/header.php';
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 40px; text-align: center;">สถานะ</th>
+                  <th class="th-col-num">สถานะ</th>
                   <th>หัวข้อการตรวจสอบ</th>
                   <th>รายละเอียด</th>
                 </tr>
@@ -383,11 +383,11 @@ require_once __DIR__ . '/../templates/header.php';
               <tbody>
                 <?php foreach ($diagnostics['security'] as $test): ?>
                   <tr>
-                    <td style="text-align: center;">
+                    <td class="th-center">
                       <?= $test['passed'] ? icon('check-circle', 'text-gain', 18) : icon('close', 'text-loss', 18) ?>
                     </td>
                     <td class="font-bold"><?= e($test['title']) ?></td>
-                    <td style="color: var(--text-muted);"><?= e($test['detail']) ?></td>
+                    <td class="text-muted"><?= e($test['detail']) ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>

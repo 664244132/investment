@@ -1,93 +1,122 @@
-# 🐞 DEBUG.md: คู่มือการตรวจสอบและแก้ไขข้อผิดพลาด (Debugging Playbook)
+# 🐞 DEBUG.md: คู่มือการตรวจสอบและแก้ไขข้อผิดพลาดสำหรับ AI Agents & Developers (Comprehensive Debugging Playbook)
 
-เอกสารนี้รวบรวมแนวทางการค้นหา วิเคราะห์ และแก้ไขข้อผิดพลาด (Debugging Guide) สำหรับระบบ **AI Stock Analysis & Simulated Portfolio** บนสภาพแวดล้อม XAMPP (Apache + PHP 8.x + MySQL)
+เอกสารนี้รวบรวมแนวทางการค้นหา วิเคราะห์ และแก้ไขข้อผิดพลาด (Systematic Debugging Playbook) สำหรับระบบ **SmartPort AI** บนสภาพแวดล้อม PHP 8.x + MySQL (XAMPP) ออกแบบมาเพื่อให้ AI Agents และนักพัฒนาสามารถวินิจฉัยปัญหาได้อย่างเป็นระบบและรวดเร็ว
 
 ---
 
-## 1. ตำแหน่งไฟล์บันทึกข้อผิดพลาด (Log File Locations in XAMPP)
+## 1. การตรวจสุขภาพระบบอัตโนมัติ (Automated Self-Diagnosis Suite)
 
-เมื่อเกิดปัญหา หน้าจอว่างเปล่า (White Screen) หรือระบบแสดง Error 500 ให้ตรวจสอบไฟล์ Log ตามพาธต่อไปนี้เป็นอันดับแรก:
+ระบบมีหน้าตรวจสอบสุขภาพอัตโนมัติ 23 รายการครอบคลุม 5 หมวดหมู่ สามารถรันได้ทั้งผ่าน Web UI และ CLI:
+
+### 1.1 รันผ่าน Web Browser
+- เปิด URL: `http://localhost/investment/pages/health_check.php`
+- ระบบจะตรวจสอบ:
+  1. **PHP Runtime:** Version (>= 8.0), cURL extension, PDO MySQL, OpenSSL, Memory Limit, Strict Types
+  2. **Database:** Connection, Table Existences (11 ตาราง), Stock Seed Data, Index Check
+  3. **Local Assets (Zero CDN):** `css/variables.css`, `css/layout.css`, `css/components.css`, `js/main.js`, Favicons
+  4. **Financial Calculation Engines:** Altman Z-Score, Piotroski F-Score, Composite Score (0-100), DCA Amortization, Comparison Engine
+  5. **Security & Session:** CSRF Token Generator, BCRYPT Cost 12 Hashing, Session Path Writable, XSS Escaping
+
+### 1.2 รันผ่าน Terminal / CLI
+```powershell
+# ตรวจสอบ Syntax ของทุกไฟล์ในโปรเจกต์
+Get-ChildItem -Recurse -Filter *.php | ForEach-Object { & C:\xampp\php\php.exe -l $_.FullName }
+
+# ตรวจสอบการทำงานของ Health Check ผ่าน CLI
+C:\xampp\php\php.exe pages/health_check.php
+```
+
+---
+
+## 2. การตรวจสอบการเชื่อมต่อและดึงข้อมูล Live Market Data API
+
+ระบบเชื่อมต่อกับ Global Market API เพื่อดึงราคาและข้อมูลกราฟ 100% พร้อมแคช 60 วินาทีในฐานข้อมูล
+
+### 2.1 ตรวจสอบ API Quote Endpoint
+```bash
+# ทดสอบดึงราคาหุ้นปัจจุบัน
+curl "http://localhost/investment/api/stock_quote.php?symbol=PTT"
+curl "http://localhost/investment/api/stock_quote.php?symbol=NVDA"
+```
+**Expected Response:**
+```json
+{"success":true,"data":{"symbol":"NVDA","current_price":128.5,"percent_change":2.34,"source":"live_api"}}
+```
+
+### 2.2 ตรวจสอบ Multi-Timeframe Chart API
+```bash
+# ทดสอบกราฟ 6 ช่วงเวลา
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1H"
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1D"
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1W"
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1M"
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1Y"
+curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=ALL"
+```
+**Troubleshooting Chart API:**
+- หาก `1M` ส่งข้อมูลว่าง ให้ตรวจเช็ค `getStockPriceHistory()` ใน `functions/stocks.php` ว่าใช้ Subquery เรียงลำดับ `trade_date DESC LIMIT 30` ซ้อนด้วย `ORDER BY trade_date ASC`
+- หาก `1H` และ `1W` กราฟเหมือนกัน ให้ตรวจเช็ค `fetchRealtimeStockPriceHistory()` ใน `functions/market_api.php` ว่าส่ง `interval=2m&range=1d` สำหรับ 1H และ `interval=1h&range=5d` สำหรับ 1W
+
+### 2.3 ตรวจสอบ Live Search & Global Stock Ingestion
+```bash
+curl "http://localhost/investment/api/search.php?q=AAPL"
+```
+**Expected Response:** รายการหุ้น Apple Inc. พร้อมราคาตลาดสด และเพิ่มหุ้นเข้าตาราง `stocks` อัตโนมัติหากเป็นหุ้นสากลตัวใหม่
+
+---
+
+## 3. ตำแหน่งไฟล์บันทึกข้อผิดพลาด (Log File Locations in XAMPP)
 
 | ระบบที่เกี่ยวข้อง | ตำแหน่งไฟล์ Log (XAMPP บน Windows) | สิ่งที่ต้องค้นหา |
 | :--- | :--- | :--- |
 | **PHP Errors** | `C:\xampp\php\logs\php_error_log` | Fatal errors, Type errors, Uncaught Exceptions |
 | **Apache Web Server** | `C:\xampp\apache\logs\error.log` | ข้อผิดพลาดการโหลดโมดูล, `.htaccess` rewrite errors, 500 Internal Server Error |
 | **MySQL Database** | `C:\xampp\mysql\data\mysql_error.log` | ข้อผิดพลาด Port 3306 ชน, Table corrupted, Access denied |
-| **Application Log** | ดูผ่านฟังก์ชัน `error_log()` ของ PHP | บันทึกการเชื่อมต่อฐานข้อมูลล้มเหลว หรือ Transaction ล้มเหลว |
 
 ---
 
-## 2. การเปิดโหมดแสดง Error ระหว่างการพัฒนา (Development Error Reporting)
-
-ในสภาพแวดล้อม Local (XAMPP) สามารถเปิดการแสดงข้อผิดพลาดบนหน้าจอได้โดยใส่โค้ดนี้ที่บรรทัดบนสุดของไฟล์ PHP ที่ต้องการทดสอบ:
-
-```php
-<?php
-declare(strict_types=1);
-
-// เปิดแสดง Error ทั้งหมดสำหรับการพัฒนา (ห้ามเปิดบน Production)
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_log_mode: E_ALL;
-error_reporting(E_ALL);
-```
-
----
-
-## 3. ปัญหาที่พบบ่อยและแนวทางแก้ไข (Troubleshooting Common Issues)
+## 4. ปัญหาที่พบบ่อยและแนวทางแก้ไข (Troubleshooting Matrix)
 
 ### 🔴 ปัญหา 1: ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (`Database Connection Error`)
-- **สาเหตุที่เป็นไปได้:**
-  1. MySQL ใน XAMPP ยังไม่ได้กด **"Start"**
-  2. ยังไม่ได้สร้างฐานข้อมูล `investment_db` หรือยังไม่ได้ Import ไฟล์ `database_schema.sql`
-  3. รหัสผ่านฐานข้อมูลใน `config/constants.php` ไม่ตรงกับ XAMPP
-- **วิธีแก้ไข:**
-  1. เปิด **XAMPP Control Panel** -> กดปุ่ม **Start** ที่โมดูล **MySQL** (สังเกตสถานะเป็นสีเขียวและมี Port 3306)
-  2. เปิดเบราว์เซอร์ไปที่ `http://localhost/phpmyadmin` แล้วตรวจสอบว่ามีฐานข้อมูลชื่อ `investment_db` และมีตารางครบ 9 ตารางหรือไม่
-  3. ตรวจสอบไฟล์ `config/constants.php` ว่าค่า `DB_USER` คือ `'root'` และ `DB_PASS` คือ `''` (ค่าเริ่มต้นของ XAMPP)
+- **สาเหตุ:** MySQL ยังไม่รัน หรือค่ารหัสผ่านใน `config/constants.php` ไม่ตรงกับ MySQL ใน XAMPP
+- **วิธีแก้:**
+  1. เปิด **XAMPP Control Panel** -> กดปุ่ม **Start** ที่ MySQL (สถานะเป็นสีเขียว Port 3306)
+  2. ตรวจสอบ `config/constants.php` ค่า `DB_HOST`, `DB_USER`, `DB_NAME`
+  3. ตรวจสอบสิทธิ์การเชื่อมต่อผ่าน `pages/health_check.php`
 
----
+### 🔴 ปัญหา 2: Session หลุดหรือ CSRF Token Mismatch
+- **สาเหตุ:** Session cookie โดนบล็อก หรือไม่ได้ส่ง token ในฟอร์ม POST
+- **วิธีแก้:**
+  1. ตรวจสอบว่าไฟล์มีการเรียก `require_once __DIR__ . '/../functions/auth.php'`
+  2. ฟอร์ม POST ทุกฟอร์มต้องมี `<?= getCsrfInputField() ?>`
+  3. ใน API AJAX ต้องส่ง header `X-CSRF-Token` หรือ query param `csrf_token`
 
-### 🔴 ปัญหา 2: Session หลุดหรือไม่สามารถเข้าสู่ระบบได้
-- **สาเหตุที่เป็นไปได้:**
-  1. โฟลเดอร์ Temp เก็บ Session ของ PHP เต็ม หรือไม่มีสิทธิ์เขียนไฟล์
-  2. คุกกี้ในเบราว์เซอร์ถูกบล็อก
-- **วิธีแก้ไข:**
-  1. ตรวจสอบว่าในไฟล์มีการเรียก `startAppSession()` ก่อนส่ง Output ใดๆ ออกมา
-  2. ล้าง Cookie ของ `localhost` ในเบราว์เซอร์ (กด `F12` -> Application -> Cookies -> Clear)
-
----
-
-### 🔴 ปัญหา 3: กราฟราคาไม่แสดงผลบนหน้าจอ (Chart is blank)
-- **สาเหตุที่เป็นไปได้:**
-  1. ไฟล์ไลบรารี `Chart.js` โหลดไม่สำเร็จ (ปัญหาการเชื่อมต่ออินเทอร์เน็ต CDN)
-  2. ไม่มีข้อมูลในตาราง `stock_price_history` สำหรับหุ้นตัวนั้น
-  3. มีข้อผิดพลาดใน JavaScript Console
-- **วิธีแก้ไข:**
-  1. กด `F12` ในเบราว์เซอร์ -> ไปที่แท็บ **Console** เพื่อดูข้อความสีแดง
-  2. ตรวจสอบว่าในตัวแปร `window.stockPriceHistory` มีข้อมูล JSON อยู่หรือไม่ โดยพิมพ์ `console.log(window.stockPriceHistory)` ในคอนโซล
-  3. หากไม่มีข้อมูล ให้รันสคริปต์ Seed Data ใน `database_schema.sql` อีกครั้ง
-
----
+### 🔴 ปัญหา 3: กราฟไม่ขยับเมื่อเปลี่ยนปุ่ม Timeframe (1H, 1D, 1W, 1M, 1Y, ALL)
+- **สาเหตุ:** Event Listener ไม่ได้ถูก bind หรือ Chart Canvas ID ไม่ตรง
+- **วิธีแก้:**
+  1. ตรวจสอบ Console (`F12`) ว่ามี error จาก `loadTimeframeChart()` หรือไม่
+  2. ตรวจสอบว่า Element `<canvas id="priceTrendCanvas">` มีอยู่จริงใน DOM
+  3. ตรวจสอบ response จาก `/api/chart_data.php?symbol=...&timeframe=...` ในแท็บ Network
 
 ### 🔴 ปัญหา 4: คำสั่งซื้อ-ขายในพอร์ตจำลองไม่ทำงาน
-- **สาเหตุที่เป็นไปได้:**
-  1. เงินสดคงเหลือในพอร์ตไม่เพียงพอ (หักรวมค่าคอมมิชชัน 0.157% แล้วเกินยอดเงินสด)
-  2. ส่งคำสั่งขาย (SELL) ด้วยจำนวนหุ้นที่มากกว่าที่มีอยู่จริงใน `portfolio_items`
-- **วิธีแก้ไข:**
+- **สาเหตุ:** เงินสดคงเหลือในพอร์ตไม่เพียงพอ (รวมค่าธรรมเนียม 0.157% แล้วเกิน) หรือส่งคำสั่งขายมากกว่าจำนวนหุ้นที่มีอยู่
+- **วิธีแก้:**
   1. ดูข้อความแจ้งเตือน Flash Alert สีแดงบนหน้าเว็บ
   2. ตรวจสอบยอดเงินสดคงเหลือ (`cash_balance`) ในหน้าพอร์ต
 
+### 🔴 ปัญหา 5: หน้าพอร์ตจำลองเกิด TypeError หรือ Undefined Key ในตารางประวัติธุรกรรม
+- **สาเหตุ:** เรียกใช้ฟิลด์วันที่ผิดชื่อ (เช่น `$tx['executed_at']` แทนที่จะเป็น `$tx['created_at']`) หรือเรียกใช้ `$tx['net_amount']` ที่ไม่ได้เป็นคอลัมน์ในตาราง
+- **วิธีแก้:**
+  1. ในตาราง `transactions` ให้ใช้ฟิลด์ `created_at` สำหรับวันเวลาที่ทำรายการเสมอ
+  2. คำนวณมูลค่าสุทธิด้วยสูตร: `($isBuy ? $total_amount + $fee : $total_amount - $fee)`
+
 ---
 
-## 4. เทคนิคการตรวจสอบตัวแปร (Inspection Techniques)
+## 5. กฎเหล็กที่ AI Agents ต้องปฏิบัติตามเสมอ (Mandatory Rules Compliance)
+1. **ห้ามรัน DDL/DML สร้างหรือแก้ไขตารางฐานข้อมูลเองโดยพลการ** (Rule 10) - ต้องจัดเตรียมโค้ด SQL ให้ผู้ใช้เป็นผู้ Import
+2. **ห้าม Push หรือ Commit ขึ้น Git เด็ดขาด** (Rule 11) - ผู้ใช้จะเป็นผู้ควบคุม Version Control เอง
+3. **ห้ามใช้ Emojis บน UI** (Rule 1) - ให้ใช้ฟังก์ชัน `icon('name')` จาก `functions/icons.php` เท่านั้น
+4. **ห้ามใช้ External CDN** (Rule 2) - ต้องใช้ Local Assets 100%
+5. **ห้ามเขียน Inline `style="..."`** (Rule 6) - ต้องใช้ CSS Classes จาก `css/components.css` และ `css/layout.css`
+6. **ใช้ De Morgan's Laws เสมอ** - เขียนเงื่อนไขในรูปแบบ `!A || !B` หรือ `!A && !B` หลีกเลี่ยง `!(A && B)`
 
-ใช้ฟังก์ชัน `var_dump()` ร่วมกับแท็ก `<pre>` หรือ `jsonResponse()` เพื่อดูค่าตัวแปร:
-
-```php
-// ตัวอย่างการ Dump ข้อมูลดูโครงสร้าง Array
-echo '<pre style="background: #231B1B; color: #FFCC00; padding: 1rem; border-radius: 8px;">';
-var_dump($stock);
-echo '</pre>';
-exit;
-```

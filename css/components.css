@@ -2543,3 +2543,712 @@ select.form-input option:checked {
 .fscore-item-title.passed {
   color: var(--text-primary);
 }
+
+/* ==============================================================================
+   18. Semantic Refactoring Utilities & Zero-Inline CSS Classes
+   ============================================================================== */
+.live-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--color-success);
+  background: rgba(3, 201, 136, 0.1);
+  border: 1px solid rgba(3, 201, 136, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-success);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.section-card {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.section-card-lg {
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+}
+
+.section-mb-lg {
+  margin-bottom: 2.5rem;
+}
+
+.section-mb-md {
+  margin-bottom: 2rem;
+}
+
+.section-mb-sm {
+  margin-bottom: 1rem;
+}
+
+.chart-title-heading {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-subtitle-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.metric-subtitle-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-header-title {
+  font-size: 1.35rem;
+  color: var(--text-primary);
+}
+
+.bullet-gain {
+  color: var(--color-success);
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.bullet-loss {
+  color: var(--color-danger);
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.score-max-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.score-bar-gain {
+  background: var(--color-success) !important;
+}
+
+.score-bar-gold {
+  background: var(--accent-gold) !important;
+}
+
+.score-bar-loss {
+  background: var(--color-danger) !important;
+}
+
+.th-right {
+  text-align: right;
+}
+
+.th-left {
+  text-align: left;
+}
+
+.th-center {
+  text-align: center;
+}
+
+.td-right {
+  text-align: right;
+}
+
+.td-left {
+  text-align: left;
+}
+
+.td-center {
+  text-align: center;
+}
+
+.td-gold {
+  color: var(--accent-gold);
+}
+
+.td-gain {
+  color: var(--color-success);
+}
+
+.td-loss {
+  color: var(--color-danger);
+}
+
+.td-muted {
+  color: var(--text-muted);
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-inline-flex {
+  display: inline-flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-xs {
+  gap: 0.25rem;
+}
+
+.gap-sm {
+  gap: 0.5rem;
+}
+
+.gap-md {
+  gap: 1rem;
+}
+
+.gap-lg {
+  gap: 1.5rem;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-gold {
+  color: var(--accent-gold);
+}
+
+.text-gain {
+  color: var(--color-success);
+}
+
+.text-loss {
+  color: var(--color-danger);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* Specific Component Classes extracted from inline styles */
+.trade-rationale-textarea {
+  resize: vertical;
+  font-size: 0.85rem;
+}
+
+.compare-chart-wrapper {
+  position: relative;
+  height: 280px;
+  width: 100%;
+}
+
+.compare-stock-header-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.compare-symbol-link {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  text-decoration: none;
+}
+
+.compare-price-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  margin-top: 0.25rem;
+}
+
+.badge-xs {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+}
+
+.badge-sm {
+  font-size: 0.75rem;
+  padding: 2px 7px;
+}
+
+.btn-w-full {
+  width: 100%;
+  justify-content: center;
+}
+
+.model-desc-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.model-details-box {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.model-details-summary {
+  cursor: pointer;
+  color: var(--accent-gold);
+  user-select: none;
+}
+
+/* Form, Checkbox, Grid & Table Helpers */
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.form-checkbox-input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-gold);
+  cursor: pointer;
+}
+
+.form-checkbox-label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.form-flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.form-flex-col-sm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.date-input-sm {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.btn-center {
+  justify-content: center;
+}
+
+.card-title-sm {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.card-desc-sm {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.chart-wrapper-320 {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mt-xs {
+  margin-top: 0.25rem;
+}
+
+.mt-sm {
+  margin-top: 0.5rem;
+}
+
+.mt-md {
+  margin-top: 1rem;
+}
+
+.mb-none {
+  margin-bottom: 0 !important;
+}
+
+/* Statement Printable Document Classes */
+.statement-notice-box {
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 204, 0, 0.04);
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.statement-notice-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.statement-footer-seal {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.statement-brand-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.statement-brand-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 0.5rem;
+}
+
+.statement-table-heading {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Portfolio & Journal Specific Classes */
+.asset-dot-gold {
+  background: var(--accent-gold);
+}
+
+.asset-dot-gain {
+  background: var(--color-success);
+}
+
+.asset-legend-gold {
+  color: var(--accent-gold);
+}
+
+.asset-legend-gain {
+  color: var(--color-success);
+}
+
+.portfolio-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.portfolio-header-title {
+  font-size: clamp(1.4rem, 4vw, 1.85rem);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empty-state-title {
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 1.5rem auto;
+  line-height: 1.6;
+}
+
+.journal-summary-details {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.journal-summary-btn {
+  cursor: pointer;
+  color: var(--accent-gold);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Screener Classes */
+.screener-filter-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  align-items: flex-end;
+}
+
+.btn-bm-sm {
+  width: 28px;
+  height: 28px;
+}
+
+.link-gold-mono {
+  font-weight: 700;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+/* Health Check Specific Classes */
+.badge-health-pill {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.85rem;
+}
+
+.diagnostics-list-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Authentication Pages (Login / Register) Specific Classes */
+.auth-header-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--accent-gold-subtle);
+  border: 1px solid var(--accent-gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+}
+
+.auth-title {
+  font-size: 1.65rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.auth-links-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.auth-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.auth-footer-text {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.auth-footer-link {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.auth-perk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.auth-perk-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.auth-perk-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.auth-terms-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+/* Header & Mobile Drawer Helper Classes */
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-gold-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-2col-gap-sm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-justify-center {
+  justify-content: center;
+}
+
+.score-text-winner {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.score-text-regular {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mt-xs {
+  margin-top: 0.5rem;
+}
+
+.form-hint-xs {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.textarea-resizable {
+  resize: vertical;
+}
+
+.table-empty-cell-padded {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.toggle-icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+}

@@ -36,6 +36,11 @@ p, span, li, a {
   word-break: normal;
 }
 
+svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
@@ -481,22 +486,22 @@ html, body {
   align-items: start;
 }
 
-/* Tablet Layout (640px - 991px): Brand on top, 2 menu columns side-by-side */
-@media (min-width: 640px) and (max-width: 991px) {
+/* Tablet Layout (640px - 1023px): Brand on top, 3 menu columns */
+@media (min-width: 640px) and (max-width: 1023px) {
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem 2.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem 1.5rem;
   }
   .footer-brand-col {
     grid-column: 1 / -1;
   }
 }
 
-/* Desktop Layout (992px+) */
-@media (min-width: 992px) {
+/* Desktop Layout (1024px+): 4 Balanced Institutional Columns */
+@media (min-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 1.85fr 1fr 1fr;
-    gap: clamp(2.5rem, 4vw, 4rem);
+    grid-template-columns: 1.5fr 1.15fr 1.15fr 1fr;
+    gap: clamp(1.5rem, 2.5vw, 2.75rem);
   }
 }
 
@@ -593,3 +598,25 @@ html, body {
     grid-template-columns: 1.15fr 1fr !important;
   }
 }
+
+/* ==============================================================================
+   13. Global Helper & Typography Utilities
+   ============================================================================== */
+.ml-auto { margin-left: auto; }
+.nowrap { white-space: nowrap; }
+.cursor-pointer { cursor: pointer; }
+.th-col-num { width: 40px; text-align: center; }
+.table-empty-cell { text-align: center; padding: 2.5rem; color: var(--text-muted); }
+.table-empty-cell-sm { text-align: center; padding: 1.5rem; color: var(--text-muted); }
+.line-height-relaxed { line-height: 1.6; }
+.dca-card-title-head { border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; }
+
+/* Quick Search Dropdown Helper Classes */
+.search-result-item-name { font-size: 0.75rem; color: var(--text-muted); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-result-price-main { font-size: 0.8rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); }
+.search-result-empty-msg { padding: 0.75rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); }
+.search-result-item-gain { font-size: 0.7rem; font-weight: 600; color: var(--color-success); }
+.search-result-item-loss { font-size: 0.7rem; font-weight: 600; color: var(--color-danger); }
+.search-result-symbol-link { font-weight: 700; font-family: var(--font-mono); color: var(--accent-gold); display: flex; align-items: center; gap: 0.35rem; }
+.search-result-market-tag { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+

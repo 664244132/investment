@@ -49,14 +49,14 @@ require_once __DIR__ . '/../templates/header.php';
     <div class="auth-card">
       
       <!-- Card Header -->
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--accent-gold-subtle); border: 1px solid var(--accent-gold-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
+      <div class="auth-header-center">
+        <div class="auth-icon-badge">
           <?= icon('lock', 'text-gold', 24) ?>
         </div>
-        <h1 style="font-size: 1.65rem; color: var(--text-primary); margin-bottom: 0.25rem;">
+        <h1 class="auth-title">
           ยินดีต้อนรับกลับมา
         </h1>
-        <p style="color: var(--text-muted); font-size: 0.875rem;">
+        <p class="auth-subtitle">
           เข้าสู่ระบบเพื่อเข้าถึงบทวิเคราะห์หุ้นและพอร์ตจำลอง
         </p>
       </div>
@@ -107,12 +107,12 @@ require_once __DIR__ . '/../templates/header.php';
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-          <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-            <input type="checkbox" name="remember" style="accent-color: var(--accent-gold);">
+        <div class="auth-links-row">
+          <label class="auth-checkbox-label">
+            <input type="checkbox" name="remember" class="form-checkbox-input">
             จดจำฉันในระบบ
           </label>
-          <span style="color: var(--accent-gold); cursor: pointer;">ลืมรหัสผ่าน?</span>
+          <span class="text-gold cursor-pointer">ลืมรหัสผ่าน?</span>
         </div>
 
         <button type="submit" class="btn btn-primary btn-full btn-lg">
@@ -121,9 +121,9 @@ require_once __DIR__ . '/../templates/header.php';
 
       </form>
 
-      <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">
+      <p class="auth-footer-text">
         ยังไม่มีบัญชีผู้ใช้? 
-        <a href="<?= e(BASE_URL) ?>/pages/register.php" style="color: var(--accent-gold); font-weight: 600;">
+        <a href="<?= e(BASE_URL) ?>/pages/register.php" class="auth-footer-link">
           สมัครสมาชิกฟรีที่นี่
         </a>
       </p>

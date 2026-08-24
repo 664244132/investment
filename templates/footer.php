@@ -13,7 +13,7 @@ declare(strict_types=1);
   <footer class="app-footer">
     <div class="container">
       
-      <!-- Top Grid: 3 Clean Columns -->
+      <!-- Top Grid: 4 Clean Columns -->
       <div class="footer-grid">
         
         <!-- Col 1: Brand & Project Mission -->
@@ -33,11 +33,11 @@ declare(strict_types=1);
           </p>
         </div>
 
-        <!-- Col 2: Core Platform Modules -->
+        <!-- Col 2: Stock Analysis & Screening Modules -->
         <div>
           <div class="footer-title-wrap">
-            <?= icon('globe', 'text-gold', 15) ?>
-            <h4 class="footer-title">ระบบการลงทุน</h4>
+            <?= icon('trending-up', 'text-gold', 15) ?>
+            <h4 class="footer-title">วิเคราะห์ &amp; คัดกรองหุ้น</h4>
           </div>
           <ul class="footer-links">
             <li class="footer-link-item">
@@ -51,44 +51,84 @@ declare(strict_types=1);
               </a>
             </li>
             <li class="footer-link-item">
-              <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="footer-link">
-                <?= icon('arrow-up-right', 'text-muted', 13) ?> พอร์ตการลงทุนจำลอง ฿1,000,000
+              <a href="<?= e(BASE_URL) ?>/pages/compare.php" class="footer-link">
+                <?= icon('scale', 'text-muted', 13) ?> เปรียบเทียบหุ้นคู่แข่ง (Compare)
+              </a>
+            </li>
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/dca.php" class="footer-link">
+                <?= icon('chart-bar', 'text-muted', 13) ?> จำลองการลงทุนสะสม (DCA)
               </a>
             </li>
           </ul>
         </div>
 
-        <!-- Col 3: Account & Access -->
+        <!-- Col 3: Portfolio & Statement Modules -->
+        <div>
+          <div class="footer-title-wrap">
+            <?= icon('wallet', 'text-gold', 15) ?>
+            <h4 class="footer-title">พอร์ตการลงทุน &amp; รายงาน</h4>
+          </div>
+          <ul class="footer-links">
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="footer-link">
+                <?= icon('wallet', 'text-muted', 13) ?> พอร์ตจำลอง ฿1,000,000
+              </a>
+            </li>
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/watchlist.php" class="footer-link">
+                <?= icon('bookmark', 'text-muted', 13) ?> รายการหุ้นเฝ้าดู (Watchlist)
+              </a>
+            </li>
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/journal.php" class="footer-link">
+                <?= icon('document', 'text-muted', 13) ?> บันทึกการเทรด (Journal)
+              </a>
+            </li>
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/export.php" class="footer-link">
+                <?= icon('file-text', 'text-muted', 13) ?> ใบรายงานสถานะพอร์ต (Export)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Account & System Diagnostics -->
         <div>
           <div class="footer-title-wrap">
             <?= icon('user', 'text-gold', 15) ?>
-            <h4 class="footer-title">บัญชีผู้ใช้งาน</h4>
+            <h4 class="footer-title">บัญชีผู้ใช้ &amp; ระบบ</h4>
           </div>
 
           <ul class="footer-links">
             <?php if (isLoggedIn()): ?>
               <li class="footer-link-item">
                 <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="footer-link text-gold">
-                  <?= icon('wallet', 'text-gold', 14) ?> พอร์ตจำลองของฉัน
+                  <?= icon('wallet', 'text-gold', 13) ?> พอร์ตจำลองของฉัน
                 </a>
               </li>
               <li class="footer-link-item">
                 <a href="<?= e(BASE_URL) ?>/pages/logout.php" class="footer-link text-loss">
-                  <?= icon('close', 'text-loss', 14) ?> ออกจากระบบ
+                  <?= icon('close', 'text-loss', 13) ?> ออกจากระบบ
                 </a>
               </li>
             <?php else: ?>
               <li class="footer-link-item">
                 <a href="<?= e(BASE_URL) ?>/pages/login.php" class="footer-link">
-                  <?= icon('user', 'text-muted', 14) ?> เข้าสู่ระบบ
+                  <?= icon('user', 'text-muted', 13) ?> เข้าสู่ระบบ
                 </a>
               </li>
               <li class="footer-link-item">
                 <a href="<?= e(BASE_URL) ?>/pages/register.php" class="footer-link text-gold">
-                  <?= icon('zap', 'text-gold', 14) ?> สมัครสมาชิกใหม่
+                  <?= icon('zap', 'text-gold', 13) ?> สมัครสมาชิกใหม่
                 </a>
               </li>
             <?php endif; ?>
+            <li class="footer-link-item">
+              <a href="<?= e(BASE_URL) ?>/pages/health_check.php" class="footer-link">
+                <?= icon('check', 'text-gain', 13) ?> ตรวจสอบระบบ (Health Check)
+              </a>
+            </li>
           </ul>
         </div>
 

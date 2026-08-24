@@ -82,12 +82,12 @@ require_once __DIR__ . '/../templates/header.php';
       <?php require __DIR__ . '/../templates/flash.php'; ?>
 
       <!-- Header Section -->
-      <div class="section-heading-row" style="margin-bottom: 1.5rem;">
+      <div class="section-heading-row section-mb-md">
         <div>
           <h1 class="section-heading-title">
             <?= icon('scale', 'text-gold', 24) ?> เปรียบเทียบหุ้นคู่แข่ง (Stock Peer Comparison)
           </h1>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          <p class="chart-subtitle-meta">
             วิเคราะห์จุดแข็ง-จุดอ่อน เปรียบเทียบอัตราส่วนงบการเงิน และโมเดลคะแนน AI สรุปผู้ชนะในแต่ละมิติ (สูงสุด 4 บริษัท)
           </p>
         </div>
@@ -112,7 +112,7 @@ require_once __DIR__ . '/../templates/header.php';
 
       <!-- Active Compared Stocks Pills & Search Selector -->
       <div class="compare-pills-bar">
-        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+        <span class="watchlist-label font-bold text-muted">
           หุ้นที่เลือก (<?= count($comparedStocks) ?>/4):
         </span>
 
@@ -135,8 +135,8 @@ require_once __DIR__ . '/../templates/header.php';
 
         <?php if (count($comparedStocks) < 4): ?>
           <!-- Dropdown เลือกหุ้นเพิ่ม -->
-          <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem;">
-            <select id="addStockSelect" class="form-input" style="padding: 0.4rem 2rem 0.4rem 0.75rem; font-size: 0.85rem; width: auto;" onchange="handleAddStockToCompare(this)">
+          <div class="d-flex align-center gap-sm ml-auto">
+            <select id="addStockSelect" class="form-input form-select-sm" onchange="handleAddStockToCompare(this)">
               <option value="">+ เพิ่มหุ้นเปรียบเทียบ...</option>
               <?php foreach ($allStocks as $as): 
                 $alreadySelected = in_array(strtoupper($as['symbol']), array_map('strtoupper', $symbolArray), true);
@@ -215,15 +215,15 @@ require_once __DIR__ . '/../templates/header.php';
       <?php endif; ?>
 
       <!-- Multi-Dimension AI Score Radar / Bar Chart -->
-      <div class="card" style="margin-bottom: 2.5rem;">
+      <div class="card section-mb-lg">
         <div class="card-header">
           <h2 class="card-title">
             <?= icon('chart-bar', 'text-gold', 18) ?> แผนภูมิเปรียบเทียบคะแนน AI 4 มิติ (Growth / Profit / Health / Value)
           </h2>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">เกณฑ์คะแนนเต็ม 100 ในแต่ละด้าน</span>
+          <span class="metric-subtitle-meta">เกณฑ์คะแนนเต็ม 100 ในแต่ละด้าน</span>
         </div>
         <div class="card-body">
-          <div style="position: relative; height: 280px; width: 100%;">
+          <div class="compare-chart-wrapper">
             <canvas id="compareBarChart"></canvas>
           </div>
         </div>
@@ -238,19 +238,19 @@ require_once __DIR__ . '/../templates/header.php';
                 <th class="metric-col-head">ตัวชี้วัดทางการเงิน / มิติการประเมิน</th>
                 <?php foreach ($comparedStocks as $s): ?>
                   <th class="stock-col-head">
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-size: 1.35rem; font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); text-decoration: none;">
+                    <div class="compare-stock-header-col">
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" class="compare-symbol-link">
                         <?= e($s['symbol']) ?>
                       </a>
-                      <span class="badge badge-neutral" style="font-size: 0.7rem;"><?= e($s['market']) ?> · <?= e($s['sector']) ?></span>
-                      <span style="font-size: 1.1rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); margin-top: 0.25rem;">
+                      <span class="badge badge-neutral badge-xs"><?= e($s['market']) ?> · <?= e($s['sector']) ?></span>
+                      <span class="compare-price-val">
                         ฿<?= number_format((float)$s['current_price'], 2) ?>
                       </span>
                     </div>
                   </th>
                 <?php endforeach; ?>
                 <th class="benchmark-col-head">
-                  ค่าเฉลี่ยกลุ่ม<br><span style="font-weight: normal; font-size: 0.7rem;">(Peer Average)</span>
+                  ค่าเฉลี่ยกลุ่ม<br><span class="metric-subtitle-meta">(Peer Average)</span>
                 </th>
               </tr>
             </thead>
@@ -270,7 +270,7 @@ require_once __DIR__ . '/../templates/header.php';
                   $score = (int)($s['total_score'] ?? 0);
                 ?>
                   <td class="stock-val-cell <?= $isWinner ? 'winner-cell' : '' ?>">
-                    <span style="font-size: 1.15rem; font-weight: 700; color: <?= $isWinner ? 'var(--accent-gold)' : 'var(--text-primary)' ?>;">
+                    <span class="<?= $isWinner ? 'score-text-winner' : 'score-text-regular' ?>">
                       <?= $score > 0 ? $score : '-' ?>
                     </span>
                     <?php if ($isWinner): ?>
@@ -290,7 +290,7 @@ require_once __DIR__ . '/../templates/header.php';
                   $badgeClass = ($rec === 'Strong Buy' || $rec === 'Buy') ? 'badge-gain' : (($rec === 'Sell') ? 'badge-loss' : 'badge-gold');
                 ?>
                   <td class="stock-val-cell">
-                    <span class="badge <?= $badgeClass ?>" style="font-size: 0.75rem;">
+                    <span class="badge <?= $badgeClass ?> badge-sm">
                       <?= e($rec) ?>
                     </span>
                   </td>
@@ -450,11 +450,11 @@ require_once __DIR__ . '/../templates/header.php';
                   $z = calculateAltmanZScore($s);
                 ?>
                   <td class="stock-val-cell">
-                    <span class="font-bold <?= e($z['color_class']) ?>" style="font-size: 1rem;">
+                    <span class="font-bold text-base <?= e($z['color_class']) ?>">
                       <?= number_format($z['score'], 2) ?>
                     </span>
                     <br>
-                    <span class="badge <?= e($z['badge_class']) ?>" style="font-size: 0.65rem; margin-top: 3px;">
+                    <span class="badge <?= e($z['badge_class']) ?> badge-xs">
                       <?= e($z['zone']) ?>
                     </span>
                   </td>
@@ -468,11 +468,11 @@ require_once __DIR__ . '/../templates/header.php';
                   $f = calculatePiotroskiFScore($s);
                 ?>
                   <td class="stock-val-cell">
-                    <span class="font-bold" style="font-size: 1rem; color: <?= ($f['score'] >= 8) ? 'var(--color-success)' : (($f['score'] >= 5) ? 'var(--accent-gold)' : 'var(--color-danger)') ?>;">
+                    <span class="font-bold text-base <?= ($f['score'] >= 8) ? 'text-gain' : (($f['score'] >= 5) ? 'text-gold' : 'text-loss') ?>">
                       <?= $f['score'] ?> / 9
                     </span>
                     <br>
-                    <span class="badge <?= e($f['badge_class']) ?>" style="font-size: 0.65rem; margin-top: 3px;">
+                    <span class="badge <?= e($f['badge_class']) ?> badge-xs">
                       <?= e($f['rating']) ?>
                     </span>
                   </td>
@@ -517,7 +517,7 @@ require_once __DIR__ . '/../templates/header.php';
                   $currentPrice = (float)$s['current_price'];
                 ?>
                   <td class="stock-val-cell">
-                    <button type="button" class="btn btn-buy btn-sm" style="width: 100%; justify-content: center;"
+                    <button type="button" class="btn btn-buy btn-sm btn-w-full"
                             onclick="openTradeModal('BUY', '<?= e($s['symbol']) ?>', <?= $currentPrice ?>, <?= e((string)$s['id']) ?>)">
                       <?= icon('cart', '', 13) ?> ซื้อ <?= e($s['symbol']) ?>
                     </button>

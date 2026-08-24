@@ -19,7 +19,6 @@ declare(strict_types=1);
 function icon(string $name, string $class = '', int $size = 18, string $color = 'currentColor'): string
 {
     $classAttr = $class !== '' ? ' class="' . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . '"' : '';
-    $styleAttr = 'style="display: inline-block; vertical-align: middle;"';
     
     // พจนานุกรม Path ของ SVG Icons (Lucide / Feather Vector Style)
     $svgPaths = [
@@ -82,12 +81,11 @@ function icon(string $name, string $class = '', int $size = 18, string $color = 
     $path = $svgPaths[$name] ?? '<circle cx="12" cy="12" r="10"></circle>';
 
     return sprintf(
-        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%s %s>%s</svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%s>%s</svg>',
         $size,
         $size,
         htmlspecialchars($color, ENT_QUOTES, 'UTF-8'),
         $classAttr,
-        $styleAttr,
         $path
     );
 }
