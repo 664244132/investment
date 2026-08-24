@@ -71,6 +71,8 @@ function fetchLiveMarketQuote(string $symbol): ?array
         
         $dayHigh = (float)($meta['regularMarketDayHigh'] ?? $currentPrice);
         $dayLow  = (float)($meta['regularMarketDayLow'] ?? $currentPrice);
+        $fiftyTwoWeekHigh = (float)($meta['fiftyTwoWeekHigh'] ?? 0);
+        $fiftyTwoWeekLow  = (float)($meta['fiftyTwoWeekLow'] ?? 0);
         $volume  = (int)($meta['regularMarketVolume'] ?? 0);
         
         $exchange = (string)($meta['exchangeName'] ?? 'SET');
@@ -104,20 +106,22 @@ function fetchLiveMarketQuote(string $symbol): ?array
         }
 
         return [
-            'symbol'         => $cleanSymbol,
-            'target_symbol'  => $targetSymbol,
-            'name_en'        => $longName ?: $shortName,
-            'name_th'        => $shortName,
-            'market'         => str_contains($targetSymbol, '.BK') ? 'SET' : ($exchange ?: 'GLOBAL'),
-            'currency'       => $currency,
-            'current_price'  => $currentPrice,
-            'previous_close' => $prevClose,
-            'price_change'   => $priceChange,
-            'percent_change' => $percentChange,
-            'day_high'       => $dayHigh,
-            'day_low'        => $dayLow,
-            'volume'         => $volume,
-            'history'        => $history
+            'symbol'              => $cleanSymbol,
+            'target_symbol'       => $targetSymbol,
+            'name_en'             => $longName ?: $shortName,
+            'name_th'             => $shortName,
+            'market'              => str_contains($targetSymbol, '.BK') ? 'SET' : ($exchange ?: 'GLOBAL'),
+            'currency'            => $currency,
+            'current_price'       => $currentPrice,
+            'previous_close'      => $prevClose,
+            'price_change'        => $priceChange,
+            'percent_change'      => $percentChange,
+            'day_high'            => $dayHigh,
+            'day_low'             => $dayLow,
+            'fifty_two_week_high' => $fiftyTwoWeekHigh,
+            'fifty_two_week_low'  => $fiftyTwoWeekLow,
+            'volume'              => $volume,
+            'history'             => $history
         ];
     }
 

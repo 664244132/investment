@@ -105,9 +105,15 @@
 }
 
 .btn-sm {
-  padding: 0.45rem 0.95rem;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 0.95rem;
   font-size: 0.8rem;
   border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .btn-lg {

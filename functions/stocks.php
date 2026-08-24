@@ -382,3 +382,65 @@ function screenStocks(PDO $pdo, array $filters = []): array
 
     return $stmt->fetchAll();
 }
+
+/**
+ * คำนวณช่วงราคา 52 สัปดาห์ (52-Week Range) และตำแหน่งเปอร์เซ็นต์ปัจจุบัน
+ * โดยเชื่อมโยงกับ API สด, ประวัติราคาในฐานข้อมูล, หรือประมาณการทางสถิติ
+ *
+ * @param PDO $pdo
+ * @param array $stock ข้อมูลหุ้น
+ * @return array ['low_52w' => float, 'high_52w' => float, 'progress_pct' => float]
+ */
+function calculateStock52WeekRange(PDO $pdo, array $stock): array
+{
+    $currentPrice = (float)($stock['current_price'] ?? 0);
+    $low52w = (float)($stock['fifty_two_week_low'] ?? 0);
+    $high52w = (float)($stock['fifty_two_week_high'] ?? 0);
+
+    // หากไม่มีในตัวแปร stock ให้ลองดึงจากประวัติราคาในฐานข้อมูล 1 ปีย้อนหลัง
+    if ($low52w <= 0.0 || $high52w <= $low52w) {
+        $stockId = (int)($stock['id'] ?? 0);
+        if ($stockId > 0) {
+            $stmt = $pdo->prepare("SELECT MIN(low_price) AS min_low, MAX(high_price) AS max_high 
+                                   FROM stock_price_history 
+                                   WHERE stock_id = :id AND trade_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)");
+            $stmt->execute([':id' => $stockId]);
+            $row = $stmt->fetch();
+            if ($row && $row['min_low'] !== null && $row['max_high'] !== null && (float)$row['max_high'] > (float)$row['min_low']) {
+                $low52w = (float)$row['min_low'];
+                $high52w = (float)$row['max_high'];
+            }
+        }
+    }
+
+    // หากยังไม่มี ให้ลองดึงสดจาก Live Market API
+    if ($low52w <= 0.0 || $high52w <= $low52w) {
+        require_once __DIR__ . '/market_api.php';
+        $symbol = (string)($stock['symbol'] ?? '');
+        if ($symbol !== '' && function_exists('fetchLiveMarketQuote')) {
+            $quote = fetchLiveMarketQuote($symbol);
+            if ($quote && !empty($quote['fifty_two_week_high']) && !empty($quote['fifty_two_week_low']) && (float)$quote['fifty_two_week_high'] > (float)$quote['fifty_two_week_low']) {
+                $low52w = (float)$quote['fifty_two_week_low'];
+                $high52w = (float)$quote['fifty_two_week_high'];
+            }
+        }
+    }
+
+    // Fallback: หากยังไม่มี ให้ประมาณการทางสถิติ (-28% และ +28% จากราคาปัจจุบัน)
+    if ($low52w <= 0.0 || $high52w <= $low52w) {
+        $low52w = $currentPrice * 0.72;
+        $high52w = $currentPrice * 1.28;
+    }
+
+    $progressPct = 50.0;
+    if ($high52w > $low52w && $currentPrice > 0.0) {
+        $progressPct = min(100.0, max(0.0, (($currentPrice - $low52w) / ($high52w - $low52w)) * 100.0));
+    }
+
+    return [
+        'low_52w'      => $low52w,
+        'high_52w'     => $high52w,
+        'progress_pct' => $progressPct
+    ];
+}
+

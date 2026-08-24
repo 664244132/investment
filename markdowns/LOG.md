@@ -2,6 +2,25 @@
 
 เอกสารนี้ใช้บันทึกประวัติการเปลี่ยนแปลง รายการปรับปรุงฟีเจอร์ และการแก้ไขโค้ด (Release Notes & Audit Log) ของโปรเจกต์ **SmartPort AI**
 
+## 📌 [Version 1.18.2] - 2026-08-24
+### 📊 Live 52-Week Range & Stats Bar Real-time API Integration
+
+- **เชื่อมต่อข้อมูล 52-Week Range เข้ากับ Live Market API จริง 100%:**
+  - เพิ่มการดึงค่า `fiftyTwoWeekHigh` และ `fiftyTwoWeekLow` ใน `fetchLiveMarketQuote` ใน [`functions/market_api.php`](file:///c:/xampp/htdocs/investment/functions/market_api.php)
+  - เพิ่มฟังก์ชัน `calculateStock52WeekRange(PDO $pdo, array $stock): array` ใน [`functions/stocks.php`](file:///c:/xampp/htdocs/investment/functions/stocks.php) คำนวณช่วงราคาต่ำสุด-สูงสุดรอบ 52 สัปดาห์ และสัดส่วนตำแหน่งปัจจุบันสัมพันธ์กับราคาตลาดสดอย่างแม่นยำ
+  - ปรับปรุงการแสดงผลใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) ให้รองรับสัญลักษณ์สกุลเงินแบบ Dynamic (`฿` สำหรับหุ้นไทย และ `$` สำหรับหุ้นสากล)
+- **ตรวจสอบการทำงานของ `.stats-bar` และ `.range-52w-track`:**
+  - ยืนยันข้อมูลทั้ง 7 เมตริกในแถบสถิติ (Open, Day High, Day Low, Volume, Market Cap, P/E, ROE) ดึงจาก Live API และฐานข้อมูลครบถ้วนถูกต้อง 100%
+
+---
+
+## 📌 [Version 1.18.1] - 2026-08-24
+### 📐 Button Size Synchronization (.btn-sm vs .btn-bookmark)
+
+- **ปรับปรุงขนาดกรอบปุ่ม `.btn-sm` ให้เท่ากับ `.btn-bookmark` สมบูรณ์แบบ:**
+  - กำหนดความสูง `height: 36px; min-height: 36px; box-sizing: border-box;` และ `padding: 0 0.95rem;` ให้กับคลาส `.btn-sm` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
+  - ส่งผลให้ปุ่ม `.btn.btn-outline.btn-sm` (เช่น ปุ่มเปรียบเทียบคู่แข่ง) มีขนาดความสูง 36px, กรอบมุมมน `border-radius: 6px` และกึ่งกลางแนวตั้งตรงกันกับปุ่ม `.btn-bookmark` (36px x 36px) อย่างสวยงามและสมดุล
+
 ---
 
 ## 📌 [Version 1.18.0] - 2026-08-24

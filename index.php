@@ -59,12 +59,11 @@ if ($stock) {
     $altmanZ = calculateAltmanZScore($stock);
     $piotroskiF = calculatePiotroskiFScore($stock);
 
-    // คำนวณช่วง 52-Week Range จากราคาปัจจุบันและประวัติราคา
-    $low52w = $currentPrice * 0.72;
-    $high52w = $currentPrice * 1.28;
-    if ($high52w > $low52w) {
-        $rangeProgressPct = min(100, max(0, (($currentPrice - $low52w) / ($high52w - $low52w)) * 100));
-    }
+    // คำนวณช่วง 52-Week Range และตำแหน่งเปอร์เซ็นต์จริงจาก API และสถิติ
+    $range52wData = calculateStock52WeekRange($pdo, $stock);
+    $low52w = $range52wData['low_52w'];
+    $high52w = $range52wData['high_52w'];
+    $rangeProgressPct = $range52wData['progress_pct'];
 }
 
 // ข้อมูลจำลองสำหรับกราฟแท่งเทียน / Timeframe ใน Chart Engine
@@ -209,11 +208,11 @@ require_once __DIR__ . '/templates/header.php';
               ช่วงราคา 52 สัปดาห์ (52W Range)
             </div>
             <div class="range-52w-slider">
-              <span class="range-52w-num">฿<?= number_format($low52w, 2) ?></span>
+              <span class="range-52w-num"><?= e($currSym) ?><?= number_format($low52w, 2) ?></span>
               <div class="range-52w-track">
                 <div class="range-52w-fill" style="--progress-pct: <?= number_format($rangeProgressPct, 1) ?>%;"></div>
               </div>
-              <span class="range-52w-num">฿<?= number_format($high52w, 2) ?></span>
+              <span class="range-52w-num"><?= e($currSym) ?><?= number_format($high52w, 2) ?></span>
             </div>
             <div class="range-52w-pos">
               ตำแหน่งปัจจุบัน: <?= number_format($rangeProgressPct, 0) ?>%
@@ -271,7 +270,7 @@ require_once __DIR__ . '/templates/header.php';
             <div class="metric-card">
               <span class="metric-label">กำไรต่อหุ้น EPS (Trailing 12M)</span>
               <span class="metric-value">
-                ฿<?= $stock['eps'] ? number_format((float)$stock['eps'], 2) : '0.00' ?>
+                <?= e($currSym) ?><?= $stock['eps'] ? number_format((float)$stock['eps'], 2) : '0.00' ?>
               </span>
               <div class="metric-sub">
                 <span class="text-gain d-inline-flex align-center gap-xs">
@@ -310,7 +309,7 @@ require_once __DIR__ . '/templates/header.php';
                   <?= icon('document', 'text-gold', 18) ?> สรุปข้อมูลงบการเงิน (Financial Statements)
                 </h2>
                 <p class="metric-subtitle-meta">
-                  งบการเงินรวมรอบปี 2025 · หน่วย: ล้านบาท (THB Million)
+                  งบการเงินรวมรอบปี 2025 · หน่วย: <?= $isThaiStock ? 'ล้านบาท (THB Million)' : 'ล้านดอลลาร์ (USD Million)' ?>
                 </p>
               </div>
               <span class="badge badge-neutral">Audited</span>
@@ -321,24 +320,24 @@ require_once __DIR__ . '/templates/header.php';
                 <thead>
                   <tr>
                     <th>รายการทางบัญชี</th>
-                    <th class="th-right">มูลค่า (บาท)</th>
+                    <th class="th-right">มูลค่า (<?= $isThaiStock ? 'บาท' : 'ดอลลาร์' ?>)</th>
                     <th class="th-right">สถานะ / สัดส่วน</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>รายได้รวม (Total Revenue)</td>
-                    <td class="num font-bold">฿<?= formatCompactNumber((float)($stock['revenue'] ?? 0)) ?></td>
+                    <td class="num font-bold"><?= e($currSym) ?><?= formatCompactNumber((float)($stock['revenue'] ?? 0)) ?></td>
                     <td class="num text-gain">+<?= number_format((float)($stock['revenue_growth_yoy'] ?? 0), 1) ?>% YoY</td>
                   </tr>
                   <tr>
                     <td>กำไรสุทธิ (Net Profit)</td>
-                    <td class="num font-bold">฿<?= formatCompactNumber((float)($stock['net_profit'] ?? 0)) ?></td>
+                    <td class="num font-bold"><?= e($currSym) ?><?= formatCompactNumber((float)($stock['net_profit'] ?? 0)) ?></td>
                     <td class="num">Net Margin <?= number_format((float)($stock['net_profit_margin'] ?? 0), 1) ?>%</td>
                   </tr>
                   <tr>
                     <td>กำไรต่อหุ้น (EPS)</td>
-                    <td class="num font-bold">฿<?= number_format((float)($stock['eps'] ?? 0), 2) ?></td>
+                    <td class="num font-bold"><?= e($currSym) ?><?= number_format((float)($stock['eps'] ?? 0), 2) ?></td>
                     <td class="num text-gold">ต่อหุ้น</td>
                   </tr>
                   <tr>
@@ -350,7 +349,7 @@ require_once __DIR__ . '/templates/header.php';
                   </tr>
                   <tr>
                     <td>กระแสเงินสดอิสระ (Free Cash Flow)</td>
-                    <td class="num font-bold text-gain">฿<?= formatCompactNumber((float)($stock['free_cash_flow'] ?? 0)) ?></td>
+                    <td class="num font-bold text-gain"><?= e($currSym) ?><?= formatCompactNumber((float)($stock['free_cash_flow'] ?? 0)) ?></td>
                     <td class="num text-gain">กระแสเงินสดบวก</td>
                   </tr>
                   <tr>
