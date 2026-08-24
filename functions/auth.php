@@ -22,6 +22,12 @@ function startAppSession(): void
         return;
     }
 
+    // หาก Header ถูกส่งไปแล้ว (เช่น รันผ่าน CLI Test หรือมี Output ไปแล้ว)
+    if (headers_sent()) {
+        @session_start();
+        return;
+    }
+
     // กำหนดการตั้งค่าความปลอดภัยของ Cookie เซสชัน
     ini_set('session.use_strict_mode', '1');
     ini_set('session.cookie_httponly', '1');

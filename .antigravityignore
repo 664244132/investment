@@ -5,27 +5,28 @@
 # --- 1. Version Control & Git Internals ---
 .git/
 .gitignore
+.antigravityignore
 
-# --- 2. Heavy Dependencies & Vendor Folders ---
+# --- 2. Heavy Dependencies, Vendor & External Folders ---
 node_modules/
 vendor/
-AI Stock/node_modules/
-AI Stock/dist/
-AI Stock/.next/
-AI Stock/.parcel-cache/
-AI Stock/build/
+AI Stock/
 
-# --- 3. Temporary, Cache & Log Files ---
+# --- 3. Temporary, Cache, Scratch & Log Files ---
 logs/
 *.log
 *.tmp
 *.temp
 tmp/
 temp/
+scratch/
 error_log
 php_errors.log
+php_error_log
+apache_errors.log
+mysql_error.log
 
-# --- 4. Large Archives & Binary Dumps ---
+# --- 4. Large Archives & Binary Database Dumps ---
 *.zip
 *.tar
 *.gz
@@ -33,11 +34,17 @@ php_errors.log
 *.7z
 *.sql.gz
 *.sql.bak
+dump.sql
+backup.sql
+*.dmp
 *.bak
 
-# --- 5. OS & IDE System Files ---
+# --- 5. Operating System & IDE System Files ---
 .DS_Store
 Thumbs.db
+ehthumbs.db
 desktop.ini
+$RECYCLE.BIN/
 .idea/
 .vscode/
+.history/

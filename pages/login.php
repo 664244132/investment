@@ -24,17 +24,21 @@ $error = null;
 
 // จัดการเมื่อมีการส่งฟอร์ม (POST Request)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $identifier = (string)($_POST['identifier'] ?? '');
-    $password   = (string)($_POST['password'] ?? '');
-
-    $pdo = getDbConnection();
-    $result = loginUser($pdo, $identifier, $password);
-
-    if ($result['success']) {
-        setFlashMessage('success', $result['message']);
-        redirect(BASE_URL . '/index.php');
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วเข้าสู่ระบบใหม่อีกครั้ง';
     } else {
-        $error = $result['message'];
+        $identifier = (string)($_POST['identifier'] ?? '');
+        $password   = (string)($_POST['password'] ?? '');
+
+        $pdo = getDbConnection();
+        $result = loginUser($pdo, $identifier, $password);
+
+        if ($result['success']) {
+            setFlashMessage('success', $result['message']);
+            redirect(BASE_URL . '/index.php');
+        } else {
+            $error = $result['message'];
+        }
     }
 }
 
@@ -73,6 +77,7 @@ require_once __DIR__ . '/../templates/header.php';
 
       <!-- Login Form -->
       <form action="<?= e(BASE_URL) ?>/pages/login.php" method="POST">
+        <?= getCsrfInputField() ?>
         
         <div class="form-group">
           <label for="identifier" class="form-label">ชื่อผู้ใช้ หรือ อีเมล</label>

@@ -342,6 +342,26 @@ html, body {
   color: var(--accent-gold);
 }
 
+.mobile-toggle .toggle-icon-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-toggle .toggle-icon-close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-toggle[aria-expanded="true"] .toggle-icon-menu {
+  display: none !important;
+}
+
+.mobile-toggle[aria-expanded="true"] .toggle-icon-close {
+  display: inline-flex !important;
+}
+
 @media (min-width: 1140px) {
   .mobile-toggle {
     display: none !important;
@@ -619,4 +639,11 @@ html, body {
 .search-result-item-loss { font-size: 0.7rem; font-weight: 600; color: var(--color-danger); }
 .search-result-symbol-link { font-weight: 700; font-family: var(--font-mono); color: var(--accent-gold); display: flex; align-items: center; gap: 0.35rem; }
 .search-result-market-tag { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+
+/* Display Utilities */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-inline-block { display: inline-block !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
 

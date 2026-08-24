@@ -146,11 +146,6 @@ require_once __DIR__ . '/templates/header.php';
                   </span>
                 </button>
 
-                <span class="live-pulse-badge">
-                  <span class="live-dot"></span>
-                  <?= e($stock['market']) ?> · ตลาดจริง Real-Time
-                </span>
-
                 <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=<?= e($stock['symbol']) ?>" class="btn btn-outline btn-sm" title="เปรียบเทียบ <?= e($stock['symbol']) ?> กับหุ้นคู่แข่ง">
                   <?= icon('scale', 'text-gold', 12) ?> เปรียบเทียบคู่แข่ง
                 </a>
@@ -216,7 +211,7 @@ require_once __DIR__ . '/templates/header.php';
             <div class="range-52w-slider">
               <span class="range-52w-num">฿<?= number_format($low52w, 2) ?></span>
               <div class="range-52w-track">
-                <div class="range-52w-fill" style="width: <?= $rangeProgressPct ?>%;"></div>
+                <div class="range-52w-fill" style="--progress-pct: <?= number_format($rangeProgressPct, 1) ?>%;"></div>
               </div>
               <span class="range-52w-num">฿<?= number_format($high52w, 2) ?></span>
             </div>
@@ -481,7 +476,7 @@ require_once __DIR__ . '/templates/header.php';
                   <?= icon('trending-up', 'text-gain', 14) ?> อัตราการเติบโต
                 </span>
                 <div class="score-progress-track">
-                  <div class="score-progress-bar score-bar-gain" style="width: <?= (int)($stock['growth_score'] ?? 90) ?>%;"></div>
+                  <div class="score-progress-bar score-bar-gain" style="--score-pct: <?= (int)($stock['growth_score'] ?? 90) ?>%;"></div>
                 </div>
                 <span class="score-val text-gain"><?= (int)($stock['growth_score'] ?? 90) ?></span>
               </div>
@@ -491,7 +486,7 @@ require_once __DIR__ . '/templates/header.php';
                   <?= icon('check', 'text-gain', 14) ?> ความสามารถทำกำไร
                 </span>
                 <div class="score-progress-track">
-                  <div class="score-progress-bar score-bar-gain" style="width: <?= (int)($stock['profitability_score'] ?? 85) ?>%;"></div>
+                  <div class="score-progress-bar score-bar-gain" style="--score-pct: <?= (int)($stock['profitability_score'] ?? 85) ?>%;"></div>
                 </div>
                 <span class="score-val text-gain"><?= (int)($stock['profitability_score'] ?? 85) ?></span>
               </div>
@@ -501,7 +496,7 @@ require_once __DIR__ . '/templates/header.php';
                   <?= icon('shield', 'text-gold', 14) ?> สุขภาพการเงิน
                 </span>
                 <div class="score-progress-track">
-                  <div class="score-progress-bar score-bar-gold" style="width: <?= (int)($stock['financial_health_score'] ?? 80) ?>%;"></div>
+                  <div class="score-progress-bar score-bar-gold" style="--score-pct: <?= (int)($stock['financial_health_score'] ?? 80) ?>%;"></div>
                 </div>
                 <span class="score-val text-gold"><?= (int)($stock['financial_health_score'] ?? 80) ?></span>
               </div>
@@ -511,7 +506,7 @@ require_once __DIR__ . '/templates/header.php';
                   <?= icon('sliders', 'text-gold', 14) ?> ความคุ้มค่าราคา
                 </span>
                 <div class="score-progress-track">
-                  <div class="score-progress-bar score-bar-gold" style="width: <?= (int)($stock['valuation_score'] ?? 65) ?>%;"></div>
+                  <div class="score-progress-bar score-bar-gold" style="--score-pct: <?= (int)($stock['valuation_score'] ?? 65) ?>%;"></div>
                 </div>
                 <span class="score-val text-gold"><?= (int)($stock['valuation_score'] ?? 65) ?></span>
               </div>
@@ -525,8 +520,12 @@ require_once __DIR__ . '/templates/header.php';
               <!-- Altman Z-Score Card -->
               <div class="model-card">
                 <div class="model-card-head">
-                  <div class="model-card-title">
-                    <?= icon('shield', 'text-gold', 18) ?> Altman Z-Score (ความเสี่ยงการล้มละลาย)
+                  <div class="model-card-title-group">
+                    <div class="model-card-title">
+                      <?= icon('shield', 'text-gold', 18) ?>
+                      <span>Altman Z-Score</span>
+                    </div>
+                    <span class="model-card-subtitle">ความเสี่ยงการล้มละลาย</span>
                   </div>
                   <span class="badge <?= e($altmanZ['badge_class']) ?>">
                     <?= e($altmanZ['zone_th']) ?>
@@ -558,8 +557,12 @@ require_once __DIR__ . '/templates/header.php';
               <!-- Piotroski F-Score Card -->
               <div class="model-card">
                 <div class="model-card-head">
-                  <div class="model-card-title">
-                    <?= icon('star', 'text-gold', 18) ?> Piotroski F-Score (คุณภาพงบการเงิน 9 ด้าน)
+                  <div class="model-card-title-group">
+                    <div class="model-card-title">
+                      <?= icon('star', 'text-gold', 18) ?>
+                      <span>Piotroski F-Score</span>
+                    </div>
+                    <span class="model-card-subtitle">คุณภาพงบการเงิน 9 ด้าน</span>
                   </div>
                   <span class="badge <?= e($piotroskiF['badge_class']) ?>">
                     <?= e($piotroskiF['rating_th']) ?>
@@ -573,7 +576,7 @@ require_once __DIR__ . '/templates/header.php';
                     <span class="score-max-label">/ <?= $piotroskiF['max_score'] ?> คะแนน</span>
                   </div>
                   <div class="score-progress-track mt-xs">
-                    <div class="score-progress-bar <?= ($piotroskiF['score'] >= 8) ? 'score-bar-gain' : (($piotroskiF['score'] >= 5) ? 'score-bar-gold' : 'score-bar-loss') ?>" style="width: <?= ($piotroskiF['score'] / 9) * 100 ?>%;"></div>
+                    <div class="score-progress-bar <?= ($piotroskiF['score'] >= 8) ? 'score-bar-gain' : (($piotroskiF['score'] >= 5) ? 'score-bar-gold' : 'score-bar-loss') ?>" style="--score-pct: <?= number_format(($piotroskiF['score'] / 9) * 100, 1) ?>%;"></div>
                   </div>
                 </div>
                 <p class="model-desc-text">

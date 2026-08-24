@@ -37,6 +37,7 @@ if ($modalStock) {
 
       <div class="card-body">
         <form action="<?= e(BASE_URL) ?>/pages/portfolio.php" method="POST">
+          <?= getCsrfInputField() ?>
           <input type="hidden" name="action" value="trade">
           <input type="hidden" id="trade_type" name="trade_type" value="BUY">
 

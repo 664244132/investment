@@ -125,7 +125,7 @@ require_once __DIR__ . '/../templates/header.php';
       <?php else: ?>
 
         <!-- KPI Summary Cards Bar -->
-        <div class="stats-bar section-mb-md">
+        <div class="stats-bar stats-bar-4 section-mb-md">
           <div class="stat-card">
             <span class="stat-label">หุ้นใน Watchlist</span>
             <span class="stat-value text-gold"><?= e((string)$stats['total']) ?> <span class="text-xs text-muted font-normal">บริษัท</span></span>
@@ -185,7 +185,7 @@ require_once __DIR__ . '/../templates/header.php';
                 <div class="watchlist-metrics-bar mt-md">
                   <div class="watchlist-metric-item">
                     <span class="watchlist-metric-label">P/E Ratio</span>
-                    <span class="watchlist-metric-val"><?= $item['pe_ratio'] ? formatNumber((float)$item['pe_ratio']) . 'x' : 'N/A' ?></span>
+                    <span class="watchlist-metric-val"><?= $item['pe_ratio'] ? formatNumber((float)$item['pe_ratio'], 2) . 'x' : 'N/A' ?></span>
                   </div>
                   <div class="watchlist-metric-item">
                     <span class="watchlist-metric-label">ROE</span>

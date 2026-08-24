@@ -25,6 +25,11 @@ $userId = (int)($user['id'] ?? 0);
 
 // จัดการการอัปเดตบทเรียนที่ได้รับ (Lessons Learned)
 if ($isUserLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_lesson') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
+        setFlashMessage('danger', 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วทำรายการใหม่อีกครั้ง');
+        redirect(BASE_URL . '/pages/journal.php');
+    }
+
     $journalId = (int)($_POST['journal_id'] ?? 0);
     $lessons   = trim((string)($_POST['lessons_learned'] ?? ''));
 
@@ -145,12 +150,12 @@ require_once __DIR__ . '/../templates/header.php';
               <?= icon('activity', 'text-gold', 14) ?> กำไรเฉลี่ย / ขาดทุนเฉลี่ย
             </div>
             <div class="perf-val text-base">
-              <span class="text-gain">+฿<?= number_format($perfMetrics['avg_win'], 2) ?></span>
-              <span class="text-muted text-sm"> / </span>
-              <span class="text-loss">-฿<?= number_format($perfMetrics['avg_loss'], 2) ?></span>
+              <span class="text-gain nowrap">+฿<?= number_format($perfMetrics['avg_win'], 2) ?></span>
+              <span class="text-muted text-xs">/</span>
+              <span class="text-loss nowrap">-฿<?= number_format($perfMetrics['avg_loss'], 2) ?></span>
             </div>
             <div class="perf-sub">
-              ออเดอร์ดีสุด: <span class="text-gain">+฿<?= number_format($perfMetrics['best_trade'], 2) ?></span>
+              ออเดอร์ดีสุด: <span class="text-gain nowrap">+฿<?= number_format($perfMetrics['best_trade'], 2) ?></span>
             </div>
           </div>
 
@@ -205,22 +210,22 @@ require_once __DIR__ . '/../templates/header.php';
         <div class="watchlist-bar section-mb-md">
           <span class="watchlist-label">กรองตามกลยุทธ์:</span>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=all" class="watchlist-chip <?= ($selectedStrategy === 'all') ? 'active' : '' ?>">
-            <?= icon('layers', '', 12) ?> ทั้งหมด
+            ทั้งหมด
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=Value Investing" class="watchlist-chip <?= ($selectedStrategy === 'Value Investing') ? 'active' : '' ?>">
-            <?= icon('star', 'text-gold', 12) ?> Value Investing
+            Value Investing
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=Growth Stock" class="watchlist-chip <?= ($selectedStrategy === 'Growth Stock') ? 'active' : '' ?>">
-            <?= icon('trending-up', 'text-gain', 12) ?> Growth Stock
+            Growth Stock
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=Dividend Play" class="watchlist-chip <?= ($selectedStrategy === 'Dividend Play') ? 'active' : '' ?>">
-            <?= icon('zap', 'text-gold', 12) ?> Dividend Play
+            Dividend Play
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=Technical Breakout" class="watchlist-chip <?= ($selectedStrategy === 'Technical Breakout') ? 'active' : '' ?>">
-            <?= icon('activity', 'text-gold', 12) ?> Technical Breakout
+            Technical Breakout
           </a>
           <a href="<?= e(BASE_URL) ?>/pages/journal.php?strategy=AI Recommendation" class="watchlist-chip <?= ($selectedStrategy === 'AI Recommendation') ? 'active' : '' ?>">
-            <?= icon('cpu', 'text-gold', 12) ?> AI Recommendation
+            AI Recommendation
           </a>
         </div>
 
@@ -308,6 +313,7 @@ require_once __DIR__ . '/../templates/header.php';
                     <?= icon('edit', '', 12) ?> <?= empty($j['lessons_learned']) ? '+ เพิ่มบทเรียนที่ได้รับ (Post-trade Reflection)' : 'แก้ไขบทเรียนที่ได้รับ' ?>
                   </summary>
                   <form action="<?= e(BASE_URL) ?>/pages/journal.php" method="POST" class="form-flex-col-sm mt-sm">
+                    <?= getCsrfInputField() ?>
                     <input type="hidden" name="action" value="update_lesson">
                     <input type="hidden" name="journal_id" value="<?= (int)$j['journal_id'] ?>">
                     <textarea name="lessons_learned" class="form-input text-sm" rows="2" placeholder="บันทึกข้อคิด เช่น ทำตามแผนได้ดี, อารมณ์ FOMO เข้าแทรก, ขายเร็วเกินไป..."><?= e($j['lessons_learned'] ?? '') ?></textarea>

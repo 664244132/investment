@@ -189,6 +189,44 @@ CREATE TABLE `transactions` (
     INDEX `idx_trx_created` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ตารางบันทึกประวัติการซื้อขายพอร์ตจำลอง';
 
+-- ------------------------------------------------------------------------------
+-- 11. ตารางรายการหุ้นที่ติดตามและราคาเป้าหมาย (user_watchlists)
+-- ------------------------------------------------------------------------------
+DROP TABLE IF EXISTS `user_watchlists`;
+CREATE TABLE `user_watchlists` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `stock_id` INT NOT NULL,
+    `target_buy_price` DECIMAL(10,2) NULL COMMENT 'ราคาเป้าหมายซื้อ',
+    `target_sell_price` DECIMAL(10,2) NULL COMMENT 'ราคาเป้าหมายขายทำกำไร',
+    `notes` TEXT NULL COMMENT 'บันทึกส่วนตัว',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`stock_id`) REFERENCES `stocks`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_user_stock` (`user_id`, `stock_id`),
+    INDEX `idx_watchlist_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ตารางเก็บรายการหุ้นที่ติดตามและราคาเป้าหมาย';
+
+-- ------------------------------------------------------------------------------
+-- 12. ตารางบันทึกการเทรดและวิเคราะห์กลยุทธ์ (trading_journals)
+-- ------------------------------------------------------------------------------
+DROP TABLE IF EXISTS `trading_journals`;
+CREATE TABLE `trading_journals` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `transaction_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `strategy_tag` VARCHAR(50) NOT NULL DEFAULT 'Value Investing' COMMENT 'แท็กกลยุทธ์ เช่น Value Investing, Growth Stock',
+    `rationale` TEXT NULL COMMENT 'เหตุผลในการตัดสินใจเข้าเทรด',
+    `lessons_learned` TEXT NULL COMMENT 'บทเรียนและข้อคิดที่ได้รับหลังปิดออเดอร์',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`transaction_id`) REFERENCES `transactions`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_journal_user` (`user_id`),
+    INDEX `idx_journal_strategy` (`strategy_tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ตารางบันทึกไดอารี่การเทรดและบทเรียน';
+
 -- เปิดการตรวจสอบ Foreign Key กลับคืน
 SET FOREIGN_KEY_CHECKS = 1;
 

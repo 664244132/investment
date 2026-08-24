@@ -24,23 +24,27 @@ $pdo = getDbConnection();
 $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim((string)($_POST['username'] ?? ''));
-    $email    = trim((string)($_POST['email'] ?? ''));
-    $password = (string)($_POST['password'] ?? '');
-    $confirmPassword = (string)($_POST['confirm_password'] ?? '');
-    $fullName = trim((string)($_POST['full_name'] ?? ''));
-
-    if ($password !== $confirmPassword) {
-        $error = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง';
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วสมัครสมาชิกใหม่อีกครั้ง';
     } else {
-        $result = registerUser($pdo, $username, $email, $password, $fullName);
-        if ($result['success']) {
-            // ทำการ Login อัตโนมัติหลังลงทะเบียนสำเร็จ
-            loginUser($pdo, $username, $password);
-            setFlashMessage('success', 'ยินดีต้อนรับสู่ SmartPort AI! ระบบได้สร้างพอร์ตจำลองเงินทุน 1,000,000 บาทให้คุณเรียบร้อยแล้ว');
-            redirect(BASE_URL . '/pages/portfolio.php');
+        $username = trim((string)($_POST['username'] ?? ''));
+        $email    = trim((string)($_POST['email'] ?? ''));
+        $password = (string)($_POST['password'] ?? '');
+        $confirmPassword = (string)($_POST['confirm_password'] ?? '');
+        $fullName = trim((string)($_POST['full_name'] ?? ''));
+
+        if ($password !== $confirmPassword) {
+            $error = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง';
         } else {
-            $error = $result['message'];
+            $result = registerUser($pdo, $username, $email, $password, $fullName);
+            if ($result['success']) {
+                // ทำการ Login อัตโนมัติหลังลงทะเบียนสำเร็จ
+                loginUser($pdo, $username, $password);
+                setFlashMessage('success', 'ยินดีต้อนรับสู่ SmartPort AI! ระบบได้สร้างพอร์ตจำลองเงินทุน 1,000,000 บาทให้คุณเรียบร้อยแล้ว');
+                redirect(BASE_URL . '/pages/portfolio.php');
+            } else {
+                $error = $result['message'];
+            }
         }
     }
 }
@@ -112,6 +116,7 @@ require_once __DIR__ . '/../templates/header.php';
           <?php endif; ?>
 
           <form action="<?= e(BASE_URL) ?>/pages/register.php" method="POST">
+            <?= getCsrfInputField() ?>
             
             <div class="form-group">
               <label for="reg_username" class="form-label">ชื่อผู้ใช้ (Username) *</label>

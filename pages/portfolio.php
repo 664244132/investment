@@ -26,6 +26,11 @@ $userId = (int)$user['id'];
 
 // ประมวลผลคำสั่งซื้อ-ขายจำลอง (POST Request)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'trade') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
+        setFlashMessage('danger', 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วทำรายการใหม่อีกครั้ง');
+        redirect(BASE_URL . '/pages/portfolio.php');
+    }
+
     $stockId     = (int)($_POST['stock_id'] ?? 0);
     $type        = strtoupper(trim((string)($_POST['trade_type'] ?? 'BUY')));
     $quantity    = (int)($_POST['quantity'] ?? 0);
@@ -170,8 +175,8 @@ require_once __DIR__ . '/../templates/header.php';
         </div>
 
         <div class="asset-allocation-bar">
-          <div class="asset-dot-gold" style="width: <?= $cashPct ?>%;" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
-          <div class="asset-dot-gain" style="width: <?= $stocksPct ?>%;" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
+          <div class="asset-alloc-seg asset-alloc-gold" style="--alloc-pct: <?= number_format($cashPct, 1) ?>%;" title="Cash: <?= number_format($cashPct, 1) ?>%"></div>
+          <div class="asset-alloc-seg asset-alloc-gain" style="--alloc-pct: <?= number_format($stocksPct, 1) ?>%;" title="Equities: <?= number_format($stocksPct, 1) ?>%"></div>
         </div>
       </div>
 

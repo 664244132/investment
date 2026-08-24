@@ -69,16 +69,16 @@ require_once __DIR__ . '/../templates/header.php';
           กลยุทธ์ยอดนิยม:
         </span>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_yield=4.0" class="watchlist-chip">
-          <?= icon('zap', 'text-gold', 12) ?> หุ้นปันผลสูง (Yield > 4%)
+          หุ้นปันผลสูง (Yield > 4%)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=20&min_roe=15" class="watchlist-chip">
-          <?= icon('trending-up', 'text-gain', 12) ?> หุ้นเติบโตราคาถูก (P/E < 20 & ROE > 15%)
+          หุ้นเติบโตราคาถูก (P/E < 20 & ROE > 15%)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="watchlist-chip">
-          <?= icon('star', 'text-gold', 12) ?> หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
+          หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=25&min_roe=12&min_score=75" class="watchlist-chip">
-          <?= icon('shield', 'text-gold', 12) ?> หุ้นสุขภาพการเงินแกร่ง (Altman Safe & High F-Score)
+          หุ้นสุขภาพการเงินแกร่ง (Altman Safe & High F-Score)
         </a>
       </div>
 

@@ -100,13 +100,13 @@ require_once __DIR__ . '/../templates/header.php';
       <div class="watchlist-bar">
         <span class="watchlist-label">กลุ่มเปรียบเทียบยอดนิยม:</span>
         <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=DELTA,NVDA,AAPL" class="watchlist-chip <?= ($rawSymbols === 'DELTA,NVDA,AAPL') ? 'active' : '' ?>">
-          <?= icon('cpu', 'text-gold', 12) ?> ยักษ์ใหญ่ AI & Tech (DELTA vs NVDA vs AAPL)
+          ยักษ์ใหญ่ AI & Tech (DELTA vs NVDA vs AAPL)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=PTT,SCB,CPALL" class="watchlist-chip <?= ($rawSymbols === 'PTT,SCB,CPALL') ? 'active' : '' ?>">
-          <?= icon('award', 'text-gold', 12) ?> หุ้นใหญ่ปันผลสูง (PTT vs SCB vs CPALL)
+          หุ้นใหญ่ปันผลสูง (PTT vs SCB vs CPALL)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=BDMS,CPALL,AOT" class="watchlist-chip <?= ($rawSymbols === 'BDMS,CPALL,AOT') ? 'active' : '' ?>">
-          <?= icon('activity', 'text-gain', 12) ?> หุ้นบริโภค & สุขภาพ (BDMS vs CPALL vs AOT)
+          หุ้นบริโภค & สุขภาพ (BDMS vs CPALL vs AOT)
         </a>
       </div>
 

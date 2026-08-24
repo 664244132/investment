@@ -1,36 +1,58 @@
 # 🐞 DEBUG.md: คู่มือการตรวจสอบและแก้ไขข้อผิดพลาดสำหรับ AI Agents & Developers (Comprehensive Debugging Playbook)
 
-เอกสารนี้รวบรวมแนวทางการค้นหา วิเคราะห์ และแก้ไขข้อผิดพลาด (Systematic Debugging Playbook) สำหรับระบบ **SmartPort AI** บนสภาพแวดล้อม PHP 8.x + MySQL (XAMPP) ออกแบบมาเพื่อให้ AI Agents และนักพัฒนาสามารถวินิจฉัยปัญหาได้อย่างเป็นระบบและรวดเร็ว
+เอกสารนี้รวบรวมแนวทางการค้นหา วิเคราะห์ และแก้ไขข้อผิดพลาด (Systematic Debugging Playbook) สำหรับระบบ **SmartPort AI** บนสภาพแวดล้อม PHP 8.x + MySQL (XAMPP) ออกแบบมาเพื่อให้ AI Agents และนักพัฒนาสามารถวินิจฉัยปัญหาได้อย่างเป็นระบบ แม่นยำ และรวดเร็ว
 
 ---
 
-## 1. การตรวจสุขภาพระบบอัตโนมัติ (Automated Self-Diagnosis Suite)
+## 1. การตรวจสุขภาพและทดสอบระบบอัตโนมัติ (Automated Self-Diagnosis Suite)
 
-ระบบมีหน้าตรวจสอบสุขภาพอัตโนมัติ 23 รายการครอบคลุม 5 หมวดหมู่ สามารถรันได้ทั้งผ่าน Web UI และ CLI:
+ระบบมีชุดทดสอบอัตโนมัติ 2 ระดับ ครอบคลุมการทำงานทั้งผ่าน CLI และ Web UI:
 
-### 1.1 รันผ่าน Web Browser
-- เปิด URL: `http://localhost/investment/pages/health_check.php`
-- ระบบจะตรวจสอบ:
-  1. **PHP Runtime:** Version (>= 8.0), cURL extension, PDO MySQL, OpenSSL, Memory Limit, Strict Types
-  2. **Database:** Connection, Table Existences (11 ตาราง), Stock Seed Data, Index Check
-  3. **Local Assets (Zero CDN):** `css/variables.css`, `css/layout.css`, `css/components.css`, `js/main.js`, Favicons
-  4. **Financial Calculation Engines:** Altman Z-Score, Piotroski F-Score, Composite Score (0-100), DCA Amortization, Comparison Engine
-  5. **Security & Session:** CSRF Token Generator, BCRYPT Cost 12 Hashing, Session Path Writable, XSS Escaping
+### 1.1 Automated CLI Test Suite Runner (`tests/run_tests.php`)
+รันการทดสอบ 32 รายการครอบคลุม:
+1. **Strict Types:** ตรวจสอบ `declare(strict_types=1);` ในไฟล์ PHP ทุกไฟล์
+2. **De Morgan's Laws:** ตรวจสอบเงื่อนไข Boolean ปราศจาก `!(A && B)` หรือ `!(A || B)`
+3. **Zero External CDN:** ยืนยันว่าไม่มีการเรียกใช้งาน Assets จากภายนอก
+4. **Security & Escaping:** ทดสอบฟังก์ชัน `e()`, CSRF Token Generation & Verification, `getCsrfInputField()`
+5. **Financial Formatting:** ทดสอบ `formatMoney()`, `formatNumber()`, `formatPercent()`, `formatCompactNumber()`, `getScoreColorClass()`, `getScoreBadgeClass()`
+6. **Statistical Models:** ทดสอบความแม่นยำของแบบจำลอง Altman Z-Score & Piotroski F-Score
+7. **DCA Compounding Engine:** ทดสอบการคำนวณเงินต้น, การทบต้น (DRIP), และตาราง Amortization
+8. **SVG Vector Icons:** ทดสอบการเรนเดอร์ไอคอน Vector จาก `functions/icons.php`
+9. **Database Connectivity:** ตรวจสอบการเชื่อมต่อฐานข้อมูลและตารางหลัก
 
-### 1.2 รันผ่าน Terminal / CLI
 ```powershell
-# ตรวจสอบ Syntax ของทุกไฟล์ในโปรเจกต์
-Get-ChildItem -Recurse -Filter *.php | ForEach-Object { & C:\xampp\php\php.exe -l $_.FullName }
-
-# ตรวจสอบการทำงานของ Health Check ผ่าน CLI
-C:\xampp\php\php.exe pages/health_check.php
+# รันชุดทดสอบอัตโนมัติทั้งหมด (ผลลัพธ์ต้อง 100% Green / 32 Passed)
+C:\xampp\php\php.exe tests/run_tests.php
 ```
+
+---
+
+### 1.2 การตรวจสอบไวยากรณ์ภาษา PHP ทุกไฟล์ (Syntax Check)
+```powershell
+# ตรวจสอบ Syntax ของทุกไฟล์ .php ในโปรเจกต์ (ต้อง 0 Errors)
+Get-ChildItem -Recurse -Filter *.php | ForEach-Object { & C:\xampp\php\php.exe -l $_.FullName }
+```
+
+---
+
+### 1.3 หน้าตรวจสุขภาพระบบอัตโนมัติ 23 รายการ (`pages/health_check.php`)
+- **ผ่าน Browser:** เปิด URL `http://localhost/investment/pages/health_check.php`
+- **ผ่าน Terminal:**
+  ```powershell
+  C:\xampp\php\php.exe pages/health_check.php
+  ```
+- **รายการที่ตรวจสอบ:**
+  1. **PHP Runtime:** Version (>= 8.0), cURL, PDO MySQL, OpenSSL, Memory Limit, Strict Types
+  2. **Database:** Connection, Table Existences (11 ตาราง), Stock Seed Data, Indexes
+  3. **Local Assets (Zero CDN):** `css/variables.css`, `css/layout.css`, `css/components.css`, `css/fonts.css`, `js/main.js`, `js/chart.umd.min.js`, Favicons
+  4. **Financial Calculation Engines:** Altman Z-Score, Piotroski F-Score, Composite Score, DCA Simulator, Stock Comparison
+  5. **Security & Session:** CSRF Token Generator, BCRYPT Cost 12 Hashing, Session Writable, XSS Escaping
 
 ---
 
 ## 2. การตรวจสอบการเชื่อมต่อและดึงข้อมูล Live Market Data API
 
-ระบบเชื่อมต่อกับ Global Market API เพื่อดึงราคาและข้อมูลกราฟ 100% พร้อมแคช 60 วินาทีในฐานข้อมูล
+ระบบเชื่อมต่อกับ Global Market API เพื่อดึงราคาและข้อมูลกราฟ 100% พร้อมแคช 60 วินาทีในฐานข้อมูล (`stock_api_cache`)
 
 ### 2.1 ตรวจสอบ API Quote Endpoint
 ```bash
@@ -43,7 +65,7 @@ curl "http://localhost/investment/api/stock_quote.php?symbol=NVDA"
 {"success":true,"data":{"symbol":"NVDA","current_price":128.5,"percent_change":2.34,"source":"live_api"}}
 ```
 
-### 2.2 ตรวจสอบ Multi-Timeframe Chart API
+### 2.2 ตรวจสอบ Multi-Timeframe Chart API (6 ช่วงเวลา)
 ```bash
 # ทดสอบกราฟ 6 ช่วงเวลา
 curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1H"
@@ -53,7 +75,7 @@ curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1M"
 curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=1Y"
 curl "http://localhost/investment/api/chart_data.php?symbol=PTT&timeframe=ALL"
 ```
-**Troubleshooting Chart API:**
+**จุดที่ต้องระวังสำหรับ Chart API:**
 - หาก `1M` ส่งข้อมูลว่าง ให้ตรวจเช็ค `getStockPriceHistory()` ใน `functions/stocks.php` ว่าใช้ Subquery เรียงลำดับ `trade_date DESC LIMIT 30` ซ้อนด้วย `ORDER BY trade_date ASC`
 - หาก `1H` และ `1W` กราฟเหมือนกัน ให้ตรวจเช็ค `fetchRealtimeStockPriceHistory()` ใน `functions/market_api.php` ว่าส่ง `interval=2m&range=1d` สำหรับ 1H และ `interval=1h&range=5d` สำหรับ 1W
 
@@ -91,20 +113,27 @@ curl "http://localhost/investment/api/search.php?q=AAPL"
   2. ฟอร์ม POST ทุกฟอร์มต้องมี `<?= getCsrfInputField() ?>`
   3. ใน API AJAX ต้องส่ง header `X-CSRF-Token` หรือ query param `csrf_token`
 
-### 🔴 ปัญหา 3: กราฟไม่ขยับเมื่อเปลี่ยนปุ่ม Timeframe (1H, 1D, 1W, 1M, 1Y, ALL)
+### 🔴 ปัญหา 3: Watchlist แสดงผลหุ้นไม่ครบทุกตัวที่ Bookmark ไว้
+- **สาเหตุ:** เกิด Fatal Error ในลูปเรนเดอร์การ์ด (เช่น เรียกใช้ฟังก์ชันที่ไม่มีอยู่จริง) ทำให้ PHP หยุดการประมวลผลกลางคัน
+- **วิธีแก้:**
+  1. ตรวจสอบว่าฟังก์ชันช่วยเหลือ (เช่น `getScoreColorClass`, `formatNumber`, `formatMoney`) ถูกประกาศไว้ใน `functions/helpers.php` ครบถ้วน
+  2. ตรวจสอบ SQL ใน `getUserWatchlist()` ว่าใช้ Subquery เพื่อไม่ให้เมตริกการเงินที่ยังไม่ครบถ้วนตัดแถวข้อมูลหุ้นทิ้ง
+
+### 🔴 ปัญหา 4: กราฟไม่ขยับเมื่อเปลี่ยนปุ่ม Timeframe (1H, 1D, 1W, 1M, 1Y, ALL)
 - **สาเหตุ:** Event Listener ไม่ได้ถูก bind หรือ Chart Canvas ID ไม่ตรง
 - **วิธีแก้:**
   1. ตรวจสอบ Console (`F12`) ว่ามี error จาก `loadTimeframeChart()` หรือไม่
-  2. ตรวจสอบว่า Element `<canvas id="priceTrendCanvas">` มีอยู่จริงใน DOM
+  2. ตรวจสอบว่า Element `<canvas id="priceTrendCanvas">` หรือ `<canvas id="stockPriceChart">` มีอยู่จริงใน DOM
   3. ตรวจสอบ response จาก `/api/chart_data.php?symbol=...&timeframe=...` ในแท็บ Network
 
-### 🔴 ปัญหา 4: คำสั่งซื้อ-ขายในพอร์ตจำลองไม่ทำงาน
+### 🔴 ปัญหา 5: คำสั่งซื้อ-ขายในพอร์ตจำลองไม่ทำงาน
 - **สาเหตุ:** เงินสดคงเหลือในพอร์ตไม่เพียงพอ (รวมค่าธรรมเนียม 0.157% แล้วเกิน) หรือส่งคำสั่งขายมากกว่าจำนวนหุ้นที่มีอยู่
 - **วิธีแก้:**
   1. ดูข้อความแจ้งเตือน Flash Alert สีแดงบนหน้าเว็บ
   2. ตรวจสอบยอดเงินสดคงเหลือ (`cash_balance`) ในหน้าพอร์ต
+  3. ตรวจสอบว่ามีการส่ง `csrf_token` ในคำขอ POST
 
-### 🔴 ปัญหา 5: หน้าพอร์ตจำลองเกิด TypeError หรือ Undefined Key ในตารางประวัติธุรกรรม
+### 🔴 ปัญหา 6: หน้าพอร์ตจำลองเกิด TypeError หรือ Undefined Key ในตารางประวัติธุรกรรม
 - **สาเหตุ:** เรียกใช้ฟิลด์วันที่ผิดชื่อ (เช่น `$tx['executed_at']` แทนที่จะเป็น `$tx['created_at']`) หรือเรียกใช้ `$tx['net_amount']` ที่ไม่ได้เป็นคอลัมน์ในตาราง
 - **วิธีแก้:**
   1. ในตาราง `transactions` ให้ใช้ฟิลด์ `created_at` สำหรับวันเวลาที่ทำรายการเสมอ
@@ -113,10 +142,11 @@ curl "http://localhost/investment/api/search.php?q=AAPL"
 ---
 
 ## 5. กฎเหล็กที่ AI Agents ต้องปฏิบัติตามเสมอ (Mandatory Rules Compliance)
-1. **ห้ามรัน DDL/DML สร้างหรือแก้ไขตารางฐานข้อมูลเองโดยพลการ** (Rule 10) - ต้องจัดเตรียมโค้ด SQL ให้ผู้ใช้เป็นผู้ Import
+
+1. **ห้ามรัน DDL/DML สร้างหรือแก้ไขตารางฐานข้อมูลเองโดยพลการ** (Rule 10) - ต้องจัดเตรียมโค้ด SQL ให้ผู้ใช้เป็นผู้นำไปรันผ่าน phpMyAdmin
 2. **ห้าม Push หรือ Commit ขึ้น Git เด็ดขาด** (Rule 11) - ผู้ใช้จะเป็นผู้ควบคุม Version Control เอง
 3. **ห้ามใช้ Emojis บน UI** (Rule 1) - ให้ใช้ฟังก์ชัน `icon('name')` จาก `functions/icons.php` เท่านั้น
 4. **ห้ามใช้ External CDN** (Rule 2) - ต้องใช้ Local Assets 100%
-5. **ห้ามเขียน Inline `style="..."`** (Rule 6) - ต้องใช้ CSS Classes จาก `css/components.css` และ `css/layout.css`
+5. **ห้ามเขียน Inline `style="..."`** (Rule 6) - ต้องใช้ CSS Classes และ CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)
 6. **ใช้ De Morgan's Laws เสมอ** - เขียนเงื่อนไขในรูปแบบ `!A || !B` หรือ `!A && !B` หลีกเลี่ยง `!(A && B)`
-
+7. **Strict Types 100%** - ทุกไฟล์ PHP ต้องขึ้นต้นด้วย `declare(strict_types=1);` และระบุ Type Hinting

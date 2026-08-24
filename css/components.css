@@ -299,6 +299,66 @@
   }
 }
 
+/* 4-column Stats Bar for Watchlist & KPI Dashboards (No text clipping) */
+.stats-bar-4 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+@media (min-width: 480px) {
+  .stats-bar-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .stats-bar-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.stat-card .stat-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
+  white-space: normal;
+  word-break: keep-all;
+  line-height: 1.4;
+}
+
+.stat-card .stat-value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.stat-card .stat-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-primary);
+  white-space: normal;
+  word-break: keep-all;
+  line-height: 1.35;
+}
+
 .stats-item {
   background: var(--bg-card);
   padding: 0.75rem 0.95rem;
@@ -551,6 +611,7 @@
 
 .score-progress-bar {
   height: 100%;
+  width: var(--score-pct, 0%);
   border-radius: var(--radius-xs);
   transition: width 0.8s ease;
 }
@@ -1215,6 +1276,7 @@ select.form-input option:checked {
   left: 0;
   top: 0;
   bottom: 0;
+  width: var(--progress-pct, 50%);
   background: linear-gradient(90deg, var(--color-danger), var(--accent-gold), var(--color-success));
   border-radius: var(--radius-xs);
 }
@@ -1445,6 +1507,20 @@ select.form-input option:checked {
   overflow: hidden;
 }
 
+.asset-alloc-seg {
+  height: 100%;
+  width: var(--alloc-pct, 50%);
+  transition: width 0.5s ease;
+}
+
+.asset-alloc-gold {
+  background: var(--accent-gold);
+}
+
+.asset-alloc-gain {
+  background: var(--color-success);
+}
+
 /* ==============================================================================
    13. Watchlist & Price Target Alert Components
    ============================================================================== */
@@ -1475,6 +1551,27 @@ select.form-input option:checked {
   border-color: var(--accent-gold);
   color: var(--accent-gold);
 }
+
+.btn-bookmark .bm-icon-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-bookmark .bm-icon-filled {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-bookmark.bookmarked .bm-icon-outline {
+  display: none !important;
+}
+
+.btn-bookmark.bookmarked .bm-icon-filled {
+  display: inline-flex !important;
+}
+
 
 .watchlist-grid {
   display: grid;
@@ -1921,9 +2018,21 @@ select.form-input option:checked {
    ============================================================================== */
 .performance-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 1.25rem;
   margin-bottom: 2rem;
+}
+
+@media (min-width: 480px) {
+  .performance-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .performance-kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .perf-card {
@@ -1933,7 +2042,9 @@ select.form-input option:checked {
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  justify-content: space-between;
+  gap: 0.45rem;
+  min-width: 0;
   transition: border-color 0.2s ease;
 }
 
@@ -1949,6 +2060,8 @@ select.form-input option:checked {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .perf-val {
@@ -1957,11 +2070,24 @@ select.form-input option:checked {
   font-family: var(--font-mono);
   color: var(--text-primary);
   line-height: 1.2;
+  white-space: nowrap;
+}
+
+.perf-val.text-base {
+  font-size: 1.02rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  white-space: nowrap;
 }
 
 .perf-sub {
   font-size: 0.75rem;
   color: var(--text-secondary);
+  white-space: normal;
+  word-break: keep-all;
+  line-height: 1.35;
 }
 
 .journal-timeline {
@@ -2065,6 +2191,69 @@ select.form-input option:checked {
   border-radius: var(--radius-md);
   overflow: hidden;
   margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+}
+
+.strategy-breakdown-card .table-responsive {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+
+.strategy-breakdown-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th {
+  background: var(--bg-card-elevated);
+  padding: 0.95rem 1.25rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-family: var(--font-primary);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.data-table th.th-center,
+.data-table td.th-center {
+  text-align: center;
+}
+
+.data-table th.th-right,
+.data-table td.th-right,
+.data-table td.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==============================================================================
@@ -2447,16 +2636,38 @@ select.form-input option:checked {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.75rem;
+}
+
+.model-card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 .model-card-title {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.model-card-title svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.model-card-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-primary);
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .model-score-display {
@@ -2547,26 +2758,6 @@ select.form-input option:checked {
 /* ==============================================================================
    18. Semantic Refactoring Utilities & Zero-Inline CSS Classes
    ============================================================================== */
-.live-pulse-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.72rem;
-  color: var(--color-success);
-  background: rgba(3, 201, 136, 0.1);
-  border: 1px solid rgba(3, 201, 136, 0.25);
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--color-success);
-  border-radius: 50%;
-  display: inline-block;
-}
-
 .section-card {
   margin-bottom: 2rem;
   padding: 1.5rem;

@@ -46,6 +46,18 @@ function formatMoney(float $amount, int $decimals = 2, string $currency = 'THB')
 }
 
 /**
+ * จัดรูปแบบตัวเลขทั่วไปพร้อมใส่คอมม่าและทศนิยม
+ *
+ * @param float $number
+ * @param int $decimals
+ * @return string
+ */
+function formatNumber(float $number, int $decimals = 2): string
+{
+    return number_format($number, $decimals, '.', ',');
+}
+
+/**
  * จัดรูปแบบเปอร์เซ็นต์ (เช่น +4.58% หรือ -1.57%)
  *
  * @param float $percent ค่าเปอร์เซ็นต์
@@ -132,6 +144,44 @@ function getPnlBadgeClass(float $change): string
     }
 
     return 'badge-neutral';
+}
+
+/**
+ * ดึงชื่อ Class CSS สีตัวหนังสือสำหรับคะแนน AI Composite Rating (0-100)
+ *
+ * @param int|float $score
+ * @return string 'text-gain', 'text-gold', หรือ 'text-loss'
+ */
+function getScoreColorClass(int|float $score): string
+{
+    if ($score >= 80) {
+        return 'text-gain';
+    }
+
+    if ($score >= 60) {
+        return 'text-gold';
+    }
+
+    return 'text-loss';
+}
+
+/**
+ * ดึงชื่อ Class Badge สำหรับคะแนน AI Composite Rating (0-100)
+ *
+ * @param int|float $score
+ * @return string 'badge-gain', 'badge-gold', หรือ 'badge-loss'
+ */
+function getScoreBadgeClass(int|float $score): string
+{
+    if ($score >= 80) {
+        return 'badge-gain';
+    }
+
+    if ($score >= 60) {
+        return 'badge-gold';
+    }
+
+    return 'badge-loss';
 }
 
 /**
@@ -304,5 +354,45 @@ function verifyCsrfToken(?string $token): bool
     }
 
     return hash_equals((string)$_SESSION['csrf_token'], $token);
+}
+
+/**
+ * สร้าง HTML Input Hidden สำหรับส่ง CSRF Token ในแบบฟอร์ม
+ *
+ * @return string HTML Input Element
+ */
+function getCsrfInputField(): string
+{
+    $token = generateCsrfToken();
+    return '<input type="hidden" name="csrf_token" value="' . e($token) . '">';
+}
+
+/**
+ * เรนเดอร์ Empty State Card สำหรับหน้าที่ไม่มีข้อมูลหรือผลลัพธ์ว่างเปล่า (Reusable DRY UI Component)
+ *
+ * @param string $iconName ชื่อไอคอนจาก icon()
+ * @param string $title หัวข้อ
+ * @param string $description รายละเอียด
+ * @param string $actionHtml ปุ่ม Action เสริม (ถ้ามี)
+ * @return string HTML Markup
+ */
+function renderEmptyState(string $iconName, string $title, string $description, string $actionHtml = ''): string
+{
+    $iconSvg = icon($iconName, 'text-gold', 28);
+    $escapedTitle = e($title);
+    $escapedDesc = e($description);
+
+    $html = <<<HTML
+<div class="empty-watchlist-state">
+  <div class="empty-watchlist-icon">
+    {$iconSvg}
+  </div>
+  <h2 class="empty-state-title">{$escapedTitle}</h2>
+  <p class="empty-state-desc">{$escapedDesc}</p>
+  {$actionHtml}
+</div>
+HTML;
+
+    return $html;
 }
 

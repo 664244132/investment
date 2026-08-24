@@ -34,8 +34,24 @@ function getUserWatchlist(PDO $pdo, int $userId): array
                    ai.total_score, ai.recommendation, ai.summary_th
             FROM user_watchlists w
             INNER JOIN stocks s ON w.stock_id = s.id
-            LEFT JOIN financial_metrics fm ON s.id = fm.stock_id AND fm.quarter = 'FY'
-            LEFT JOIN ai_analyses ai ON s.id = ai.stock_id
+            LEFT JOIN (
+                SELECT fm1.stock_id, fm1.pe_ratio, fm1.eps, fm1.roe, fm1.dividend_yield
+                FROM financial_metrics fm1
+                WHERE fm1.id IN (
+                    SELECT MAX(fm2.id)
+                    FROM financial_metrics fm2
+                    GROUP BY fm2.stock_id
+                )
+            ) fm ON s.id = fm.stock_id
+            LEFT JOIN (
+                SELECT ai1.stock_id, ai1.total_score, ai1.recommendation, ai1.summary_th
+                FROM ai_analyses ai1
+                WHERE ai1.id IN (
+                    SELECT MAX(ai2.id)
+                    FROM ai_analyses ai2
+                    GROUP BY ai2.stock_id
+                )
+            ) ai ON s.id = ai.stock_id
             WHERE w.user_id = :user_id
             ORDER BY w.created_at DESC";
 

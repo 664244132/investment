@@ -4,101 +4,109 @@
 
 ---
 
-## 📌 [Version 1.15.1] - 2026-08-24
-### 🛡️ Critical Bug Fix & 100% Zero Inline CSS Finalization
+## 📌 [Version 1.18.0] - 2026-08-24
+### 💎 Full Project Refactoring, Rule 6 CSS Custom Properties & Architecture Docs Overhaul
 
-#### 1. แก้ไข Critical Runtime Error ในหน้าพอร์ตจำลอง ([`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php))
-- **แก้ไขคีย์ฟิลด์วันที่ธุรกรรม:** เปลี่ยน `$tx['executed_at']` เป็น `$tx['created_at']` ป้องกันข้อผิดพลาด `Fatal error: TypeError: strtotime()` เมื่อเรนเดอร์ตารางประวัติคำสั่งซื้อขาย
-- **แก้ไขการคำนวณมูลค่าสุทธิของธุรกรรม:** คำนวณ `net_amount` ตามประเภทคำสั่ง (BUY: `total_amount + fee`, SELL: `total_amount - fee`) ป้องกัน `Undefined array key "net_amount"`
-
-#### 2. สกัด Inline CSS ที่ตกค้าง 100% (Rule 6 Strict Compliance)
-- **`index.php`:** สกัดสไตล์แถบวัดคะแนน Piotroski F เป็นคลาส `.mt-xs`
-- **`pages/screener.php`:** สกัดกล่องผลลัพธ์ว่างเปล่าเป็นคลาส `.table-empty-cell-padded`
-- **`pages/watchlist.php`:** สกัดคำแนะนำฟอร์มเป็น `.form-hint-xs` และกล่องบันทึกเป็น `.textarea-resizable`
-- **`js/main.js`:** สกัดสไตล์ปุ่มดูรหัสผ่านเป็น `.toggle-icon-svg`
-- **`functions/icons.php` & `css/layout.css`:** สกัดสไตล์สากลของ SVG Vector Icons ออกจากฟังก์ชัน `icon()` ไปยัง `css/layout.css`
-
----
-
-## 📌 [Version 1.15.0] - 2026-08-24
-### 💎 Full Project-Wide Refactoring & Architectural Hardening (Rule 6 Zero Inline CSS & Clean Code)
-
-#### 1. Zero Inline CSS Overhaul (Rule 6 Compliance 100%)
-- **สกัด Inline `style="..."` ออกจากทุกไฟล์หน้าเว็บและเทมเพลต:**
-  - `index.php`: แดชบอร์ดวิเคราะห์หุ้นรายตัว, Hero Header, ตัวชี้วัดสำคัญ, ตารางงบการเงิน, การ์ดสังเคราะห์ AI, เกจวัดคะแนน, และ Statistical Models (Altman Z & Piotroski F)
-  - `templates/trade_modal.php`: ปรับแต่ง Rationale Textarea และ Modal Controls
-  - `pages/compare.php`: แถบ Pill Controls, กราฟเปรียบเทียบ, ตาราง Matrix 5 หมวดหมู่, และ Winner Badges
-  - `pages/dca.php`: ฟอร์มพารามิเตอร์, KPI Summary, กราฟสะสมทุน, และตาราง Amortization
-  - `pages/export.php`: การ์ด Action Hub, ฟอร์มดาวน์โหลด CSV, และเอกสารใบแจ้งยอดทางการขนาด A4
-  - `pages/journal.php`: KPI Cards, Trading Timeline Cards, Strategy Performance, และแบบประเมินอารมณ์
-  - `pages/portfolio.php`: Header Controls, Overview Metrics, Asset Allocation Bar, Holdings Table, และ Transaction History
-  - `pages/screener.php`: แถบ Preset Chips, ฟอร์มคัดกรองหุ้นเชิงปริมาณ, และตารางผลการคัดกรอง
-  - `pages/health_check.php`: สถิติผลการตรวจสุขภาพ 23 ข้อ และตารางแจกแจงสถานะแต่ละหมวดหมู่
-  - `pages/login.php` & `pages/register.php`: ฟอร์มเข้าสู่ระบบ, ฟอร์มลงทะเบียน, และ Benefit Highlights
-  - `templates/header.php`: Mobile Hamburger Drawer และ Navigation Links
-  - `js/main.js`: ปรับปรุง Autocomplete Dropdown Renderer ให้ใช้คลาส CSS แทนการสร้าง Inline Styles ใน JavaScript
-- **สร้าง Semantic Classes ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) และ [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css):**
-  - Section 18: Hero, Metrics, Statements, AI Synthesis, Scoring, Compare, DCA, Export, Journal, Portfolio, Screener, Health Check, Auth, และ Dropdown Utilities
-
-#### 2. Clean Code & Strict Engineering Standards
-- **PHP Strict Typing 100%:** ทุกไฟล์ PHP ทั้ง 28 ไฟล์ขึ้นต้นด้วย `declare(strict_types=1);` และมี Type Hinting
-- **Guard Clauses & Early Return:** ตรวจสอบความถูกต้องของ Input และสิทธิ์ผู้ใช้งานก่อนเสมอ ลดความซับซ้อนของโค้ด
-- **De Morgan's Laws Boolean Logic:** ตรวจสอบเงื่อนไขทุกจุดในรูปแบบ `!A || !B` หรือ `!A && !B` ปราศจาก `!(A && B)`
-- **Database & Version Control Compliance:** สอดคล้องตาม Rule 10 (ไม่รัน DDL/DML เอง) และ Rule 11 (ไม่ Commit/Push Git เอง)
-
-#### 3. Documentation & Playbook Synchronization
-- **`markdowns/aboutProject.md`:** อัปเดตสถาปัตยกรรม 10 โมดูลหลัก, ระบบแคช 60 วินาที, Live Market API, และโครงสร้าง Data Layer
-- **`markdowns/DEBUG.md`:** ยกระดับเป็น AI Agent Debugging Playbook ที่สมบูรณ์ ครอบคลุมการรัน Health Check, การทดสอบ API Multi-Timeframe, และแนวทางแก้ปัญหาเฉพาะจุด
-- **`markdowns/LOG.md`:** เคลียร์และจัดระเบียบประวัติการพัฒนาให้กระชับ ชัดเจน และอ่านง่าย
+- **RefactorCode ตามกฎ Rule 6 (Zero Inline CSS 100%):**
+  - แปลงการกำหนดความกว้าง Dynamic Progress Bars ใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) (ช่วงราคา 52W, แถบคะแนน AI Composite 4 ด้าน, แถบคะแนน Piotroski F) และ [`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php) (Asset Allocation Bar) ให้ส่งผ่าน **CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)**
+  - เพิ่มสไตล์ `.asset-alloc-seg`, `.asset-alloc-gold`, `.asset-alloc-gain` และอัปเดต `.range-52w-fill`, `.score-progress-bar` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)
+- **อัปเดตสถาปัตยกรรมระบบใน [`markdowns/aboutProject.md`](file:///c:/xampp/htdocs/investment/markdowns/aboutProject.md):**
+  - ปรับปรุงโครงสร้างโปรเจกต์ทั้ง 10 โมดูล, แผนผัง System Architecture, โครงสร้างโฟลเดอร์ 14 โฟลเดอร์, และตารางฐานข้อมูล 11 ตารางให้ตรงกับสภาพปัจจุบัน 100%
+- **ยกระดับ Playbook สำหรับ AI Agents ใน [`markdowns/DEBUG.md`](file:///c:/xampp/htdocs/investment/markdowns/DEBUG.md):**
+  - เพิ่มแนวทางการรัน Automated CLI Test Suite (32/32 Passed), การตรวจไวยากรณ์ PHP, การทดสอบ API Endpoints, ตารางตำแหน่ง Log Files ใน XAMPP, และ Troubleshooting Matrix 6 ปัญหาหลัก
+- **เคลียร์และจัดระเบียบ [`markdowns/LOG.md`](file:///c:/xampp/htdocs/investment/markdowns/LOG.md):**
+  - รวมประวัติรุ่นเก่าให้กระชับ ชัดเจน และอ่านง่าย
 
 ---
 
-## 📌 [Version 1.14.5] - 2026-08-24
-### 🎯 Precise Timeframe Differentiation (1H Intraday vs 1W Weekly)
-- แยกชุดข้อมูลและช่วงเวลาของ 1H และ 1W ให้ถูกต้อง 100% ใน [`functions/market_api.php`](file:///c:/xampp/htdocs/investment/functions/market_api.php):
-  - **`1H` (รายชั่วโมง / Intraday):** ใช้ `interval=2m&range=1d` (79-196 จุดข้อมูล) แสดงเวลา `H:i`
-  - **`1W` (รายอาทิตย์ / 1 Week):** ใช้ `interval=1h&range=5d` (30-36 จุดข้อมูล) แสดงวันที่และเวลา `d M H:i`
+## 📌 [Version 1.17.7] - 2026-08-24
+### 🛡️ Ignore Files Optimization (.antigravityignore & .gitignore)
+
+- **อัปเดตไฟล์กำหนดขอบเขตการทำงานของ AI (`.antigravityignore`):**
+  - จัดหมวดหมู่ 5 กลุ่มอย่างเป็นระเบียบ: Version Control, Dependencies, Temp/Logs/Scratch, Binary Dumps และ OS/IDE Files
+  - เพิ่มการละเว้นโฟลเดอร์ `scratch/` และไฟล์ระบบ `.history/`, `ehthumbs.db`, `$RECYCLE.BIN/`
+- **อัปเดตไฟล์ความปลอดภัยสำหรับ Git Repository (`.gitignore`):**
+  - แก้ไขตัวสะกด `.antigravityignore` ให้ถูกต้อง
+  - ละเว้นไฟล์ Sensitive Configurations, Error Logs, Scratch Files, Dependencies และ Local Database Dumps ป้องกันข้อมูลรั่วไหลขึ้น GitHub
 
 ---
 
-## 📌 [Version 1.14.4] - 2026-08-24
-### 🛠️ 1M Chart Live Synchronization & Global Performance Hardening
-- แก้ไข SQL ใน `getStockPriceHistory()` ให้ใช้ Subquery เรียงลำดับประวัติราคาวันล่าสุดย้อนหลัง (`ORDER BY trade_date DESC LIMIT 30`) และจัดเรียงแสดงผลจากอดีตไปปัจจุบัน (`ORDER BY trade_date ASC`) อย่างถูกต้อง
-- ปรับแต่ง In-Memory Chart Cache และ Client Animation Easing ให้ตอบสนองลื่นไหลในทุกอุปกรณ์
+## 📌 [Version 1.17.6] - 2026-08-24
+### 📈 Performance KPI Text-Base Word Wrap Prevention
+
+- **ปรับปรุง Layout การ์ดกำไรเฉลี่ย/ขาดทุนเฉลี่ย (`.perf-val.text-base` / `.perf-sub`):**
+  - เพิ่มคลาส `.nowrap` ให้กับตัวเลขกำไรเฉลี่ย (`+฿...`) และขาดทุนเฉลี่ย (`-฿...`) ใน [`pages/journal.php`](file:///c:/xampp/htdocs/investment/pages/journal.php) เพื่อป้องกันตัวเลขและสัญลักษณ์สกุลเงินฉีกขาดจากกัน
+  - ปรับ Responsive Grid ของ `.performance-kpi-grid` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) ให้ขยายคอลัมน์อย่างเหมาะสม (1 คอลัมน์บนมือถือเล็ก, 2 คอลัมน์บนแท็บเล็ต, 4 คอลัมน์บนเดสก์ท็อป)
+  - กำหนด `word-break: keep-all;` สำหรับ `.perf-label` และ `.perf-sub` ป้องกันข้อความภาษาไทยฉีกคำอย่างสมบูรณ์แบบ
 
 ---
 
-## 📌 [Version 1.14.0 - 1.14.3] - 2026-08-24
-### 📊 Live Multi-Timeframe Chart, Smart Caching, Favicon & Navigation Hub
-- **100% Live Market Chart:** พัฒนา `api/chart_data.php` ดึงข้อมูลประวัติราคาแท่งเทียนสด 6 ช่วงเวลา (1H, 1D, 1W, 1M, 1Y, ALL)
-- **Smart DB TTL Cache 60s:** ดึงราคาหุ้นซ้ำจาก MySQL ภายใน 60 วินาที ตอบสนองไวใน 4.74ms (เร็วขึ้นกว่า 86 เท่า)
-- **Native Brand Favicon:** สร้าง Favicon SVG/PNG/ICO จากโลโก้ `brand-icon`
-- **Comprehensive Footer:** ปรับเมนู Footer เป็น 4 คอลัมน์สมบูรณ์
+## 📌 [Version 1.17.5] - 2026-08-24
+### 📊 Strategy Breakdown Card & Data Table Full-width Layout Enhancement
+
+- **ปรับปรุง Layout ตารางสรุปผลกลยุทธ์การลงทุน (`.strategy-breakdown-card` / `.data-table`):**
+  - กำหนดสไตล์ `.strategy-breakdown-card` และ `.data-table` ใน [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) ให้ขยายกว้างเต็มกรอบ 100%
+  - เพิ่ม Padding ให้กับเซลล์ตาราง (`th`, `td`) เป็น `0.95rem 1.25rem` และ `1rem 1.25rem` พร้อมจัดตำแหน่งตัวเลขและข้อความตรงกลาง/ชิดขวาอย่างสมดุล ไม่เบียดเสียด
+  - เพิ่ม Effect การ Hover แถวตารางอย่างนุ่มนวลเพื่อให้อ่านข้อมูลสถิติได้ง่ายและสบายตา
 
 ---
 
-## 📌 [Version 1.13.0 - 1.13.9] - 2026-08-24
-### 🌍 Global Market Search, Statement Engine & UI Polish
-- **Global Stock Search:** ค้นหาหุ้นทั่วโลกผ่าน Yahoo Finance Search และสร้างหุ้นเข้าสู่ระบบอัตโนมัติ
-- **Electronic Statement:** สร้างใบรายงานพอร์ตทางการ A4 และส่งออก CSV ใน `pages/export.php`
-- **Registration Clean:** ลบองค์ประกอบตกแต่งที่ไม่จำเป็นใน `pages/register.php` และปรับตำแหน่งหัวข้อให้ตรงกัน
+## 📌 [Version 1.17.4] - 2026-08-24
+### 📐 Model Card Header & Icon Alignment Fix
+
+- **ปรับปรุง Layout ส่วนหัวการ์ดโมเดลสถิติ (`.model-card-title-group` / `.model-card-title` / `.model-card-subtitle`):**
+  - จัดโครงสร้างหัวข้อใน [`index.php`](file:///c:/xampp/htdocs/investment/index.php) ให้แยกชื่อโมเดลหลัก (Altman Z-Score / Piotroski F-Score) อยู่ในบรรทัดเดียวกับไอคอน Shield / Star โดยกำหนด `white-space: nowrap` และ `flex-shrink: 0` สำหรับ SVG
+  - ย้ายคำอธิบายรอง (ความเสี่ยงการล้มละลาย / คุณภาพงบการเงิน 9 ด้าน) ลงมาเป็น `.model-card-subtitle` ด้านล่างอย่างเป็นระเบียบ
+  - ป้องกันปัญหาข้อความและไอคอนตกบรรทัดหรือซ้อนทับกันอย่างสมบูรณ์แบบบนทุกขนาดหน้าจอ
 
 ---
 
-## 📌 [Version 1.4.0 - 1.12.0] - 2026-08-23 ถึง 2026-08-24
-### 📱 Institutional Design, DRY Architecture & Automated Health Check
-- **Automated Health Check:** พัฒนา `pages/health_check.php` ตรวจสอบสุขภาพระบบ 23 รายการ
-- **Modular Templates:** สกัดโค้ดส่วนกลางเป็น `templates/` (Header, Footer, Flash, Trade Modal)
-- **Zero Inline CSS & Safe Area:** รองรับหน้าจอทุกขนาดพร้อม Viewport Insets สำหรับ iOS/Android
+## 📌 [Version 1.17.3] - 2026-08-24
+### 🧹 Clean Watchlist Bar Chips (Icons Removal)
+
+- **นำ Icons ออกจากแถบ Quick Preset Chips (`.watchlist-bar` และ `.watchlist-bar.section-mb-md`):**
+  - ลบไอคอนออกจากชิปเปรียบเทียบใน [`pages/compare.php`](file:///c:/xampp/htdocs/investment/pages/compare.php)
+  - ลบไอคอนออกจากชิปแผนออมหุ้นยอดนิยมใน [`pages/dca.php`](file:///c:/xampp/htdocs/investment/pages/dca.php)
+  - ลบไอคอนออกจากชิปกรองตามกลยุทธ์ใน [`pages/journal.php`](file:///c:/xampp/htdocs/investment/pages/journal.php)
+  - ลบไอคอนออกจากชิปกลยุทธ์ยอดนิยมใน [`pages/screener.php`](file:///c:/xampp/htdocs/investment/pages/screener.php)
+  - ทำให้ UI ดูโปร่ง สะอาด เรียบง่าย และสบายตาตามความต้องการ
 
 ---
 
-## 📌 [Version 1.0.0 - 1.11.0] - 2026-08-23 ถึง 2026-08-24
-### 🏛️ Initial Release, Advanced Financial Models & Feature Modules
-- **Advanced Statistical Models:** Altman Z-Score & Piotroski F-Score ใน `functions/financial_models.php`
-- **Statement & Export Hub:** ส่งออก CSV รายงานพอร์ต และรายงานทางการ A4 ใน `pages/export.php`
-- **DCA Simulator:** เครื่องมือจำลองการสะสมหุ้นรายเดือนและการทบต้น (DRIP) ใน `pages/dca.php`
-- **Trading Journal:** วิเคราะห์ประสิทธิภาพการเทรด Win Rate และจิตวิทยาการลงทุนใน `pages/journal.php`
-- **Stock Comparison Matrix:** เปรียบเทียบหุ้นสูงสุด 4 บริษัทและเฟ้นหาผู้ชนะ 5 มิติใน `pages/compare.php`
-- **Watchlist & Alerts:** รายการติดตามและระบบเตือนราคาเป้าหมายใน `pages/watchlist.php`
-- **Database & Architecture:** ระบบฐานข้อมูล 11 ตาราง และพอร์ตจำลอง ฿1,000,000
+## 📌 [Version 1.17.2] - 2026-08-24
+### 🎯 Watchlist Score Color Helpers Fix & Multi-item Bookmark Rendering
+
+- **แก้ไข Fatal Error `getScoreColorClass()` ใน Watchlist Rendering:**
+  - เพิ่มฟังก์ชัน `getScoreColorClass(int|float $score): string` และ `getScoreBadgeClass(int|float $score): string` ใน [`functions/helpers.php`](file:///c:/xampp/htdocs/investment/functions/helpers.php)
+  - แก้ไขปัญหา Fatal error ที่ทำให้ PHP หยุดการเรนเดอร์กลางคัน ส่งผลให้การ์ดหุ้นใน Watchlist ทุกตัวที่ผู้ใช้กด Bookmark (เช่น NVDA, AAPL และตัวอื่นๆ) แสดงผลครบถ้วนใน `.watchlist-grid` 100%
+- **ขยายชุดทดสอบอัตโนมัติ (`tests/run_tests.php`):**
+  - เพิ่มการทดสอบ `getScoreColorClass` และ `getScoreBadgeClass` ผ่านการทดสอบ 32/32 รายการ (100.0% Pass)
+
+---
+
+## 📌 [Version 1.17.0 - 1.17.1] - 2026-08-24
+### 🛡️ Schema Sync, CSRF Security, Stats Bar Layout & Bookmark Query Enhancement
+
+- **ซิงค์โครงสร้างฐานข้อมูล (`database_schema.sql` - Rule 10 Compliance):** เพิ่มตาราง `user_watchlists` และ `trading_journals` ครบถ้วน
+- **ยกระดับความปลอดภัย CSRF:** เพิ่ม `getCsrfInputField()` และการตรวจสอบ `verifyCsrfToken()` ในฟอร์ม POST ทั้งหมด
+- **ปรับปรุง Layout แถบสถิติสรุป KPI (`.stats-bar-4` / `.stat-card`):** จัดคอลัมน์ 4 ช่อง พร้อมป้องกันการฉีกคำ
+- **เพิ่มประสิทธิภาพการดึงข้อมูล Bookmark (`getUserWatchlist`):** ใช้ Subquery เชื่อมต่อเมตริกการเงินและ AI Score
+
+---
+
+## 📌 [Version 1.15.0 - 1.16.2] - 2026-08-24
+### 🎨 Local Webfonts Engine, UI Icon Audit & Project-Wide Hardening
+
+- **Local Webfonts 100% (Rule 2):** ติดตั้งชุดฟอนต์ WOFF2 **Prompt** และ **JetBrains Mono** รวม 34 ไฟล์ใน [`assets/fonts/`](file:///c:/xampp/htdocs/investment/assets/fonts)
+- **ตรวจสอบไอคอนซ้อนกัน (Project-wide Dual-icon Audit):** แก้ไขสถานะไอคอนเมนูมือถือ (`.mobile-toggle`) และปุ่ม Bookmark (`.btn-bookmark`) ป้องกันการแสดงผลไอคอนซ้อนกัน
+- **Zero Inline CSS Overhaul (Rule 6):** สกัดสไตล์ออกจากทุกหน้าเว็บและเทมเพลตไปยัง [`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css) และ [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css)
+
+---
+
+## 📌 [Version 1.0.0 - 1.14.5] - 2026-08-23 ถึง 2026-08-24
+### 🏛️ Initial Architecture & Core Features Milestone
+
+- **Live Market Data & Multi-Timeframe Chart:** ดึงราคาสดและกราฟ 6 ช่วงเวลา (1H, 1D, 1W, 1M, 1Y, ALL) พร้อมแคช 60 วินาทีใน MySQL
+- **10 Core Investment Modules:** Dashboard หุ้นรายตัว, งบการเงิน 3 ด้าน, Statistical Models (Altman Z & Piotroski F), Screener, Compare, DCA Simulator, Watchlist, Journal, Simulated Portfolio ฿1,000,000 และ Statement Export A4
+- **Automated Health Check:** ระบบตรวจสุขภาพอัตโนมัติ 23 รายการใน `pages/health_check.php`
+- **Security & Standards:** Strict Types 100%, PDO Prepared Statements, De Morgan's Laws, BCRYPT Hashing, และ Session Hardening

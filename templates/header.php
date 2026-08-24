@@ -21,31 +21,18 @@ $currentUser = $currentUser ?? getCurrentUser();
   <title><?= e($pageTitle) ?></title>
   
   <!-- Favicon Icons (Native Brand Icon) -->
-  <link rel="icon" type="image/svg+xml" href="<?= e(BASE_URL) ?>/favicon.svg">
-  <link rel="icon" type="image/png" href="<?= e(BASE_URL) ?>/favicon.png">
-  <link rel="apple-touch-icon" href="<?= e(BASE_URL) ?>/favicon.png">
+  <link rel="icon" type="image/svg+xml" href="<?= e(BASE_URL) ?>/assets/images/favicon.svg">
+  <link rel="icon" type="image/png" href="<?= e(BASE_URL) ?>/assets/images/favicon.png">
+  <link rel="apple-touch-icon" href="<?= e(BASE_URL) ?>/assets/images/favicon.png">
 
-  <!-- CSS Stylesheets (Local Assets 100%) -->
+  <!-- CSS Stylesheets (100% Local Assets & Offline Webfonts) -->
+  <link rel="stylesheet" href="<?= e(CSS_URL) ?>/fonts.css?v=<?= e(APP_VERSION) ?>">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/variables.css?v=<?= e(APP_VERSION) ?>">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/layout.css?v=<?= e(APP_VERSION) ?>">
   <link rel="stylesheet" href="<?= e(CSS_URL) ?>/components.css?v=<?= e(APP_VERSION) ?>">
 
   <script>
     window.BASE_URL = <?= json_encode(BASE_URL) ?>;
-    window.toggleMobileDrawer = function(e) {
-      if (e) {
-        if (e.stopPropagation) e.stopPropagation();
-      }
-      var drawer = document.getElementById('mobileDrawer');
-      var btn = document.getElementById('mobileMenuBtn');
-      var iconMenu = document.querySelector('.toggle-icon-menu');
-      var iconClose = document.querySelector('.toggle-icon-close');
-      if (!drawer) return;
-      var isOpen = drawer.classList.toggle('open');
-      if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      if (iconMenu) iconMenu.style.display = isOpen ? 'none' : 'inline-block';
-      if (iconClose) iconClose.style.display = isOpen ? 'inline-block' : 'none';
-    };
   </script>
 
   <?php if (!empty($extraHead)): ?>

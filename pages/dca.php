@@ -97,13 +97,13 @@ require_once __DIR__ . '/../templates/header.php';
       <div class="watchlist-bar section-mb-md">
         <span class="watchlist-label">แผนออมหุ้นยอดนิยม:</span>
         <a href="<?= e(BASE_URL) ?>/pages/dca.php?symbol=<?= e($selectedSymbol) ?>&monthly_amount=3000&years=5&growth_rate=8&dividend_yield=3&drip=1" class="watchlist-chip <?= ($monthlyAmount == 3000 && $years == 5) ? 'active' : '' ?>">
-          <?= icon('zap', 'text-gold', 12) ?> มือใหม่เริ่มออม (฿3,000/ด. · 5 ปี)
+          มือใหม่เริ่มออม (฿3,000/ด. · 5 ปี)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/dca.php?symbol=<?= e($selectedSymbol) ?>&monthly_amount=5000&years=10&growth_rate=10&dividend_yield=3.5&drip=1" class="watchlist-chip <?= ($monthlyAmount == 5000 && $years == 10) ? 'active' : '' ?>">
-          <?= icon('star', 'text-gain', 12) ?> สร้างอิสรภาพทางการเงิน (฿5,000/ด. · 10 ปี)
+          สร้างอิสรภาพทางการเงิน (฿5,000/ด. · 10 ปี)
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/dca.php?symbol=<?= e($selectedSymbol) ?>&monthly_amount=10000&years=15&growth_rate=12&dividend_yield=4&drip=1" class="watchlist-chip <?= ($monthlyAmount == 10000 && $years == 15) ? 'active' : '' ?>">
-          <?= icon('award', 'text-gold', 12) ?> แผนเกษียณมั่งคั่ง (฿10,000/ด. · 15 ปี)
+          แผนเกษียณมั่งคั่ง (฿10,000/ด. · 15 ปี)
         </a>
       </div>
 

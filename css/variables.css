@@ -46,8 +46,8 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
   
-  /* --- Unified Typography Stack (Single Consistent Font Family) --- */
-  --font-primary: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Thai', 'Prompt', 'Kanit', sans-serif;
+  /* --- Unified Typography Stack (Local Webfonts & Fallbacks) --- */
+  --font-primary: 'Prompt', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Thai', 'Kanit', sans-serif;
   --font-sans: var(--font-primary);
   --font-serif: var(--font-primary);
   --font-mono: 'JetBrains Mono', 'Consolas', 'Roboto Mono', monospace;

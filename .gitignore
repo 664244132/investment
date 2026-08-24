@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🚫 .gitignore: Git Ignore Rules for AI Stock Analysis & Investment Platform
+# 🚫 .gitignore: Git Ignore Rules for SmartPort AI Investment Platform
 # ==============================================================================
 
 # --- 1. Environment & Sensitive Config Files ---
@@ -22,6 +22,7 @@ mysql_error.log
 *.temp
 tmp/
 temp/
+scratch/
 *.pid
 
 # --- 3. Package Managers & Dependency Directories ---
@@ -40,15 +41,10 @@ composer.phar
 .gemini/
 .claude/
 skills-lock.json
-.antigravityigore
+.antigravityignore
 
 # --- 5. Frontend Prototype Build Caches (AI Stock folder) ---
-AI Stock/node_modules/
-AI Stock/dist/
-AI Stock/.next/
-AI Stock/.parcel-cache/
-AI Stock/build/
-AI Stock/.cache/
+AI Stock/
 
 # --- 6. Operating System Generated Files ---
 .DS_Store
@@ -83,3 +79,4 @@ $RECYCLE.BIN/
 dump.sql
 backup.sql
 *.dmp
+*.bak
