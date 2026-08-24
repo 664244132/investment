@@ -684,6 +684,30 @@
   outline: none;
 }
 
+/* Reset / Hide default browser password reveal and clear buttons (Edge, IE, Chrome, Safari, WebKit) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-caps-lock-indicator {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  right: 0 !important;
+}
+
+.form-input-wrapper input[type="password"],
+.form-input-wrapper input.has-toggle {
+  padding-right: 2.75rem;
+}
+
 /* ==============================================================================
    Custom Dark-Gold Number Stepper & Input Spinner Reset
    ============================================================================== */
@@ -970,15 +994,24 @@ select.form-input option:checked {
 .input-toggle-btn {
   position: absolute;
   right: 0.85rem;
+  background: transparent;
+  border: none;
   color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-xs);
   transition: color 0.15s ease;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.input-toggle-btn:hover {
-  color: var(--text-primary);
+.input-toggle-btn:hover,
+.input-toggle-btn:focus-visible {
+  color: var(--accent-gold);
+  outline: none;
 }
 
 .pw-strength-bar {
@@ -1410,4 +1443,1103 @@ select.form-input option:checked {
   border-radius: var(--radius-xs);
   display: flex;
   overflow: hidden;
+}
+
+/* ==============================================================================
+   13. Watchlist & Price Target Alert Components
+   ============================================================================== */
+.btn-bookmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.btn-bookmark:hover {
+  background: var(--bg-card-elevated);
+  border-color: var(--accent-gold-border);
+  color: var(--accent-gold);
+}
+
+.btn-bookmark.bookmarked {
+  background: var(--accent-gold-subtle);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .watchlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .watchlist-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.watchlist-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.watchlist-card:hover {
+  border-color: var(--accent-gold-border);
+  background: #251C1C;
+}
+
+.watchlist-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.watchlist-stock-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.watchlist-symbol-link {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: var(--font-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.15s ease;
+}
+
+.watchlist-symbol-link:hover {
+  color: var(--accent-gold);
+}
+
+.watchlist-company-name {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.watchlist-price-box {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.watchlist-price-main {
+  font-size: 1.45rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.watchlist-metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-card-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 204, 0, 0.08);
+}
+
+.watchlist-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.15rem;
+}
+
+.watchlist-metric-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.watchlist-metric-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.watchlist-targets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.watchlist-target-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.825rem;
+  padding: 0.5rem 0.75rem;
+  background: #1C1515;
+  border-radius: var(--radius-xs);
+  border-left: 3px solid var(--text-muted);
+}
+
+.watchlist-target-row.target-buy-row {
+  border-left-color: var(--color-success);
+}
+
+.watchlist-target-row.target-sell-row {
+  border-left-color: var(--color-danger);
+}
+
+.watchlist-target-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.watchlist-target-label {
+  color: var(--text-secondary);
+}
+
+.watchlist-target-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.badge-target-hit {
+  background: rgba(3, 201, 136, 0.2);
+  border: 1px solid #03C988;
+  color: #03C988;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+}
+
+.badge-target-near {
+  background: rgba(255, 204, 0, 0.2);
+  border: 1px solid #FFCC00;
+  color: #FFCC00;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+}
+
+.badge-target-sell-hit {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid #FF4D4D;
+  color: #FF4D4D;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+}
+
+.watchlist-notes-box {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 0.5rem 0.75rem;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.watchlist-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.empty-watchlist-state {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2.5rem;
+}
+
+.empty-watchlist-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--accent-gold-subtle);
+  color: var(--accent-gold);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+/* ==============================================================================
+   14. Stock Comparison Matrix & Peer Analysis Components
+   ============================================================================== */
+.compare-pills-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 2rem;
+}
+
+.compare-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--accent-gold-border);
+  border-radius: var(--radius-sm);
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.compare-pill-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.compare-pill-remove:hover {
+  color: var(--color-danger);
+}
+
+.compare-matrix-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+.compare-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.compare-matrix-table th,
+.compare-matrix-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.compare-matrix-table th.metric-col-head {
+  background: var(--bg-card-elevated);
+  width: 240px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.compare-matrix-table th.stock-col-head {
+  background: var(--bg-card-elevated);
+  text-align: center;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.compare-matrix-table th.benchmark-col-head {
+  background: #191212;
+  text-align: center;
+  border-left: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.compare-matrix-table td.metric-title-cell {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.compare-matrix-table td.stock-val-cell {
+  text-align: center;
+  font-family: var(--font-mono);
+  border-left: 1px solid var(--border-subtle);
+  font-variant-numeric: tabular-nums;
+  position: relative;
+}
+
+.compare-matrix-table td.benchmark-val-cell {
+  text-align: center;
+  font-family: var(--font-mono);
+  border-left: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.25);
+  font-variant-numeric: tabular-nums;
+}
+
+.compare-matrix-table tr.category-section-row td {
+  background: linear-gradient(90deg, #2A2020 0%, #1E1616 100%);
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 0.825rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.winner-cell {
+  background: rgba(255, 204, 0, 0.08) !important;
+  color: var(--accent-gold) !important;
+  font-weight: 700 !important;
+}
+
+.badge-winner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.65rem;
+  background: rgba(255, 204, 0, 0.22);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-xs);
+  margin-left: 4px;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.compare-champions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.champion-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.champion-card:hover {
+  border-color: var(--accent-gold-border);
+}
+
+.champion-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-gold-subtle);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.champion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.champion-title {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.champion-symbol {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.champion-metric {
+  font-size: 0.8rem;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+}
+
+/* ==============================================================================
+   15. Trading Journal & Performance Analytics Components
+   ============================================================================== */
+.performance-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.perf-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.2s ease;
+}
+
+.perf-card:hover {
+  border-color: var(--accent-gold-border);
+}
+
+.perf-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.perf-val {
+  font-size: 1.55rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.perf-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.journal-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.journal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.journal-card:hover {
+  border-color: var(--accent-gold-border);
+  background: #241C1C;
+}
+
+.journal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.journal-stock-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.journal-symbol {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  text-decoration: none;
+}
+
+.journal-symbol:hover {
+  text-decoration: underline;
+}
+
+.journal-rationale-box {
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.journal-rationale-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.journal-lesson-box {
+  background: rgba(3, 201, 136, 0.04);
+  border-left: 3px solid var(--color-success);
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.journal-lesson-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-success);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.strategy-breakdown-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+/* ==============================================================================
+   16. DCA Simulator & Growth Calculator Components
+   ============================================================================== */
+.dca-calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 992px) {
+  .dca-calculator-grid {
+    grid-template-columns: 360px 1fr;
+  }
+}
+
+.dca-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dca-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dca-summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dca-summary-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dca-summary-val {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.dca-comparison-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dca-benchmark-card {
+  background: #201717;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.dca-benchmark-card.stock-winner {
+  border-color: var(--accent-gold);
+  background: rgba(255, 204, 0, 0.05);
+}
+
+.dca-benchmark-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dca-benchmark-val {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+/* ==============================================================================
+   17. Portfolio Statement & Export Report Components
+   ============================================================================== */
+.export-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.export-action-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.export-action-card:hover {
+  border-color: var(--accent-gold-border);
+  background: #241C1C;
+}
+
+.export-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-gold-subtle);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.statement-paper {
+  background: #181212;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.statement-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 2px solid var(--accent-gold);
+  margin-bottom: 1.75rem;
+}
+
+.statement-meta-box {
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.25rem;
+  min-width: 300px;
+}
+
+.statement-paper,
+.statement-paper * {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.statement-paper .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.statement-paper .data-table th,
+.statement-paper .data-table td {
+  padding: 0.75rem 0.85rem;
+}
+
+.statement-summary-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  background: #201717;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.statement-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statement-summary-item-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statement-summary-item-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* ==============================================================================
+   18. Print Media Styles (A4 Professional Print Engine)
+   ============================================================================== */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #111111 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .app-header,
+  .app-footer,
+  .main-nav,
+  .btn,
+  .header-actions,
+  .mobile-toggle,
+  .watchlist-bar,
+  .export-hub-grid,
+  .statement-actions-bar,
+  .section-heading-row,
+  .modal-backdrop,
+  #mobileDrawer {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .statement-paper {
+    background: #FFFFFF !important;
+    color: #111111 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .statement-brand-row {
+    border-bottom: 2px solid #111111 !important;
+    padding-bottom: 12pt !important;
+    margin-bottom: 14pt !important;
+  }
+
+  .statement-brand-row h1,
+  .statement-brand-row h2,
+  .statement-brand-row h3 {
+    color: #000000 !important;
+  }
+
+  .statement-meta-box {
+    text-align: left !important;
+    background: #F8F8F8 !important;
+    border: 1px solid #CCCCCC !important;
+    color: #111111 !important;
+    padding: 6pt 10pt !important;
+    font-size: 8.5pt !important;
+    min-width: auto !important;
+  }
+
+  .statement-summary-box {
+    background: #F8F8F8 !important;
+    border: 1px solid #CCCCCC !important;
+    color: #000000 !important;
+    padding: 8pt 10pt !important;
+    margin-bottom: 14pt !important;
+  }
+
+  .statement-summary-item-label {
+    color: #555555 !important;
+    font-size: 7pt !important;
+  }
+
+  .statement-summary-item-val {
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  .data-table {
+    border: 1px solid #CCCCCC !important;
+    color: #000000 !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  .data-table tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  .data-table th {
+    background: #EAEAEA !important;
+    color: #000000 !important;
+    border: 1px solid #CCCCCC !important;
+    font-size: 8pt !important;
+    padding: 5pt 6pt !important;
+  }
+
+  .data-table td {
+    color: #000000 !important;
+    border: 1px solid #E0E0E0 !important;
+    font-size: 8pt !important;
+    padding: 5pt 6pt !important;
+  }
+
+  .text-gain,
+  .text-loss,
+  .text-gold {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+
+  .badge {
+    border: none !important;
+    background: transparent !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+}
+
+/* ==============================================================================
+   19. Advanced Statistical Financial Models (Altman Z & Piotroski F)
+   ============================================================================== */
+.models-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .models-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.model-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.model-card:hover {
+  border-color: var(--accent-gold-border);
+}
+
+.model-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.model-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.model-score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.model-score-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.zscore-meter-track {
+  height: 8px;
+  border-radius: var(--radius-xs);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3px;
+  overflow: hidden;
+  background: transparent;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.zscore-seg-distress {
+  background: var(--color-danger);
+  opacity: 0.4;
+}
+
+.zscore-seg-grey {
+  background: var(--accent-gold);
+  opacity: 0.4;
+}
+
+.zscore-seg-safe {
+  background: var(--color-success);
+  opacity: 0.4;
+}
+
+.zscore-seg-active {
+  opacity: 1 !important;
+}
+
+.zscore-labels-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.fscore-checklist-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.fscore-check-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.fscore-check-item:last-child {
+  border-bottom: none;
+}
+
+.fscore-item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.fscore-item-title.passed {
+  color: var(--text-primary);
 }

@@ -61,6 +61,8 @@ function getUserPortfolio(PDO $pdo, int $userId): ?array
     $portfolio['total_unrealized_pnl'] = $totalUnrealizedPnl;
     $portfolio['total_profit_loss']    = $totalProfitLoss;
     $portfolio['total_return_percent'] = $totalReturnPercent;
+    $portfolio['total_pnl']            = $totalProfitLoss;
+    $portfolio['total_pnl_percent']    = $totalReturnPercent;
     $portfolio['holdings_count']       = count($holdings);
 
     return $portfolio;
@@ -97,10 +99,11 @@ function getPortfolioHoldings(PDO $pdo, int $portfolioId): array
         $unrealizedPnl= $marketValue - $costValue;
         $returnPct    = ($costValue > 0) ? ($unrealizedPnl / $costValue) * 100 : 0.0;
 
-        $item['cost_value']     = $costValue;
-        $item['market_value']   = $marketValue;
-        $item['unrealized_pnl'] = $unrealizedPnl;
-        $item['return_percent'] = $returnPct;
+        $item['cost_value']         = $costValue;
+        $item['market_value']       = $marketValue;
+        $item['unrealized_pnl']     = $unrealizedPnl;
+        $item['return_percent']     = $returnPct;
+        $item['unrealized_pnl_pct'] = $returnPct;
 
         $result[] = $item;
     }
@@ -142,6 +145,8 @@ function getPortfolioTransactions(PDO $pdo, int $portfolioId, int $limit = 50): 
  * @param int $stockId
  * @param string $type 'BUY' หรือ 'SELL'
  * @param int $quantity จำนวนหุ้นที่ต้องการซื้อขาย
+ * @param string $strategyTag กลยุทธ์การลงทุน เช่น Value Investing, Growth Stock, etc.
+ * @param string $rationale เหตุผลในการตัดสินใจซื้อ-ขาย
  * @return array ['success' => bool, 'message' => string]
  */
 function executeSimulatedTrade(
@@ -149,7 +154,9 @@ function executeSimulatedTrade(
     int $userId,
     int $stockId,
     string $type,
-    int $quantity
+    int $quantity,
+    string $strategyTag = 'Value Investing',
+    string $rationale = ''
 ): array {
     $type = strtoupper(trim($type));
 
@@ -257,6 +264,22 @@ function executeSimulatedTrade(
                 ':amount' => $subtotal,
                 ':fee'    => $fee
             ]);
+            $trxId = (int)$pdo->lastInsertId();
+
+            // บันทึก Trading Journal (ถ้ามีตาราง trading_journals)
+            try {
+                $jSql = "INSERT INTO trading_journals (transaction_id, user_id, strategy_tag, rationale, lessons_learned) 
+                         VALUES (:trx_id, :u_id, :tag, :rationale, NULL)";
+                $jStmt = $pdo->prepare($jSql);
+                $jStmt->execute([
+                    ':trx_id'    => $trxId,
+                    ':u_id'      => $userId,
+                    ':tag'       => !empty($strategyTag) ? $strategyTag : 'Value Investing',
+                    ':rationale' => !empty($rationale) ? $rationale : 'เข้าซื้อสะสมตามกลยุทธ์'
+                ]);
+            } catch (PDOException $je) {
+                // ข้ามหากตารางยังไม่ได้สร้าง
+            }
 
             $pdo->commit();
 
@@ -330,6 +353,22 @@ function executeSimulatedTrade(
                 ':fee'    => $fee,
                 ':pnl'    => $realizedPnl
             ]);
+            $trxId = (int)$pdo->lastInsertId();
+
+            // บันทึก Trading Journal (ถ้ามีตาราง trading_journals)
+            try {
+                $jSql = "INSERT INTO trading_journals (transaction_id, user_id, strategy_tag, rationale, lessons_learned) 
+                         VALUES (:trx_id, :u_id, :tag, :rationale, NULL)";
+                $jStmt = $pdo->prepare($jSql);
+                $jStmt->execute([
+                    ':trx_id'    => $trxId,
+                    ':u_id'      => $userId,
+                    ':tag'       => !empty($strategyTag) ? $strategyTag : 'Value Investing',
+                    ':rationale' => !empty($rationale) ? $rationale : 'ขายทำกำไร/ตัดขาดทุนตามแผน'
+                ]);
+            } catch (PDOException $je) {
+                // ข้ามหากตารางยังไม่ได้สร้าง
+            }
 
             $pdo->commit();
 

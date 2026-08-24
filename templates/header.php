@@ -63,20 +63,31 @@ $currentUser = $currentUser ?? getCurrentUser();
         <div class="brand-text">
           <span>SmartPort</span>
           <span class="brand-gold">AI</span>
-          <span class="brand-badge">PRO</span>
         </div>
       </a>
 
       <!-- Desktop Nav Links (Segmented Glass Rail) -->
       <nav class="main-nav">
         <a href="<?= e(BASE_URL) ?>/index.php" class="nav-link <?= ($activeNav === 'index') ? 'active' : '' ?>">
-          หน้าหลัก / วิเคราะห์หุ้น
+          วิเคราะห์หุ้น
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link <?= ($activeNav === 'screener') ? 'active' : '' ?>">
-          คัดกรองหุ้น (Screener)
+          คัดกรอง
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/compare.php" class="nav-link <?= ($activeNav === 'compare') ? 'active' : '' ?>">
+          เปรียบเทียบ
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/dca.php" class="nav-link <?= ($activeNav === 'dca') ? 'active' : '' ?>">
+          ออมหุ้น DCA
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/watchlist.php" class="nav-link <?= ($activeNav === 'watchlist') ? 'active' : '' ?>">
+          ติดตาม
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/journal.php" class="nav-link <?= ($activeNav === 'journal') ? 'active' : '' ?>">
+          บันทึกเทรด
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="nav-link <?= ($activeNav === 'portfolio') ? 'active' : '' ?>">
-          พอร์ตจำลอง (Portfolio)
+          พอร์ตจำลอง
         </a>
       </nav>
 
@@ -136,6 +147,30 @@ $currentUser = $currentUser ?? getCurrentUser();
         <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="nav-link <?= ($activeNav === 'screener') ? 'active' : '' ?>">
           <span style="display: flex; align-items: center; gap: 8px;">
             <?= icon('filter', 'text-gold', 16) ?> คัดกรองหุ้น (Screener)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/compare.php" class="nav-link <?= ($activeNav === 'compare') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('scale', 'text-gold', 16) ?> เปรียบเทียบหุ้น (Compare)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/dca.php" class="nav-link <?= ($activeNav === 'dca') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('repeat', 'text-gold', 16) ?> จำลองออมหุ้น (DCA)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/watchlist.php" class="nav-link <?= ($activeNav === 'watchlist') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('bookmark', 'text-gold', 16) ?> รายการติดตาม (Watchlist)
+          </span>
+          <?= icon('arrow-up-right', 'text-muted', 14) ?>
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/journal.php" class="nav-link <?= ($activeNav === 'journal') ? 'active' : '' ?>">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <?= icon('book-open', 'text-gold', 16) ?> บันทึกการเทรด (Journal)
           </span>
           <?= icon('arrow-up-right', 'text-muted', 14) ?>
         </a>

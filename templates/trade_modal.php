@@ -75,6 +75,27 @@ if ($modalStock) {
             </div>
           </div>
 
+          <!-- Trading Journal: Strategy Tag & Rationale -->
+          <div class="form-group">
+            <label for="trade_strategy_tag" class="form-label">กลยุทธ์การลงทุน (Strategy Tag)</label>
+            <div class="form-input-wrapper">
+              <select id="trade_strategy_tag" name="strategy_tag" class="form-input">
+                <option value="Value Investing">Value Investing (เน้นคุณค่า / พื้นฐาน)</option>
+                <option value="Growth Stock">Growth Stock (หุ้นเติบโตสูง)</option>
+                <option value="Dividend Play">Dividend Play (เน้นเงินปันผล)</option>
+                <option value="Technical Breakout">Technical Breakout (เทคนิคอล / โมเมนตัม)</option>
+                <option value="AI Recommendation">AI Recommendation (ตามสัญญาณ AI)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="trade_rationale" class="form-label">เหตุผลในการตัดสินใจเทรด (Trading Rationale)</label>
+            <div class="form-input-wrapper">
+              <textarea id="trade_rationale" name="rationale" class="form-input" rows="2" placeholder="เช่น กราฟเบรกแนวต้าน, P/E ต่ำกว่ากลุ่ม, AI Score 85+..." style="resize: vertical; font-size: 0.85rem;"></textarea>
+            </div>
+          </div>
+
           <!-- Net Estimated Trade Total -->
           <div class="trade-total-row">
             <span class="trade-total-label">มูลค่ารวมสุทธิ (+ค่าคอมมิชชัน 0.157%):</span>

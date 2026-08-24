@@ -464,6 +464,47 @@ function initSmartPort() {
   }
 
   initCustomNumberInputs();
+
+  // 6. Global Watchlist Toggle Controller
+  window.toggleWatchlistStock = async function(stockId, btnElement) {
+    if (!stockId) return;
+    if (btnElement) btnElement.disabled = true;
+
+    try {
+      const response = await fetch((window.BASE_URL || '') + '/api/watchlist_toggle.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle', stock_id: parseInt(stockId, 10) })
+      });
+
+      const result = await response.json();
+      if (response.status === 401 && result.require_login) {
+        if (confirm(result.message + '\n\nคุณต้องการไปที่หน้าเข้าสู่ระบบหรือไม่?')) {
+          window.location.href = (window.BASE_URL || '') + '/pages/login.php';
+        }
+        if (btnElement) btnElement.disabled = false;
+        return;
+      }
+
+      if (result.success) {
+        if (btnElement) {
+          const isBookmarked = result.is_bookmarked;
+          btnElement.classList.toggle('bookmarked', isBookmarked);
+          btnElement.setAttribute('title', isBookmarked ? 'นำออกจาก Watchlist' : 'เพิ่มใน Watchlist');
+          const outlineIcon = btnElement.querySelector('.bm-icon-outline');
+          const filledIcon = btnElement.querySelector('.bm-icon-filled');
+          if (outlineIcon) outlineIcon.style.display = isBookmarked ? 'none' : 'inline-block';
+          if (filledIcon) filledIcon.style.display = isBookmarked ? 'inline-block' : 'none';
+        }
+      } else {
+        alert(result.message || 'เกิดข้อผิดพลาดในการทำรายการ');
+      }
+    } catch (err) {
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+    } finally {
+      if (btnElement) btnElement.disabled = false;
+    }
+  };
 }
 
 // Fail-safe bootstrap for any document readyState

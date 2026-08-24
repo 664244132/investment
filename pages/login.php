@@ -82,7 +82,7 @@ require_once __DIR__ . '/../templates/header.php';
               id="identifier" 
               name="identifier" 
               class="form-input" 
-              placeholder="เช่น investor_demo หรือ demo@investment.local" 
+              placeholder="กรอกชื่อผู้ใช้ หรือ อีเมลของคุณ" 
               value="<?= e($_POST['identifier'] ?? '') ?>"
               required 
               autofocus
@@ -98,7 +98,7 @@ require_once __DIR__ . '/../templates/header.php';
               id="login_password" 
               name="password" 
               class="form-input" 
-              placeholder="กรอกรหัสผ่านของคุณ (ตัวอย่าง: password123)" 
+              placeholder="กรอกรหัสผ่านของคุณ" 
               required
             >
             <button type="button" class="input-toggle-btn" data-target="login_password" aria-label="แสดง/ซ่อนรหัสผ่าน">
@@ -120,21 +120,6 @@ require_once __DIR__ . '/../templates/header.php';
         </button>
 
       </form>
-
-      <!-- Divider -->
-      <div style="display: flex; align-items: center; gap: 0.75rem; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.75rem;">
-        <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-        <span style="white-space: nowrap;">บัญชีทดสอบในระบบ</span>
-        <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-      </div>
-
-      <!-- Quick Demo Account Box -->
-      <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; font-size: 0.8rem; color: var(--text-muted);">
-        <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 4px; white-space: nowrap;">
-          <?= icon('info', 'text-gold', 14) ?> บัญชี Demo สำหรับทดลองใช้:
-        </p>
-        <p>User: <code style="color: var(--text-primary);">investor_demo</code> | Pass: <code style="color: var(--text-primary);">password123</code></p>
-      </div>
 
       <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">
         ยังไม่มีบัญชีผู้ใช้? 

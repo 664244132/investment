@@ -13,11 +13,21 @@ require_once __DIR__ . '/../functions/helpers.php';
 require_once __DIR__ . '/../functions/icons.php';
 require_once __DIR__ . '/../functions/auth.php';
 require_once __DIR__ . '/../functions/stocks.php';
+require_once __DIR__ . '/../functions/watchlist.php';
+require_once __DIR__ . '/../functions/financial_models.php';
 
 startAppSession();
 
 $pdo = getDbConnection();
 $user = getCurrentUser();
+
+$userWatchlistStockIds = [];
+if (isLoggedIn() && $user && isset($user['id'])) {
+    $wlItems = getUserWatchlist($pdo, (int)$user['id']);
+    foreach ($wlItems as $wli) {
+        $userWatchlistStockIds[(int)$wli['stock_id']] = true;
+    }
+}
 
 $sectors = getAllSectors($pdo);
 
@@ -47,7 +57,6 @@ require_once __DIR__ . '/../templates/header.php';
           <h1 style="font-size: clamp(1.4rem, 4vw, 1.85rem); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
             <?= icon('filter', 'text-gold', 24) ?> เครื่องมือคัดกรองหลักทรัพย์ (Quantitative Stock Screener)
           </h1>
-          <span class="badge badge-gold">Deterministic Filters</span>
         </div>
         <p style="color: var(--text-muted); font-size: 0.85rem;">
           คัดกรองหุ้นคุณค่าและหุ้นเติบโตตามตัวชี้วัดทางการเงินเชิงลึกและคะแนนคุณภาพ Composite Rating
@@ -67,6 +76,9 @@ require_once __DIR__ . '/../templates/header.php';
         </a>
         <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&min_score=80" class="watchlist-chip">
           <?= icon('star', 'text-gold', 12) ?> หุ้นพื้นฐานแกร่ง (Composite Rating > 80)
+        </a>
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php?sector=all&max_pe=25&min_roe=12&min_score=75" class="watchlist-chip">
+          <?= icon('shield', 'text-gold', 12) ?> หุ้นสุขภาพการเงินแกร่ง (Altman Safe & High F-Score)
         </a>
       </div>
 
@@ -164,9 +176,24 @@ require_once __DIR__ . '/../templates/header.php';
                 <?php foreach ($screenedStocks as $s): ?>
                   <tr>
                     <td class="font-bold">
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
-                        <?= e($s['symbol']) ?>
-                      </a>
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <?php $isBmk = isset($userWatchlistStockIds[(int)$s['id']]); ?>
+                        <button type="button" class="btn-bookmark <?= $isBmk ? 'bookmarked' : '' ?>" 
+                                style="width: 28px; height: 28px;"
+                                onclick="window.toggleWatchlistStock(<?= e((string)$s['id']) ?>, this)"
+                                title="<?= $isBmk ? 'นำออกจาก Watchlist' : 'เพิ่มใน Watchlist' ?>" 
+                                aria-label="Toggle Watchlist">
+                          <span class="bm-icon-outline" style="<?= $isBmk ? 'display:none;' : '' ?>">
+                            <?= icon('bookmark', '', 14) ?>
+                          </span>
+                          <span class="bm-icon-filled" style="<?= $isBmk ? '' : 'display:none;' ?>">
+                            <?= icon('bookmark-filled', 'text-gold', 14) ?>
+                          </span>
+                        </button>
+                        <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-mono); font-size: 1.05rem; white-space: nowrap;">
+                          <?= e($s['symbol']) ?>
+                        </a>
+                      </div>
                     </td>
                     <td>
                       <div style="font-weight: 500;"><?= e($s['name_th'] ?: $s['name_en']) ?></div>

@@ -4,6 +4,329 @@
 
 ---
 
+## 📌 [Version 1.13.5] - 2026-08-24
+### 📄 Electronic Statement Standardization (No Signature Required)
+
+- **ปรับรูปแบบเอกสารเป็นรายงานอิเล็กทรอนิกส์สมบูรณ์ ([`pages/export.php`](file:///c:/xampp/htdocs/investment/pages/export.php)):**
+  - ลบช่องลงนาม (Signature Box) ออกทั้งหมดตามมาตรฐานรายงานอิเล็กทรอนิกส์อัตโนมัติ
+  - เพิ่มแถบรับรองเอกสารระบบอิเล็กทรอนิกส์ (Electronic Statement Notice) ระบุว่าเอกสารประมวลผลจากฐานข้อมูลระบบอัตโนมัติ จึงมีความสมบูรณ์ถูกต้องโดยไม่ต้องลงลายมือชื่อ
+  - ปรับปรุงข้อความท้ายเอกสารเป็น `หน้า ๑ จาก ๑ · เอกสารทางการอิเล็กทรอนิกส์ (ไม่ต้องลงลายมือชื่อ)`
+- **จัดระเบียบ CSS สไตล์ชีท ([`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css)):** ลบโค้ด CSS ของกล่องลายเซ็นและจัดระเบียบส่วน `@media print` ให้พิมพ์กระดาษ A4 ได้คมชัด สะอาดตา
+
+---
+
+## 📌 [Version 1.13.4] - 2026-08-24
+### 🏛️ Official Institutional Standard & Certified Signature Ledger
+
+- **ปรับแต่งหัวเอกสารและโครงสร้างข้อมูลทางการ ([`pages/export.php`](file:///c:/xampp/htdocs/investment/pages/export.php)):**
+  - หัวรายงาน: **ใบรายงานสรุปสถานะพอร์ตการลงทุนและบัญชีหลักทรัพย์**
+  - กล่องข้อมูลทางการ: ระบุเลขที่บัญชีหลักทรัพย์, ชื่อผู้ถือบัญชี, ประเภทบัญชี (Cash Balance), และสกุลเงินอ้างอิง
+- **ปรับตารางบัญชีเป็นภาษาไทยทางการ (ตารางที่ ๑ และ ตารางที่ ๒):**
+  - เพิ่มคอลัมน์ลำดับที่, รหัสหลักทรัพย์, ชื่อบริษัท/กิจการ, ราคาปิดล่าสุด, อัตราผลตอบแทน
+  - ปรับการระบุประเภทคำสั่งเป็นภาษาไทยควบคู่สากล: `ซื้อ (BUY)` และ `ขาย (SELL)`
+- **เพิ่มช่องลงนามรับรองรายงานทางการ (Certification & Signature Grid):**
+  - เพิ่มส่วนลงนามรับรองความถูกต้องโดยผู้ตรวจสอบข้อมูลฝ่ายปฏิบัติการ และช่องลงนามรับทราบโดยผู้ถือบัญชี
+  - เพิ่ม CSS สไตล์ราชการ/สถาบันการเงิน รองรับการพิมพ์ A4 โดยที่ลายเซ็นไม่หลุดหน้ากระดาษ ([`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css))
+
+---
+
+## 📌 [Version 1.13.3] - 2026-08-24
+### 🇹🇭 Localization & Official Thai Statement Branding
+
+- **เพิ่มฟังก์ชัน `formatThaiDate()` ([`functions/helpers.php`](file:///c:/xampp/htdocs/investment/functions/helpers.php)):** แปลง Timestamp หรือวันที่สากลให้อยู่ในรูปแบบภาษาไทย พุทธศักราช (พ.ศ.) อย่างเป็นทางการ เช่น `24 สิงหาคม 2569 เวลา 09:46:05 น.`
+- **ปรับหัวเอกสารและป้ายกำกับเป็นภาษาไทยทางการ ([`pages/export.php`](file:///c:/xampp/htdocs/investment/pages/export.php)):**
+  - หัวเอกสาร: **ใบรายงานสถานะพอร์ตการลงทุนและรายการซื้อขายหลักทรัพย์**
+  - ชื่อระบบ: **ระบบจำลองการลงทุนและวิเคราะห์หลักทรัพย์เชิงปริมาณ SmartPort AI**
+  - ตารางที่ 1: **1. รายการหลักทรัพย์ที่ถือครองในพอร์ตการลงทุน**
+  - ตารางที่ 2: **2. รายการบันทึกประวัติการซื้อขายหลักทรัพย์**
+  - แสดงผลวันที่ในตารางประวัติธุรกรรมด้วยรูปแบบวันที่ไทย พ.ศ. ครบถ้วน
+
+---
+
+## 📌 [Version 1.13.2] - 2026-08-24
+### 📄 Print & Statement Engine Polish: Official Institutional Ledger
+
+- **แก้ไข Warning unrealized_pnl_pct:** เพิ่มคีย์ `unrealized_pnl_pct` ใน `functions/portfolio.php` (`getPortfolioHoldings()`) และเพิ่ม Fallback ใน [`pages/export.php`](file:///c:/xampp/htdocs/investment/pages/export.php) ป้องกันข้อผิดพลาด 100%
+- **จัดรูปแบบข้อมูลบัญชีพอร์ตชิดซ้าย (Left-Aligned Meta):** ปรับแก้ `.statement-meta-box` ให้แสดงผลข้อมูลเลขที่บัญชี ชื่อผู้ถือ วันที่ และสกุลเงิน ชิดซ้ายอย่างเป็นระเบียบชัดเจน
+- **ลบกรอบครอบประเภทธุรกรรม BUY/SELL:** เปลี่ยนเป็นข้อความ Plain Text หนาสีเขียว/แดง (`text-gain` / `text-loss`) สะอาดตา สไตล์รายงานทางการ
+- **Typography & A4 Print Layout:** เพิ่มกฎ `word-break: normal;` และ `@media print` จัดเส้นตารางคมชัด ไม่มีการฉีกคำภาษาไทย หรือข้อความซ้อนทับกัน
+
+---
+
+## 📌 [Version 1.13.1] - 2026-08-24
+### 🐛 Bug Fix: Portfolio Statement Array Keys & P&L Alignment
+
+- **`functions/portfolio.php`:** เพิ่มคีย์ `total_pnl` และ `total_pnl_percent` ในฟังก์ชัน `getUserPortfolio()` ควบคู่กับ `total_profit_loss` และ `total_return_percent` เพื่อป้องกันปัญหา Undefined Array Key
+- **`pages/export.php`:** ปรับปรุงการเข้าถึงตัวแปร `$portfolio['total_pnl']` และ `$portfolio['total_pnl_percent']` พร้อมระบบ Fallback รองรับตัวแปรทุกรูปแบบ ป้องกัน PHP Warning 100%
+
+---
+
+## 📌 [Version 1.13.0] - 2026-08-24
+### 🎨 UI Refinement: Clean Badge Removal
+
+- ลบ `<span class="badge badge-gold">` (Market Tag) ใน Hero Section ([`index.php`](file:///c:/xampp/htdocs/investment/index.php))
+- ลบ `<span class="badge badge-neutral">` (Sector Tag) ใน Hero Section ([`index.php`](file:///c:/xampp/htdocs/investment/index.php))
+- ลบ `<span class="badge badge-gain">` (Ready for analysis Tag) ใน Hero Section ([`index.php`](file:///c:/xampp/htdocs/investment/index.php))
+- ลบ `<span class="badge badge-gold">` (Fundamental model Tag) ใน Composite Rating Card ([`index.php`](file:///c:/xampp/htdocs/investment/index.php))
+- ลบ `<span class="badge badge-gold">` (Decorative Header Tags) ใน [`pages/screener.php`](file:///c:/xampp/htdocs/investment/pages/screener.php) และ [`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php))
+
+---
+
+## 📌 [Version 1.12.0] - 2026-08-24
+### 🩺 Step 1: System Health & Responsive Header Optimization
+
+#### 1. พัฒนาระบบตรวจสอบสุขภาพระบบอัตโนมัติ ([`pages/health_check.php`](file:///c:/xampp/htdocs/investment/pages/health_check.php))
+- **Environment & Runtime Suite:** ตรวจสอบความเข้ากันได้ของ PHP Runtime และ Extensions สำคัญ (`pdo`, `pdo_mysql`, `mbstring`, `json`, `session`, `curl`)
+- **Database & Schema Integrity Suite:** ตรวจสอบการเชื่อมต่อและนับจำนวนแถวในตารางฐานข้อมูลทั้ง 10 ตาราง
+- **Static Assets & CDN-Free Suite:** ตรวจสอบความพร้อมของไฟล์สไตล์ชีท CSS (`variables.css`, `layout.css`, `components.css`) และไลบรารี JavaScript ในเครื่อง (Local 100%)
+- **Financial Engines Validation:** ตรวจสอบความถูกต้องของโมดูลคำนวณราคาหุ้น, Altman Z-Score, Piotroski F-Score และ DCA Simulator
+- **Security & Session Suite:** ตรวจสอบ Session Lifecycle, Timing-Attack Safe CSRF Protection และ Bcrypt Password Hashing
+
+#### 2. จัดระเบียบ Responsive Navbar Header ไม่ให้ล้นจอ ([`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css) & [`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php))
+- ปรับ Breakpoint แสดงผล Desktop Nav จาก `992px` เป็น `1140px` พร้อมกลไกสลับแสดงผล Mobile Drawer Hamburger บนหน้าจอแท็บเล็ตและหน้าต่างขนาดกลาง
+- เพิ่มกฎขนาดกะทัดรัด (Compact Rules) บนหน้าจอขนาดกลาง (1140px - 1380px) ปรับลด Padding, Font Size และขนาด Search Box ป้องกันการทะลุออกนอกจอ 100%
+- ปรับข้อความป้ายเมนู Desktop ให้กระชับ ได้ใจความชัดเจน
+
+#### 3. เสริมสร้างความปลอดภัยส่วนกลาง ([`functions/helpers.php`](file:///c:/xampp/htdocs/investment/functions/helpers.php))
+- เพิ่มฟังก์ชัน `generateCsrfToken()` สร้าง Token ปลอดภัยด้วย `random_bytes(32)`
+- เพิ่มฟังก์ชัน `verifyCsrfToken()` ตรวจสอบ Token แบบ Timing Attack Safe ด้วย `hash_equals()`
+
+---
+
+## 📌 [Version 1.11.0] - 2026-08-24
+### 🛡️ Step 6: Advanced Statistical Financial Health Models (Altman Z & Piotroski F)
+
+#### 1. พัฒนาโมดูล Financial Models Engine ([`functions/financial_models.php`](file:///c:/xampp/htdocs/investment/functions/financial_models.php))
+- **`calculateAltmanZScore()`:** คำนวณแบบจำลองสถิติ Altman Z-Score ทำนายความเสี่ยงการล้มละลายของกิจการ จำแนกออกเป็น 3 โซน (Safe Zone \(Z \ge 2.99\), Grey Zone \(1.81 \le Z < 2.99\), และ Distress Zone \(Z < 1.81\))
+- **`calculatePiotroskiFScore()`:** คำนวณเกณฑ์ประเมินความแข็งแกร่งของงบการเงิน 9 จุด (Piotroski 9-Point Quality Score) ครอบคลุม 3 มิติหลัก: Profitability (4 คะแนน), Leverage & Liquidity (3 คะแนน), และ Operating Efficiency (2 คะแนน)
+
+#### 2. บูรณาการและเชื่อมโยงทั่วทั้งระบบ
+- **[`index.php`](file:///c:/xampp/htdocs/investment/index.php):** ติดตั้งแผงแสดงผล Altman Z-Score Segmented Meter และ Piotroski F-Score Progress Bar พร้อมกล่อง Dropdown ตรวจสอบเช็คลิสต์ 9 มิติอย่างละเอียด (Fundamental Checklist)
+- **[`pages/compare.php`](file:///c:/xampp/htdocs/investment/pages/compare.php):** เพิ่มแถว Altman Z-Score และ Piotroski F-Score ลงในตาราง Comparison Matrix Section 5 (Solvency & Financial Health)
+- **[`pages/screener.php`](file:///c:/xampp/htdocs/investment/pages/screener.php):** เพิ่มปุ่มชิปตัวกรองกลยุทธ์ยอดนิยม *หุ้นสุขภาพการเงินแกร่ง (Altman Safe & High F-Score)*
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่มคลาสสำหรับ Models Grid, Model Card, Z-Score 3-Segmented Meter, และ F-Score Checklist Items
+
+---
+
+## 📌 [Version 1.10.0] - 2026-08-24
+### 📑 Step 5: Portfolio Statement & Transaction Report Export Hub
+
+#### 1. พัฒนาโมดูล Export Engine ([`functions/export.php`](file:///c:/xampp/htdocs/investment/functions/export.php))
+- **`exportHoldingsToCsv()`:** ส่งออกรายการหุ้นที่ถือครองในพอร์ตเป็นไฟล์ CSV เข้ารหัส UTF-8 พร้อม Byte Order Mark (BOM `\xEF\xBB\xBF`) เพื่อเปิดภาษาไทยใน Microsoft Excel ได้ถูกต้องสมบูรณ์
+- **`exportTransactionsToCsv()`:** ส่งออกประวัติธุรกรรมซื้อ-ขาย พร้อมตัวกรองช่วงวันที่ (Date Range Filter), ค่าธรรมเนียม, กำไรรับรู้, และบันทึก Trading Rationale
+- **`getStatementData()`:** รวบรวมข้อมูลสถานะพอร์ตการเงิน เลขที่บัญชี และประวัติคำสั่งเพื่อใช้สร้างใบแจ้งยอดทางการ
+
+#### 2. พัฒนาหน้าจอ Export Hub & Official Statement ([`pages/export.php`](file:///c:/xampp/htdocs/investment/pages/export.php))
+- **Export Action Hub Cards:** การ์ดศูนย์ดาวน์โหลด 3 รูปแบบ (Holdings CSV, Transactions CSV พร้อมเลือกช่วงวันที่, และ Official Statement)
+- **Printable A4 Brokerage Statement:** ใบแจ้งยอดพอร์ตสไตล์สถาบันการเงิน จัดพิมพ์ขนาด A4 อัตโนมัติ พร้อมตราประทับดิจิทัล
+- **Print Media Engine (`@media print`):** ปรับแต่ง CSS ซ่อนปุ่มและ Navbar ทั้งหมด แปลงธีมเป็นโหมดเอกสารทางการสีขาว-ดำ สะอาดตา
+
+#### 3. บูรณาการและเชื่อมโยงทั่วทั้งระบบ
+- **[`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php):** เพิ่มปุ่มทางลัด `ส่งออกรายงาน (Export)` บนแถบ Header ของหน้าพอร์ตการลงทุน
+- **[`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php):** เพิ่ม SVG Icons `download`, `printer`, `file-text`
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่มคลาสสำหรับ Export Hub Grid, Statement Paper, และสไตล์ `@media print`
+
+---
+
+## 📌 [Version 1.9.0] - 2026-08-24
+### 📈 Step 4: Dollar-Cost Averaging (DCA) Simulator & Compounding Engine
+
+#### 1. พัฒนาโมดูล DCA Engine ([`functions/dca.php`](file:///c:/xampp/htdocs/investment/functions/dca.php))
+- **`simulateDcaGrowth()`:** จำลองการสะสมหุ้นรายเดือนแบบทบต้น (Month-by-Month Compounding), คำนวณเงินต้นสะสม, มูลค่าพอร์ตสุทธิ, กำไรส่วนต่างราคา (Capital Gains), ปันผลสะสม (Dividends), ตัวเลือกนำปันผลมาซื้อซ้ำ (DRIP), และเปรียบเทียบ Benchmark กับเงินฝากประจำ 1.5% APY และดัชนีตลาด SET Index 7.0% APY
+
+#### 2. พัฒนาหน้าจอ DCA Simulator ([`pages/dca.php`](file:///c:/xampp/htdocs/investment/pages/dca.php))
+- **Preset Strategy Chips:** ทางลัดแผนออมหุ้นยอดนิยม (*มือใหม่เริ่มออม 3,000฿/ด. 5 ปี*, *สร้างอิสรภาพทางการเงิน 5,000฿/ด. 10 ปี*, *เกษียณมั่งคั่ง 10,000฿/ด. 15 ปี*)
+- **Parameter Configuration Form:** ฟอร์มปรับเปลี่ยนจำนวนเงิน, ระยะเวลา (1-30 ปี), อัตราเติบโตคาดการณ์, อัตราเงินปันผล และสวิตช์ DRIP
+- **Financial KPI Summary:** สรุป 4 มิติ (เงินต้นสะสม, มูลค่าพอร์ตสุทธิ, กำไรส่วนต่างราคา, เงินปันผลสะสม)
+- **Benchmark Comparative Cards:** เปรียบเทียบผลตอบแทนสุทธิ พอร์ต DCA vs ดัชนีตลาด vs เงินฝากประจำ
+- **Multi-Line Growth Trajectory Chart:** แผนภูมิกราฟเส้นแสดงทิศทางการเติบโตของความมั่งคั่งเปรียบเทียบ 4 เส้น (Chart.js Local 100%)
+- **Year-by-Year Amortization Schedule Table:** ตารางแจกแจงเงินต้น, ปันผลประจำปี, กำไรสะสม, และมูลค่าพอร์ตสุทธิในแต่ละสิ้นปี
+
+#### 3. บูรณาการและเชื่อมโยงทั่วทั้งระบบ
+- **[`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php):** เพิ่มเมนู `จำลองออมหุ้น (DCA)` ใน Header ทั้ง Desktop และ Mobile Navigation Drawer
+- **[`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php):** เพิ่ม SVG Icons `calculator`, `repeat`, `coins`
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่มคลาสสำหรับ DCA Calculator Grid, Form Cards, Summary Cards, และ Benchmark Cards
+
+---
+
+## 📌 [Version 1.8.0] - 2026-08-24
+### 📖 Step 3: Trading Journal & Performance Analytics System
+
+#### 1. พัฒนาโมดูล Trading Journal Engine ([`functions/journal.php`](file:///c:/xampp/htdocs/investment/functions/journal.php))
+- **`getUserJournalEntries()`:** ดึงประวัติการบันทึกการเทรด พร้อมกรองตามกลยุทธ์ (Value, Growth, Dividend, Technical Breakout, AI Recommendation)
+- **`updateTradeJournalLesson()`:** อัปเดตบทเรียนที่ได้รับ (Lessons Learned / Post-trade Reflection)
+- **`calculateTradingPerformanceMetrics()`:** อัลกอริทึมคำนวณ Win Rate (%), Profit Factor, Net Realized P&L, Best/Worst Trade, Average Win vs Average Loss และสถิติแจกแจงแยกตามกลยุทธ์ (Strategy Breakdown)
+
+#### 2. พัฒนาหน้าจอ Trading Journal Dashboard ([`pages/journal.php`](file:///c:/xampp/htdocs/investment/pages/journal.php))
+- **Performance KPI Cards:** แผงสถิติ 4 มิติ (Win Rate %, Profit Factor, Net Realized P&L, Average Win / Average Loss)
+- **Strategy Breakdown Table:** ตารางสรุปจำนวนออเดอร์, Win, Loss, Win Rate และกำไรสะสมของแต่ละกลยุทธ์
+- **Strategy Filter Bar:** ชิปตัวกรองแยกตามกลยุทธ์การลงทุน 5 รูปแบบ
+- **Journal Timeline Cards:** แสดงรายละเอียดคำสั่งซื้อ-ขาย, กล่องเหตุผลการตัดสินใจ (`journal-rationale-box`), กล่องบทเรียนที่ได้รับ (`journal-lesson-box`), และแบบฟอร์ม Inline สำหรับเขียน/แก้ไขข้อคิดหลังปิดออเดอร์
+
+#### 3. ปรับปรุง Trade Modal & Portfolio Engine
+- **[`templates/trade_modal.php`](file:///c:/xampp/htdocs/investment/templates/trade_modal.php):** เพิ่มช่องเลือก Strategy Tag และกล่องกรอก Trading Rationale ในขั้นตอนการส่งคำสั่งซื้อ-ขาย
+- **[`functions/portfolio.php`](file:///c:/xampp/htdocs/investment/functions/portfolio.php):** เชื่อมโยง `executeSimulatedTrade()` ให้บันทึก Transaction ID, Strategy Tag, และ Rationale ลงในตาราง `trading_journals` แบบ Atomic Transaction
+- **[`pages/portfolio.php`](file:///c:/xampp/htdocs/investment/pages/portfolio.php):** ส่งต่อค่า Strategy Tag และ Rationale จากฟอร์มไปยังฟังก์ชันการเทรด
+- **[`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php):** เพิ่มเมนู `บันทึกการเทรด (Journal)` ใน Header ทั้ง Desktop และ Mobile Navigation Drawer
+- **[`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php):** เพิ่ม SVG Icons `book-open`, `target`, `pie-chart`
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่มสไตล์สำหรับ Performance KPI Grid, Journal Cards, Rationale Boxes, และ Strategy Breakdown Table
+
+---
+
+## 📌 [Version 1.7.0] - 2026-08-24
+### ⚖️ Step 2: Stock Comparison & Peer Analysis Matrix System
+
+#### 1. พัฒนาโมดูล Comparison Engine ([`functions/comparison.php`](file:///c:/xampp/htdocs/investment/functions/comparison.php))
+- **`getStocksForComparison()`:** ดึงข้อมูลหุ้นพร้อมกัน 2-4 ตัว พร้อมอัตราส่วนงบการเงินและคะแนน AI
+- **`identifyWinningMetrics()`:** อัลกอริทึมวิเคราะห์หาหุ้นที่เป็นผู้ชนะในแต่ละมิติ (P/E ต่ำสุด, P/BV ต่ำสุด, ROE สูงสุด, Net Margin สูงสุด, D/E ต่ำสุด, Yield สูงสุด, Revenue Growth สูงสุด, AI Score สูงสุด)
+- **`calculatePeerAverages()`:** คำนวณค่าเฉลี่ยของกลุ่ม (Peer Average Benchmark) เพื่อใช้เปรียบเทียบ
+
+#### 2. พัฒนาหน้าจอเปรียบเทียบระดับสถาบัน ([`pages/compare.php`](file:///c:/xampp/htdocs/investment/pages/compare.php))
+- **Preset Comparison Strategies:** ชิปทางลัดเปรียบเทียบกลุ่มยอดนิยม (*Tech AI Giants: DELTA vs NVDA vs AAPL*, *Thai Blue Chips & Dividend*, *Domestic Consumption & Recovery*)
+- **Multi-Stock Pills & Dropdown:** ระบบเลือกหุ้นเปรียบเทียบแบบยืดหยุ่น เพิ่ม/ลบได้สูงสุด 4 บริษัท
+- **Champion Spotlight Cards:** การ์ดสรุปผู้ชนะ 4 หมวดหลัก (AI Score Champion, Valuation Champion, ROE Champion, Dividend Champion)
+- **Multi-Bar Comparison Chart:** แผนภูมิเปรียบเทียบคะแนน AI 4 มิติ (Chart.js Local 100%)
+- **Financial Matrix Table:** ตารางเปรียบเทียบ 5 หมวดหมู่ใหญ่ (AI Score, Valuation, Profitability, Growth & Dividend, Solvency & Health) พร้อมไฮไลท์เซลล์ผู้ชนะด้วยสีทองและป้าย `badge-winner-tag`
+- **One-Click Trading Action:** ปุ่มส่งคำสั่งซื้อ-ขายจำลองตรงจากตารางเปรียบเทียบ
+
+#### 3. บูรณาการและเชื่อมโยงทั่วทั้งระบบ
+- **[`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php):** เพิ่มเมนู `เปรียบเทียบหุ้น (Compare)` ใน Header ทั้งบน Desktop และ Mobile Navigation Drawer
+- **[`index.php`](file:///c:/xampp/htdocs/investment/index.php):** เพิ่มปุ่มทางลัด `เปรียบเทียบคู่แข่ง` ข้างชื่อหุ้นใน Stock Hero
+- **[`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php):** เพิ่ม SVG Icons `scale`, `award`, `check-circle`
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่ม CSS Classes สำหรับ Matrix Table, Champion Cards, Winner Highlights, และ Comparison Pills
+
+---
+
+## 📌 [Version 1.6.0] - 2026-08-24
+### ⭐ Step 1: Watchlist & Price Target Alerts System
+
+#### 1. พัฒนาโมดูล Watchlist Engine ([`functions/watchlist.php`](file:///c:/xampp/htdocs/investment/functions/watchlist.php))
+- **`getUserWatchlist()`:** ดึงรายการหุ้นที่ผู้ใช้บันทึกไว้ พร้อมเชื่อมโยงอัตราส่วนการเงินและคะแนน AI พร้อมคำนวณ Proximity Alerts (แตะเป้าซื้อ/ขาย, ใกล้เป้าซื้อ ≤ +3%, ใกล้เป้าขาย ≥ -3%)
+- **`toggleWatchlist()`:** สลับสถานะเพิ่ม/ลบหุ้นออกจาก Watchlist แบบ atomic transaction
+- **`updateWatchlistTarget()`:** บันทึกและปรับปรุงราคาเป้าหมายซื้อ, เป้าหมายขาย, และข้อความบันทึกส่วนตัว
+- **`removeFromWatchlist()` & `isStockInWatchlist()`:** ตรวจสอบและจัดการข้อมูลอย่างปลอดภัยด้วย PDO Prepared Statements
+
+#### 2. สร้าง AJAX API Endpoint ([`api/watchlist_toggle.php`](file:///c:/xampp/htdocs/investment/api/watchlist_toggle.php))
+- รองรับ Action `toggle`, `update_target`, และ `remove` ตอบสนองแบบ Asynchronous JSON
+- มีการตรวจสอบสิทธิ์การเข้าสู่ระบบและ Guard Clauses ตามมาตรฐาน De Morgan's Laws & Early Return
+
+#### 3. พัฒนาหน้าจัดการ Watchlist สไตล์ Financial Terminal ([`pages/watchlist.php`](file:///c:/xampp/htdocs/investment/pages/watchlist.php))
+- แถบสรุป KPI 4 มิติ: จำนวนหุ้นใน Watchlist, หุ้นที่แตะเป้าซื้อ, หุ้นที่ใกล้เข้าเขตซื้อ, หุ้นคุณภาพสูง (AI Score 80+)
+- การ์ดหุ้น Watchlist แสดงราคา Real-time, อัตราส่วน P/E, ROE, AI Score, ป้าย Proximity Alerts (`badge-target-hit`, `badge-target-near`), และโน้ตส่วนตัว
+- ปุ่มเทรดด่วนเชื่อมกับ `trade_modal.php`, ปุ่มเปิด Modal ตั้งราคาเป้าหมาย และปุ่มลบหุ้น
+- Empty State สะอาดตาพร้อมเชิญชวนให้คัดกรองหุ้นหรือเข้าสู่ระบบ
+
+#### 4. บูรณาการ UI ทั่วทั้งระบบ
+- **[`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php):** เพิ่มเมนู `รายการติดตาม (Watchlist)` ทั้งใน Desktop Bar และ Mobile Navigation Drawer
+- **[`index.php`](file:///c:/xampp/htdocs/investment/index.php):** ติดตั้งปุ่ม Quick Bookmark Icon สไตล์ Dark Gold ข้างชื่อย่อหุ้นใน Stock Hero
+- **[`pages/screener.php`](file:///c:/xampp/htdocs/investment/pages/screener.php):** ติดตั้งปุ่ม Quick Bookmark ในตารางผลการคัดกรองหุ้น
+- **[`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php):** เพิ่ม SVG Icons `bookmark`, `bookmark-filled`, `crosshair`, `trash`, `edit`, `external-link` (100% Vector ไร้ Emoji)
+- **[`js/main.js`](file:///c:/xampp/htdocs/investment/js/main.js):** สร้าง `window.toggleWatchlistStock()` สากล รองรับการคลิก Bookmark ได้จากทุกหน้าเพจ
+- **[`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css):** เพิ่ม CSS Classes สำหรับ Watchlist Grid, Cards, Badges, และปุ่ม Bookmark ตามทฤษฎี Subtle Flat Hover State
+
+---
+
+## 📌 [Version 1.5.4] - 2026-08-24
+### 🧹 Removal of Quick Demo Account Box & Placeholder Cleanup
+
+#### 1. นำข้อมูลบัญชีทดลองใช้ออกจากหน้าเข้าสู่ระบบ ([`pages/login.php`](file:///c:/xampp/htdocs/investment/pages/login.php))
+- **ลบ Demo Box:** ลบส่วน *บัญชีทดสอบในระบบ* และ *บัญชี Demo สำหรับทดลองใช้ (User: investor_demo | Pass: password123)* ออกจากแบบฟอร์มเข้าสู่ระบบทั้งหมด
+- **ปรับ Placeholder:** ปรับข้อความตัวอย่างในช่องกรอกชื่อผู้ใช้/อีเมลเป็น `กรอกชื่อผู้ใช้ หรือ อีเมลของคุณ` และช่องรหัสผ่านเป็น `กรอกรหัสผ่านของคุณ` ให้สะอาดตา เป็นมืออาชีพ พร้อมสำหรับการใช้งานจริง
+
+---
+
+## 📌 [Version 1.5.3] - 2026-08-24
+### 👁️ Native Browser Password Reveal Icon Reset & Input Wrapper Isolation
+
+#### 1. ซ่อนไอคอนดวงตาเริ่มต้นของเว็บเบราว์เซอร์ ([`css/components.css`](file:///c:/xampp/htdocs/investment/css/components.css))
+- **Edge / IE Pseudo-elements:** ซ่อน `::-ms-reveal` และ `::-ms-clear` บน `input[type="password"]` แบบ `display: none !important;` ขจัดไอคอนดวงตาของ Microsoft Edge ที่แสดงซ้อนกับปุ่ม Custom SVG
+- **WebKit / Blink Elements:** ซ่อน `::-webkit-contacts-auto-fill-button`, `::-webkit-credentials-auto-fill-button`, และ `::-webkit-caps-lock-indicator`
+- **Padding Isolation:** กำหนด `padding-right: 2.75rem;` บน `.form-input-wrapper input[type="password"]` ป้องกันไม่ให้ข้อความรหัสผ่านที่พิมพ์ทับซ้อนกับปุ่มดวงตา Custom SVG (`.input-toggle-btn`)
+- **Luxury Toggle Button:** ปรับแต่ง `.input-toggle-btn` ให้มี `z-index: 2`, รองรับ Focus State และเปลี่ยนสีเป็น `var(--accent-gold)` เมื่อ Hover อย่างราบรื่น
+
+---
+
+## 📌 [Version 1.5.2] - 2026-08-23
+### 📐 Comprehensive Footer Responsive Layout & Proportional Grid System
+
+#### 1. ปรับระบบ Layout และ Grid ของ Footer ให้สมดุลทุกขนาดหน้าจอ ([`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css))
+- **Mobile (< 640px):** แสดงผลแบบ 1 Column แนวตั้ง พร้อมระยะห่าง `gap: 2rem;` ที่อ่านง่าย สบายตา
+- **Tablet (640px - 991px):** กำหนดให้คอลัมน์แบรนด์ขยายเต็มความกว้าง (`grid-column: 1 / -1;`) และให้ 2 คอลัมน์เมนูนำทาง (`ระบบการลงทุน` และ `บัญชีผู้ใช้งาน`) วางเรียงข้างกันอย่างสมมาตร (`1fr 1fr`) ขจัดปัญหาช่องว่างว่างเปล่า
+- **Desktop (>= 992px):** ปรับสัดส่วน Grid เป็น `1.85fr 1fr 1fr;` พร้อมระยะห่าง `gap: clamp(2.5rem, 4vw, 4rem);` และควบคุม `max-width: 440px;` ของคำบรรยายให้อ่านสบายตา
+- **Typography & Links:** ปรับระยะบรรทัด `line-height: 1.65;`, ระยะห่างไอคอน `gap: 8px;`, และจัดแถบ Copyright กึ่งกลางอย่างประณีต
+
+---
+
+## 📌 [Version 1.5.1] - 2026-08-23
+### 🏷️ Complete Removal of Brand Badge (PRO) across Header & Footer
+
+#### 1. ลบ `class="brand-badge"` ทั่วทั้งระบบ
+- **[`templates/header.php`](file:///c:/xampp/htdocs/investment/templates/header.php):** ลบ `<span class="brand-badge">PRO</span>` ออกจากโลโก้ในแถบ Header
+- **[`templates/footer.php`](file:///c:/xampp/htdocs/investment/templates/footer.php):** ลบ `<span class="brand-badge">PRO</span>` ออกจากโลโก้ในส่วนท้ายเว็บไซต์
+- **[`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css):** ลบคลาส CSS `.brand-badge` และ Media Query ที่เกี่ยวข้องออกทั้งหมด
+- โลโก้แบรนด์แสดงผลเรียบง่าย คมชัด และสม่ำเสมอในรูปแบบ `SmartPort AI`
+
+---
+
+## 📌 [Version 1.5.0] - 2026-08-23
+### 🌟 3-Column Minimalist Luxury Footer Refinement
+
+#### 1. ปรับโครงสร้าง Footer สู่รูปแบบ 3 คอลัมน์สมดุลสะอาดตา ([`templates/footer.php`](file:///c:/xampp/htdocs/investment/templates/footer.php))
+- **ลบคอลัมน์โมเดลวิเคราะห์ออก:** ลบหัวข้อ *การวิเคราะห์และโมเดล AI* พร้อมรายการย่อย 4 รายการ (`Composite Score`, `งบการเงิน 3 ด้าน`, `อัตราส่วนสำคัญ`, `AI Summary`)
+- **ลบ Trust Chips:** ลบ `.footer-trust-chips` ออกจากคอลัมน์แบรนด์
+- **คงเหลือ 3 คอลัมน์หลักระดับพรีเมียม:**
+  1. `แบรนด์และคำบรรยายระบบ` (SmartPort AI PRO Logo & Mission Statement)
+  2. `ระบบการลงทุน` (วิเคราะห์หุ้น, คัดกรองหุ้น Screener, พอร์ตจำลอง ฿1,000,000)
+  3. `บัญชีผู้ใช้งาน` (เข้าสู่ระบบ / สมัครสมาชิก หรือ พอร์ตจำลอง / ออกจากระบบ)
+- **ปรับแต่ง Desktop Layout ([`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css)):** เปลี่ยน `.footer-grid` ให้แสดงผลแบบ `grid-template-columns: 2fr 1fr 1fr;` บนหน้าจอ Desktop (`>= 992px`) และจัดความกว้าง `max-width: 420px;` สำหรับคำบรรยายให้อ่านง่าย สวยงาม ไม่หนาแน่นจนเกินไป
+
+---
+
+## 📌 [Version 1.4.9] - 2026-08-23
+### ✨ Clean & Streamlined Footer Optimization
+
+#### 1. ตัดส่วนที่ไม่จำเป็นออกตามคำสั่งของผู้ใช้ ([`templates/footer.php`](file:///c:/xampp/htdocs/investment/templates/footer.php))
+- **ลบ Technical Meta Bar:** นำข้อมูล Stack (`PHP 8.x + MySQL + Vanilla JS`), Security (`PDO Prepared & BCRYPT`), และ Version ออกจาก Footer ด้านล่าง
+- **ลบ Status Card:** นำ `.footer-status-card` ออกจากคอลัมน์ที่ 4 เพื่อให้รายการเมนูบัญชีผู้ใช้แสดงผลอย่างสะอาดตาและเป็นระเบียบ
+- **ลบ Disclaimer Box:** นำ `.footer-disclaimer-box` ออก และรวมข้อความแจ้งเตือนสั้นๆ ลงในแถบ Copyright ด้านล่าง
+- **ทำความสะอาด CSS:** ลบ CSS Rules ที่ไม่ได้ใช้งานใน [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css) และจัดตำแหน่ง Copyright ให้อยู่กึ่งกลางอย่างสมดุล
+
+---
+
+## 📌 [Version 1.4.8] - 2026-08-23
+### 🎯 Footer Content Alignment with Core Project Specifications
+
+#### 1. ปรับเนื้อหาส่วนท้ายเว็บไซต์ (`class="app-footer"`) ให้ตรงกับโปรเจกต์ 100%
+- **Col 1 (พันธกิจและแบรนด์):** ระบุวัตถุประสงค์หลักของ SmartPort AI ในการวิเคราะห์ปัจจัยพื้นฐานหุ้นไทย/สากล, AI Composite Score 4 มิติ, และพอร์ตจำลอง ฿1,000,000 บนสถาปัตยกรรม Native Local 100%
+- **Col 2 (ระบบหลัก):** ลิงก์ตรงสู่ 3 ระบบสำคัญของโปรเจกต์ (วิเคราะห์หุ้นรายตัว & กราฟราคา, คัดกรองหุ้นคุณค่า AI Screener, และพอร์ตการลงทุนจำลอง ฿1,000,000)
+- **Col 3 (การวิเคราะห์ & ตัวชี้วัด):** ปรับหัวข้อให้ตรงกับฟังก์ชันจริง (`Composite Score 0-100`, `งบการเงิน 3 ด้าน`, `อัตราส่วนสำคัญ P/E, EPS, ROE, D/E`, `AI Summary & Risk Assessment`)
+- **Col 4 (จำลองพอร์ตและสมาชิก):** ระบุข้อมูลเงินทุนตั้งต้น ฿1,000,000 และค่าคอมมิชชัน 0.157% ตรงตาม `constants.php` และ `PRODUCT.md`
+- **Financial Disclaimer:** ปรับข้อความคำเตือนความเสี่ยงให้ครอบคลุมการศึกษาและการจำลองพอร์ตลงทุนเสมือนจริง
+- **Footer Bottom Meta:** ระบุ Stack (`PHP 8.x + MySQL + Vanilla JS`) และความปลอดภัย (`PDO Prepared & BCRYPT`)
+
+---
+
+## 📌 [Version 1.4.7] - 2026-08-23
+### 🏛️ Institutional Luxury Footer Redesign & Trust Framework
+
+#### 1. ปรับปรุงดีไซน์และโครงสร้างส่วนท้ายเว็บไซต์ ([`templates/footer.php`](file:///c:/xampp/htdocs/investment/templates/footer.php))
+- **Brand & Trust Framework (Col 1):** โลโก้แบรนด์ `SmartPort AI PRO`, คำอธิบายแพลตฟอร์มเชิงสถาบัน, และป้าย Trust Chips 3 รายการ (`100% Local Intelligence`, `Zero-Lag Architecture`, `256-Bit Security`)
+- **ระบบการลงทุน (Col 2):** เมนูนำทางสู่ระบบหลักพร้อมไอคอน `arrow-up-right`
+- **โมเดล AI เชิงลึก (Col 3):** สรุปโมเดลการคำนวณและประเมินมูลค่าหุ้น (`Composite Rating`, `Intrinsic Value`, `Z-Score`, `Asset Allocation Optimizer`)
+- **สถานะและการเข้าถึง (Col 4):** การ์ดแสดงสถานะระบบแบบ Real-time Pulse Dot (`Core Engine Active`, `Architecture: 100% Local`) พร้อมปุ่มเข้าถึงบัญชีผู้ใช้
+- **Financial Disclaimer Box:** กล่องแจ้งเตือนความรับผิดชอบทางการเงินแบบ Glassmorphic พร้อมไอคอน `alert-triangle` สีทอง
+- **Footer Bottom Meta:** ข้อมูลเครื่องยนต์ (`PHP 8.2 Strict Types`), เวอร์ชันระบบ (`APP_VERSION`), และค่า Latency (`< 5ms`)
+
+#### 2. เพิ่มเติม SVG Icons ใน [`functions/icons.php`](file:///c:/xampp/htdocs/investment/functions/icons.php)
+- เพิ่มไอคอน `activity`, `globe`, `cpu`, `layers` แบบ Vector คมชัด 100% ปราศจาก Emoji
+
+#### 3. ปรับปรุง CSS สไตล์หรูหราใน [`css/layout.css`](file:///c:/xampp/htdocs/investment/css/layout.css)
+- กำหนดเฉดสีพื้นหลังแบบ Dark Ambient Gradient (`#181111` ถึง `#0F0B0B`)
+- เพิ่มเส้นขอบบนแบบ Accent Gold Ambient Line
+- ปรับ Grid และ Flex ให้รองรับ Responsive สมบูรณ์แบบทุกอุปกรณ์
+
+---
+
 ## 📌 [Version 1.4.6] - 2026-08-23
 ### 🚀 Direct Inline Mobile Drawer Controller & Cache Busting (v1.4.5 / v1.4.6)
 

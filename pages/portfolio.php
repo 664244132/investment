@@ -26,11 +26,13 @@ $userId = (int)$user['id'];
 
 // ประมวลผลคำสั่งซื้อ-ขายจำลอง (POST Request)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'trade') {
-    $stockId  = (int)($_POST['stock_id'] ?? 0);
-    $type     = strtoupper(trim((string)($_POST['trade_type'] ?? 'BUY')));
-    $quantity = (int)($_POST['quantity'] ?? 0);
+    $stockId     = (int)($_POST['stock_id'] ?? 0);
+    $type        = strtoupper(trim((string)($_POST['trade_type'] ?? 'BUY')));
+    $quantity    = (int)($_POST['quantity'] ?? 0);
+    $strategyTag = trim((string)($_POST['strategy_tag'] ?? 'Value Investing'));
+    $rationale   = trim((string)($_POST['rationale'] ?? ''));
 
-    $tradeResult = executeSimulatedTrade($pdo, $userId, $stockId, $type, $quantity);
+    $tradeResult = executeSimulatedTrade($pdo, $userId, $stockId, $type, $quantity, $strategyTag, $rationale);
 
     if ($tradeResult['success']) {
         setFlashMessage('success', $tradeResult['message']);
@@ -82,7 +84,6 @@ require_once __DIR__ . '/../templates/header.php';
             <h1 style="font-size: clamp(1.4rem, 4vw, 1.85rem); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
               <?= icon('wallet', 'text-gold', 24) ?> <?= e($portfolio['portfolio_name']) ?>
             </h1>
-            <span class="badge badge-gold">จำลองตามราคาตลาดจริง</span>
           </div>
           <p style="color: var(--text-muted); font-size: 0.85rem;">
             เงินทุนเริ่มต้น <?= formatMoney((float)$portfolio['initial_cash']) ?> · ค่าธรรมเนียมจำลอง 0.157% ต่อรายการ
@@ -90,6 +91,9 @@ require_once __DIR__ . '/../templates/header.php';
         </div>
 
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="<?= e(BASE_URL) ?>/pages/export.php" class="btn btn-outline" title="ส่งออกรายงานและใบแจ้งยอดพอร์ต">
+            <?= icon('file-text', 'text-gold', 14) ?> ส่งออกรายงาน (Export)
+          </a>
           <button type="button" class="btn btn-buy open-trade-modal-btn" data-trade-type="BUY">
             <?= icon('plus', '', 14) ?> ส่งคำสั่งซื้อ (BUY)
           </button>

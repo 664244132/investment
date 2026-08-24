@@ -14,12 +14,15 @@ require_once __DIR__ . '/functions/icons.php';
 require_once __DIR__ . '/functions/auth.php';
 require_once __DIR__ . '/functions/stocks.php';
 require_once __DIR__ . '/functions/portfolio.php';
+require_once __DIR__ . '/functions/watchlist.php';
+require_once __DIR__ . '/functions/financial_models.php';
 
 startAppSession();
 
 $pdo = getDbConnection();
 $user = getCurrentUser();
 $isUserLoggedIn = isLoggedIn();
+$userId = (int)($user['id'] ?? 0);
 
 // ดึงรายชื่อหุ้นที่ต้องการแสดง (ค่าเริ่มต้นเป็น DELTA หรือรับจาก $_GET['symbol'])
 $requestedSymbol = (string)($_GET['symbol'] ?? 'DELTA');
@@ -39,11 +42,21 @@ $priceHistory = [];
 $low52w = 0.0;
 $high52w = 0.0;
 $rangeProgressPct = 50.0;
+$isBookmarked = false;
+$altmanZ = null;
+$piotroskiF = null;
 
 if ($stock) {
     $priceHistory = getStockPriceHistory($pdo, (int)$stock['id'], 30);
     $currentPrice = (float)$stock['current_price'];
     
+    if ($isUserLoggedIn && $userId > 0) {
+        $isBookmarked = isStockInWatchlist($pdo, $userId, (int)$stock['id']);
+    }
+
+    $altmanZ = calculateAltmanZScore($stock);
+    $piotroskiF = calculatePiotroskiFScore($stock);
+
     // คำนวณช่วง 52-Week Range จากราคาปัจจุบันและประวัติราคา
     $low52w = $currentPrice * 0.72;
     $high52w = $currentPrice * 1.28;
@@ -116,11 +129,24 @@ require_once __DIR__ . '/templates/header.php';
             <div>
               <div class="modal-title-flex" style="margin-bottom: 0.35rem; flex-wrap: wrap;">
                 <span class="stock-symbol"><?= e($stock['symbol']) ?></span>
-                <span class="badge badge-gold"><?= e($stock['market']) ?></span>
-                <span class="badge badge-neutral"><?= e($stock['sector']) ?></span>
-                <span class="badge badge-gain">
-                  <?= icon('check', 'text-gain', 12) ?> ข้อมูลพร้อมวิเคราะห์
-                </span>
+                
+                <!-- Quick Bookmark Button -->
+                <button type="button" class="btn-bookmark <?= $isBookmarked ? 'bookmarked' : '' ?>" 
+                        id="heroBookmarkBtn" 
+                        onclick="window.toggleWatchlistStock(<?= e((string)$stock['id']) ?>, this)"
+                        title="<?= $isBookmarked ? 'นำออกจาก Watchlist' : 'เพิ่มใน Watchlist' ?>" 
+                        aria-label="Toggle Watchlist">
+                  <span class="bm-icon-outline" style="<?= $isBookmarked ? 'display:none;' : '' ?>">
+                    <?= icon('bookmark', '', 16) ?>
+                  </span>
+                  <span class="bm-icon-filled" style="<?= $isBookmarked ? '' : 'display:none;' ?>">
+                    <?= icon('bookmark-filled', 'text-gold', 16) ?>
+                  </span>
+                </button>
+
+                <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=<?= e($stock['symbol']) ?>" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;" title="เปรียบเทียบ <?= e($stock['symbol']) ?> กับหุ้นคู่แข่ง">
+                  <?= icon('scale', 'text-gold', 12) ?> เปรียบเทียบคู่แข่ง
+                </a>
               </div>
               <p class="hero-company-name">
                 <?= e($stock['name_th'] ?: $stock['name_en']) ?>
@@ -408,9 +434,6 @@ require_once __DIR__ . '/templates/header.php';
                 ประเมินจากแบบจำลองเชิงปริมาณ 4 มิติหลัก (เต็ม 100 คะแนน)
               </p>
             </div>
-            <span class="badge badge-gold">
-              โมเดลการประเมินปัจจัยพื้นฐาน
-            </span>
           </div>
 
           <div class="score-grid">
@@ -485,6 +508,92 @@ require_once __DIR__ . '/templates/header.php';
               </div>
             </div>
           </div>
+
+          <?php if ($altmanZ && $piotroskiF): ?>
+            <!-- Advanced Statistical Models: Altman Z-Score & Piotroski F-Score -->
+            <div class="models-grid">
+              
+              <!-- Altman Z-Score Card -->
+              <div class="model-card">
+                <div class="model-card-head">
+                  <div class="model-card-title">
+                    <?= icon('shield', 'text-gold', 18) ?> Altman Z-Score (ความเสี่ยงการล้มละลาย)
+                  </div>
+                  <span class="badge <?= e($altmanZ['badge_class']) ?>">
+                    <?= e($altmanZ['zone_th']) ?>
+                  </span>
+                </div>
+                <div>
+                  <div class="model-score-display">
+                    <span class="model-score-num <?= e($altmanZ['color_class']) ?>">
+                      <?= number_format($altmanZ['score'], 2) ?>
+                    </span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">/ 8.50</span>
+                  </div>
+                  <div class="zscore-meter-track">
+                    <div class="zscore-seg-distress <?= ($altmanZ['zone'] === 'Distress') ? 'zscore-seg-active' : '' ?>"></div>
+                    <div class="zscore-seg-grey <?= ($altmanZ['zone'] === 'Grey') ? 'zscore-seg-active' : '' ?>"></div>
+                    <div class="zscore-seg-safe <?= ($altmanZ['zone'] === 'Safe') ? 'zscore-seg-active' : '' ?>"></div>
+                  </div>
+                  <div class="zscore-labels-row">
+                    <span>Distress (&lt;1.81)</span>
+                    <span>Grey (1.81-2.99)</span>
+                    <span>Safe (&gt;2.99)</span>
+                  </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                  <?= e($altmanZ['description']) ?>
+                </p>
+              </div>
+
+              <!-- Piotroski F-Score Card -->
+              <div class="model-card">
+                <div class="model-card-head">
+                  <div class="model-card-title">
+                    <?= icon('star', 'text-gold', 18) ?> Piotroski F-Score (คุณภาพงบการเงิน 9 ด้าน)
+                  </div>
+                  <span class="badge <?= e($piotroskiF['badge_class']) ?>">
+                    <?= e($piotroskiF['rating_th']) ?>
+                  </span>
+                </div>
+                <div>
+                  <div class="model-score-display">
+                    <span class="model-score-num <?= ($piotroskiF['score'] >= 8) ? 'text-gain' : (($piotroskiF['score'] >= 5) ? 'text-gold' : 'text-loss') ?>">
+                      <?= $piotroskiF['score'] ?>
+                    </span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">/ <?= $piotroskiF['max_score'] ?> คะแนน</span>
+                  </div>
+                  <div class="score-progress-track" style="margin-top: 0.5rem;">
+                    <div class="score-progress-bar" style="width: <?= ($piotroskiF['score'] / 9) * 100 ?>%; background: <?= ($piotroskiF['score'] >= 8) ? 'var(--color-success)' : (($piotroskiF['score'] >= 5) ? 'var(--accent-gold)' : 'var(--color-danger)') ?>;"></div>
+                  </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                  <?= e($piotroskiF['description']) ?>
+                </p>
+
+                <!-- Checklist Dropdown details -->
+                <details style="font-size: 0.8rem; color: var(--text-muted);">
+                  <summary style="cursor: pointer; color: var(--accent-gold); user-select: none;">
+                    <?= icon('sliders', '', 12) ?> ดูรายละเอียดเกณฑ์ 9 ข้อ (Fundamental Checklist)
+                  </summary>
+                  <div class="fscore-checklist-box">
+                    <?php foreach ($piotroskiF['checklist'] as $item): ?>
+                      <div class="fscore-check-item">
+                        <span class="fscore-item-title <?= $item['passed'] ? 'passed' : '' ?>">
+                          <?= $item['passed'] ? icon('check-circle', 'text-gain', 14) : icon('close', 'text-loss', 14) ?>
+                          <?= e($item['title']) ?>
+                        </span>
+                        <span class="badge <?= $item['passed'] ? 'badge-gain' : 'badge-neutral' ?>" style="font-size: 0.68rem;">
+                          <?= e($item['value']) ?>
+                        </span>
+                      </div>
+                    <?php endforeach; ?>
+                  </div>
+                </details>
+              </div>
+
+            </div>
+          <?php endif; ?>
         </section>
 
       <?php endif; ?>

@@ -135,6 +135,49 @@ function getPnlBadgeClass(float $change): string
 }
 
 /**
+ * แปลงวันที่และเวลาเป็นรูปแบบภาษาไทย (พ.ศ.) เช่น "24 สิงหาคม 2569 เวลา 09:46:05 น."
+ *
+ * @param string|int|DateTimeInterface|null $dateTime
+ * @param bool $showTime
+ * @return string
+ */
+function formatThaiDate(mixed $dateTime = null, bool $showTime = true): string
+{
+    if ($dateTime === null || $dateTime === '') {
+        $timestamp = time();
+    } elseif (is_numeric($dateTime)) {
+        $timestamp = (int)$dateTime;
+    } elseif ($dateTime instanceof DateTimeInterface) {
+        $timestamp = $dateTime->getTimestamp();
+    } else {
+        $timestamp = strtotime((string)$dateTime);
+        if ($timestamp === false) {
+            return (string)$dateTime;
+        }
+    }
+
+    $thaiMonths = [
+        1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน',
+        5 => 'พฤษภาคม', 6 => 'มิถุนายน', 7 => 'กรกฎาคม', 8 => 'สิงหาคม',
+        9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม'
+    ];
+
+    $day   = (int)date('j', $timestamp);
+    $month = (int)date('n', $timestamp);
+    $year  = (int)date('Y', $timestamp) + 543;
+
+    $monthName = $thaiMonths[$month] ?? '';
+    $formattedDate = "{$day} {$monthName} {$year}";
+
+    if ($showTime) {
+        $time = date('H:i:s', $timestamp);
+        $formattedDate .= " เวลา {$time} น.";
+    }
+
+    return $formattedDate;
+}
+
+/**
  * ตอบกลับการร้องขอในรูปแบบ JSON พร้อมกำหนด Header ที่ถูกต้อง
  *
  * @param array $data ข้อมูลที่ต้องการส่งกลับ
@@ -225,3 +268,41 @@ function getFlashMessage(): ?array
 
     return $flash;
 }
+
+/**
+ * สร้าง CSRF Token ประจำเซสชัน (Cryptographically Secure Pseudo-Random Bytes)
+ *
+ * @return string
+ */
+function generateCsrfToken(): string
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        startAppSession();
+    }
+
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return (string)$_SESSION['csrf_token'];
+}
+
+/**
+ * ตรวจสอบความถูกต้องของ CSRF Token ป้องกันการโจมตีข้ามไซต์ (Timing Attack Safe)
+ *
+ * @param string|null $token
+ * @return bool
+ */
+function verifyCsrfToken(?string $token): bool
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        startAppSession();
+    }
+
+    if ($token === null || $token === '' || empty($_SESSION['csrf_token'])) {
+        return false;
+    }
+
+    return hash_equals((string)$_SESSION['csrf_token'], $token);
+}
+
