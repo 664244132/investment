@@ -25,7 +25,7 @@ $user = getCurrentUser();
 $userId = (int)$user['id'];
 
 // ประมวลผลคำสั่งซื้อ-ขายจำลอง (POST Request)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'trade') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action']) && $_POST['action'] === 'trade') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
         setFlashMessage('danger', 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วทำรายการใหม่อีกครั้ง');
         redirect(BASE_URL . '/pages/portfolio.php');

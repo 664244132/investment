@@ -24,7 +24,7 @@ $isUserLoggedIn = isLoggedIn();
 $userId = (int)($user['id'] ?? 0);
 
 // จัดการการอัปเดตบทเรียนที่ได้รับ (Lessons Learned)
-if ($isUserLoggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_lesson') {
+if ($isUserLoggedIn && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_lesson') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
         setFlashMessage('danger', 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วทำรายการใหม่อีกครั้ง');
         redirect(BASE_URL . '/pages/journal.php');

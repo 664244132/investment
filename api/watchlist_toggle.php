@@ -19,7 +19,7 @@ startAppSession();
 header('Content-Type: application/json; charset=UTF-8');
 
 // Guard Clause 1: ต้องเป็นคำขอแบบ POST เท่านั้น
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     jsonResponse(['success' => false, 'message' => 'Method Not Allowed'], 405);
 }
 

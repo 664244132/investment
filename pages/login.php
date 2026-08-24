@@ -23,7 +23,7 @@ if (isLoggedIn()) {
 $error = null;
 
 // จัดการเมื่อมีการส่งฟอร์ม (POST Request)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
         $error = 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วเข้าสู่ระบบใหม่อีกครั้ง';
     } else {

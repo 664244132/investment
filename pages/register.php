@@ -23,7 +23,7 @@ if (isLoggedIn()) {
 $pdo = getDbConnection();
 $error = null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? null)) {
         $error = 'การตรวจสอบความปลอดภัย CSRF ล้มเหลว กรุณารีเฟรชหน้าเว็บแล้วสมัครสมาชิกใหม่อีกครั้ง';
     } else {
