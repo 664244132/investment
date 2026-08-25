@@ -91,16 +91,32 @@ function getPortfolioHoldings(PDO $pdo, int $portfolioId): array
     $result = [];
     foreach ($items as $item) {
         $qty          = (int)$item['quantity'];
-        $avgPrice     = (float)$item['average_price'];
-        $currentPrice = (float)$item['current_price'];
+        $avgPrice     = (float)$item['average_price'];     // ราคาต้นทุนในสกุลเงินจริง (THB หรือ USD)
+        $currentPrice = (float)$item['current_price'];    // ราคาตลาดในสกุลเงินจริง (THB หรือ USD)
+        
+        $isThai       = isThaiStock($item['market'], $item['symbol']);
+        $currSym      = $isThai ? '฿' : '$';
+        $currency     = $isThai ? 'THB' : 'USD';
+        $fxRate       = $isThai ? 1.0 : DEFAULT_USD_THB_RATE;
 
-        $costValue    = $qty * $avgPrice;
-        $marketValue  = $qty * $currentPrice;
-        $unrealizedPnl= $marketValue - $costValue;
-        $returnPct    = ($costValue > 0) ? ($unrealizedPnl / $costValue) * 100 : 0.0;
+        // คำนวณต้นทุนและมูลค่าตลาดเทียบเท่าเงินบาท (THB Equivalent)
+        $avgPriceThb  = $avgPrice * $fxRate;
+        $currPriceThb = $currentPrice * $fxRate;
+        $costValueThb = $qty * $avgPriceThb;
+        $marketValThb = $qty * $currPriceThb;
+        $unrealizedPnl= $marketValThb - $costValueThb;
+        $returnPct    = ($costValueThb > 0) ? ($unrealizedPnl / $costValueThb) * 100 : 0.0;
 
-        $item['cost_value']         = $costValue;
-        $item['market_value']       = $marketValue;
+        $item['is_thai']            = $isThai;
+        $item['currency']           = $currency;
+        $item['currency_symbol']    = $currSym;
+        $item['fx_rate']            = $fxRate;
+        $item['average_price_thb']  = $avgPriceThb;
+        $item['current_price_thb']  = $currPriceThb;
+        $item['cost_value']         = $costValueThb;
+        $item['market_value']       = $marketValThb;
+        $item['cost_value_orig']    = $qty * $avgPrice;
+        $item['market_value_orig']  = $qty * $currentPrice;
         $item['unrealized_pnl']     = $unrealizedPnl;
         $item['return_percent']     = $returnPct;
         $item['unrealized_pnl_pct'] = $returnPct;
@@ -122,7 +138,7 @@ function getPortfolioHoldings(PDO $pdo, int $portfolioId): array
 function getPortfolioTransactions(PDO $pdo, int $portfolioId, int $limit = 50): array
 {
     $sql = "SELECT t.id, t.transaction_type, t.quantity, t.price, t.total_amount, t.fee, t.realized_pnl, t.created_at,
-                   s.symbol, s.name_en, s.name_th
+                   s.symbol, s.name_en, s.name_th, s.market
             FROM transactions t
             INNER JOIN stocks s ON t.stock_id = s.id
             WHERE t.portfolio_id = :portfolio_id
@@ -183,8 +199,8 @@ function executeSimulatedTrade(
     $portfolioId = (int)$portfolio['id'];
     $cashBalance = (float)$portfolio['cash_balance'];
 
-    // 2. ดึงราคาปัจจุบันของหุ้น
-    $stockSql = "SELECT id, symbol, current_price FROM stocks WHERE id = :stock_id LIMIT 1";
+    // 2. ดึงราคาปัจจุบันและตลาดของหุ้น
+    $stockSql = "SELECT id, symbol, market, current_price FROM stocks WHERE id = :stock_id LIMIT 1";
     $sStmt = $pdo->prepare($stockSql);
     $sStmt->execute([':stock_id' => $stockId]);
     $stock = $sStmt->fetch();
@@ -193,36 +209,51 @@ function executeSimulatedTrade(
         return ['success' => false, 'message' => 'ไม่พบข้อมูลหุ้นที่เลือกในระบบ'];
     }
 
-    $price = (float)$stock['current_price'];
-    $subtotal = $quantity * $price;
-    $fee = $subtotal * SIMULATED_BROKER_FEE_RATE; // ค่าคอมมิชชัน 0.157%
+    $price        = (float)$stock['current_price']; // ราคาในสกุลเงินจริง (USD หรือ THB)
+    $isThai       = isThaiStock($stock['market'], $stock['symbol']);
+    $currSym      = $isThai ? '฿' : '$';
+    $fxRate       = $isThai ? 1.0 : DEFAULT_USD_THB_RATE;
+    
+    // คำนวณราคาและมูลค่าเทียบเท่าเงินบาท (THB Equivalent)
+    $priceInThb   = $price * $fxRate;
+    $subtotalThb  = $quantity * $priceInThb;
+    $feeThb       = $subtotalThb * SIMULATED_BROKER_FEE_RATE; // ค่าคอมมิชชันจำลอง 0.157%
 
     try {
         $pdo->beginTransaction();
 
         if ($type === 'BUY') {
-            $totalCost = $subtotal + $fee;
+            $totalCostThb = $subtotalThb + $feeThb;
 
-            // Guard Clause: ตรวจสอบเงินสดคงเหลือ
-            if ($cashBalance < $totalCost) {
+            // Guard Clause: ตรวจสอบเงินสดคงเหลือเทียบกับยอดซื้อสุทธิในสกุลเงินบาท
+            if ($cashBalance < $totalCostThb) {
                 $pdo->rollBack();
+                $shortage = $totalCostThb - $cashBalance;
+                
+                $priceDisplay = $isThai 
+                    ? sprintf('฿%s', number_format($price, 2))
+                    : sprintf('$%s (≈ ฿%s @ FX %.2f)', number_format($price, 2), number_format($priceInThb, 2), $fxRate);
+
                 return [
                     'success' => false,
                     'message' => sprintf(
-                        'เงินสดในพอร์ตไม่เพียงพอ (ต้องการ %s บาท แต่มีคงเหลือ %s บาท)',
-                        number_format($totalCost, 2),
-                        number_format($cashBalance, 2)
+                        'ยอดซื้อเกินวงเงินที่สามารถซื้อได้! หุ้น %s ราคา %s ยอดรวมคำสั่งซื้อ ฿%s เกินเงินสดคงเหลือ ฿%s (ขาดอีก ฿%s)',
+                        $stock['symbol'],
+                        $priceDisplay,
+                        number_format($totalCostThb, 2),
+                        number_format($cashBalance, 2),
+                        number_format($shortage, 2)
                     )
                 ];
             }
 
-            // หักเงินสดออกจากพอร์ต
-            $newCash = $cashBalance - $totalCost;
+            // หักเงินสดออกจากพอร์ต (สกุลเงินบาท)
+            $newCash = $cashBalance - $totalCostThb;
             $updateCashSql = "UPDATE portfolios SET cash_balance = :cash, updated_at = NOW() WHERE id = :id";
             $ucStmt = $pdo->prepare($updateCashSql);
             $ucStmt->execute([':cash' => $newCash, ':id' => $portfolioId]);
 
-            // อัปเดตรายการหุ้นที่ถือครอง (คำนวณต้นทุนเฉลี่ยใหม่ Average Cost)
+            // อัปเดตรายการหุ้นที่ถือครอง (คำนวณต้นทุนเฉลี่ยใหม่ในสกุลเงินจริง Average Cost)
             $checkHoldSql = "SELECT id, quantity, average_price FROM portfolio_items 
                              WHERE portfolio_id = :p_id AND stock_id = :s_id LIMIT 1";
             $chStmt = $pdo->prepare($checkHoldSql);
@@ -252,7 +283,7 @@ function executeSimulatedTrade(
                 ]);
             }
 
-            // บันทึกธุรกรรม
+            // บันทึกธุรกรรม (price ในสกุลเดิม, total_amount & fee ในสกุลเงินบาท)
             $trxSql = "INSERT INTO transactions (portfolio_id, stock_id, transaction_type, quantity, price, total_amount, fee, realized_pnl) 
                        VALUES (:p_id, :s_id, 'BUY', :qty, :price, :amount, :fee, NULL)";
             $tStmt = $pdo->prepare($trxSql);
@@ -261,8 +292,8 @@ function executeSimulatedTrade(
                 ':s_id'   => $stockId,
                 ':qty'    => $quantity,
                 ':price'  => $price,
-                ':amount' => $subtotal,
-                ':fee'    => $fee
+                ':amount' => $subtotalThb,
+                ':fee'    => $feeThb
             ]);
             $trxId = (int)$pdo->lastInsertId();
 
@@ -283,15 +314,29 @@ function executeSimulatedTrade(
 
             $pdo->commit();
 
-            return [
-                'success' => true,
-                'message' => sprintf(
-                    'จำลองการซื้อสำเร็จ! ซื้อหุ้น %s จำนวน %s หุ้น ที่ราคา %s บาท (ยอดรวม %s บาท)',
+            $successMsg = $isThai
+                ? sprintf(
+                    'จำลองการซื้อสำเร็จ! ซื้อหุ้น %s จำนวน %s หุ้น ที่ราคา ฿%s บาท (ยอดตัดเงินสด ฿%s บาท รวมค่าคอมมิชชัน ฿%s บาท)',
                     $stock['symbol'],
                     number_format($quantity),
                     number_format($price, 2),
-                    number_format($totalCost, 2)
+                    number_format($totalCostThb, 2),
+                    number_format($feeThb, 2)
                 )
+                : sprintf(
+                    'จำลองการซื้อสำเร็จ! ซื้อหุ้น %s จำนวน %s หุ้น ที่ราคา $%s (~฿%s/หุ้น) ยอดตัดเงินสด ฿%s บาท (รวมค่าคอมมิชชัน ฿%s บาท @ FX %.2f)',
+                    $stock['symbol'],
+                    number_format($quantity),
+                    number_format($price, 2),
+                    number_format($priceInThb, 2),
+                    number_format($totalCostThb, 2),
+                    number_format($feeThb, 2),
+                    $fxRate
+                );
+
+            return [
+                'success' => true,
+                'message' => $successMsg
             ];
 
         } else {
@@ -317,13 +362,14 @@ function executeSimulatedTrade(
                 ];
             }
 
-            $avgPrice = (float)$existingHold['average_price'];
-            $costBasis = $quantity * $avgPrice;
-            $netProceeds = $subtotal - $fee;
-            $realizedPnl = $netProceeds - $costBasis;
+            $avgPrice        = (float)$existingHold['average_price']; // ต้นทุนเฉลี่ยในสกุลเงินจริง
+            $avgPriceThb     = $avgPrice * $fxRate;
+            $costBasisThb    = $quantity * $avgPriceThb;
+            $netProceedsThb  = $subtotalThb - $feeThb;
+            $realizedPnlThb  = $netProceedsThb - $costBasisThb;
 
-            // เพิ่มเงินสดเข้าพอร์ต
-            $newCash = $cashBalance + $netProceeds;
+            // เพิ่มเงินสดเข้าพอร์ต (สกุลเงินบาท)
+            $newCash = $cashBalance + $netProceedsThb;
             $updateCashSql = "UPDATE portfolios SET cash_balance = :cash, updated_at = NOW() WHERE id = :id";
             $ucStmt = $pdo->prepare($updateCashSql);
             $ucStmt->execute([':cash' => $newCash, ':id' => $portfolioId]);
@@ -340,7 +386,7 @@ function executeSimulatedTrade(
                 $dhStmt->execute([':id' => $existingHold['id']]);
             }
 
-            // บันทึกธุรกรรม
+            // บันทึกธุรกรรม (price ในสกุลเดิม, total_amount, fee & realized_pnl ในสกุลเงินบาท)
             $trxSql = "INSERT INTO transactions (portfolio_id, stock_id, transaction_type, quantity, price, total_amount, fee, realized_pnl) 
                        VALUES (:p_id, :s_id, 'SELL', :qty, :price, :amount, :fee, :pnl)";
             $tStmt = $pdo->prepare($trxSql);
@@ -349,9 +395,9 @@ function executeSimulatedTrade(
                 ':s_id'   => $stockId,
                 ':qty'    => $quantity,
                 ':price'  => $price,
-                ':amount' => $subtotal,
-                ':fee'    => $fee,
-                ':pnl'    => $realizedPnl
+                ':amount' => $subtotalThb,
+                ':fee'    => $feeThb,
+                ':pnl'    => $realizedPnlThb
             ]);
             $trxId = (int)$pdo->lastInsertId();
 
@@ -372,16 +418,30 @@ function executeSimulatedTrade(
 
             $pdo->commit();
 
-            return [
-                'success' => true,
-                'message' => sprintf(
-                    'จำลองการขายสำเร็จ! ขายหุ้น %s จำนวน %s หุ้น ได้รับเงินสุทธิ %s บาท (กำไร/ขาดทุนรับรู้: %s%s บาท)',
+            $sellMsg = $isThai
+                ? sprintf(
+                    'จำลองการขายสำเร็จ! ขายหุ้น %s จำนวน %s หุ้น ได้รับเงินสุทธิ ฿%s บาท (กำไร/ขาดทุนรับรู้: %s฿%s บาท)',
                     $stock['symbol'],
                     number_format($quantity),
-                    number_format($netProceeds, 2),
-                    ($realizedPnl >= 0 ? '+' : ''),
-                    number_format($realizedPnl, 2)
+                    number_format($netProceedsThb, 2),
+                    ($realizedPnlThb >= 0 ? '+' : ''),
+                    number_format($realizedPnlThb, 2)
                 )
+                : sprintf(
+                    'จำลองการขายสำเร็จ! ขายหุ้น %s จำนวน %s หุ้น ที่ราคา $%s (~฿%s/หุ้น) ได้รับเงินสุทธิ ฿%s บาท (กำไร/ขาดทุนรับรู้: %s฿%s บาท @ FX %.2f)',
+                    $stock['symbol'],
+                    number_format($quantity),
+                    number_format($price, 2),
+                    number_format($priceInThb, 2),
+                    number_format($netProceedsThb, 2),
+                    ($realizedPnlThb >= 0 ? '+' : ''),
+                    number_format($realizedPnlThb, 2),
+                    $fxRate
+                );
+
+            return [
+                'success' => true,
+                'message' => $sellMsg
             ];
         }
 

@@ -145,4 +145,13 @@
   - 🟡 **`.badge-gold`:** พื้นหลังทองคำโปร่งแสง ขอบสีทอง `#FFD633`
   - ⚪ **`.badge-neutral`:** พื้นหลังเงินสว่างโปร่งแสง ขอบ `#D4C9B4`
 
+---
+
+## 🔲 8. กฎการใช้เส้นขอบและพื้นหลังสะอาดตา (Uniform 1px Borders — No Accent Stripe Lines)
+
+> [!IMPORTANT]
+> **STRICT RULE: ห้ามใช้เส้นแถบสีหัวพื้นหลังหรือขอบด้านข้างหนาเด็ดขาด**
+> 1. ห้ามใส่เส้นแถบสีหนาที่ขอบด้านข้างหรือด้านบนของ Card, Row, Container, Box หรือ Toast Alert (เช่น `border-left: 3px/4px solid`, `border-top: 3px/4px solid`)
+> 2. ทุกองค์ประกอบต้องใช้ **เส้นขอบบาง 1px สม่ำเสมอรอบด้าน (Uniform 1px Border)** เช่น `border: 1px solid var(--border-subtle)` หรือเส้นขอบโปร่งแสง 1px เพื่อรักษาความสะอาดตา ความเรียบหรูระดับ Luxury Dark Glass และความคงเส้นคงวาของ UI ทั้งระบบ
+
 

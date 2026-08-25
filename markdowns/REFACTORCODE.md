@@ -50,6 +50,10 @@
 - **ไฟล์ภาพ, ไอคอน, ฟอนต์ และสคริปต์ทั้งหมดต้องเก็บและเรียกใช้งานภายในโปรเจกต์ 100% (ห้ามใช้ CDN ภายนอก)**
 - หากมีการใช้งานไอคอนใหม่ ต้องเพิ่ม Path ลงในพจนานุกรมไอคอน [`functions/icons.php`](../functions/icons.php) เสมอ เพื่อให้เรียกใช้ผ่านฟังก์ชัน `icon('icon-name', $class, $size, $color)` ได้จากทุกจุดในระบบ และคงมาตรฐานความคมชัดแบบ Vector ไร้ Emoji
 
+### 🔴 กฎข้อ 9: ห้ามใช้เส้นแถบสีหัวพื้นหลังหรือเส้นหนาด้านข้าง (No Accent Border Stripes / No Header Indicator Lines on Backgrounds)
+- **ห้ามใส่เส้นแถบสีที่ขอบด้านข้างหรือหัวพื้นหลังของ Card, Row, Container, หรือ Alert เด็ดขาด** (เช่น `border-left: 3px solid ...`, `border-left: 4px solid ...`, หรือ `border-top: 3px solid ...`)
+- **การออกแบบที่ถูกต้อง:** ทุก Container, Card, Row, Box และ Toast Alert ต้องใช้ **เส้นขอบบาง 1px สม่ำเสมอรอบด้าน (Clean Uniform 1px Border)** เช่น `border: 1px solid var(--border-subtle)` หรือเส้นขอบโปร่งแสง 1px เพื่อรักษาความสะอาดตา ความเรียบหรูระดับ Luxury Dark Glass และความคงเส้นคงวาของ UI ทั้งระบบ
+
 ### 🔴 กฎข้อ 10: การจัดการฐานข้อมูล (Database Protocol)
 - **ห้ามนำข้อมูลเข้า หรือสร้าง table database เองโดยอัตโนมัติเด็ดขาด**
 - ต้องจัดเตรียมไฟล์คำสั่ง SQL (เช่น `database_schema.sql`) และแจ้งผู้ใช้ทราบ พร้อมส่งมอบโค้ดให้ผู้ใช้เป็นผู้นำไปกดรันผ่าน phpMyAdmin บนเครื่องของผู้ใช้เองเท่านั้น

@@ -218,7 +218,10 @@ require_once __DIR__ . '/../templates/header.php';
                   </td>
                 </tr>
               <?php else: ?>
-                <?php foreach ($holdings as $item): ?>
+                <?php foreach ($holdings as $item): 
+                  $isThaiItem = (bool)($item['is_thai'] ?? isThaiStock($item['market'], $item['symbol']));
+                  $currSymItem = $isThaiItem ? '฿' : '$';
+                ?>
                   <tr>
                     <td>
                       <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="link-gold-mono">
@@ -233,16 +236,25 @@ require_once __DIR__ . '/../templates/header.php';
                       <?= number_format((int)$item['quantity']) ?>
                     </td>
                     <td class="num">
-                      <?= number_format((float)$item['average_price'], 2) ?>
+                      <div><?= $currSymItem . number_format((float)$item['average_price'], 2) ?></div>
+                      <?php if (!$isThaiItem && isset($item['average_price_thb'])): ?>
+                        <div class="text-xs text-muted font-normal">(≈ ฿<?= number_format((float)$item['average_price_thb'], 2) ?>)</div>
+                      <?php endif; ?>
                     </td>
                     <td class="num font-bold">
-                      <?= number_format((float)$item['current_price'], 2) ?>
+                      <div><?= $currSymItem . number_format((float)$item['current_price'], 2) ?></div>
+                      <?php if (!$isThaiItem && isset($item['current_price_thb'])): ?>
+                        <div class="text-xs text-muted font-normal">(≈ ฿<?= number_format((float)$item['current_price_thb'], 2) ?>)</div>
+                      <?php endif; ?>
                     </td>
                     <td class="num font-bold text-primary">
-                      <?= number_format((float)$item['market_value'], 2) ?>
+                      <div>฿<?= number_format((float)$item['market_value'], 2) ?></div>
+                      <?php if (!$isThaiItem && isset($item['market_value_orig'])): ?>
+                        <div class="text-xs text-muted font-normal">($<?= number_format((float)$item['market_value_orig'], 2) ?>)</div>
+                      <?php endif; ?>
                     </td>
                     <td class="num <?= getPnlColorClass((float)$item['unrealized_pnl']) ?>">
-                      <strong><?= ((float)$item['unrealized_pnl'] >= 0 ? '+' : '') . number_format((float)$item['unrealized_pnl'], 2) ?></strong>
+                      <strong><?= ((float)$item['unrealized_pnl'] >= 0 ? '+' : '') . '฿' . number_format((float)$item['unrealized_pnl'], 2) ?></strong>
                       <div class="text-xs">
                         (<?= formatPercent((float)$item['return_percent']) ?>)
                       </div>
@@ -255,8 +267,8 @@ require_once __DIR__ . '/../templates/header.php';
                         <button type="button" class="btn btn-sell btn-sm open-trade-modal-btn" data-trade-type="SELL" data-stock-id="<?= (int)$item['stock_id'] ?>" data-price="<?= (float)$item['current_price'] ?>">
                           <?= icon('minus', '', 12) ?> ขาย
                         </button>
-                        <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="btn btn-outline btn-sm">
-                          <?= icon('bot', '', 12) ?> วิเคราะห์
+                        <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($item['symbol']) ?>" class="btn btn-outline btn-sm" title="วิเคราะห์ <?= e($item['symbol']) ?>" aria-label="วิเคราะห์ <?= e($item['symbol']) ?>">
+                          <?= icon('bot', '', 14) ?>
                         </a>
                       </div>
                     </td>
@@ -276,7 +288,7 @@ require_once __DIR__ . '/../templates/header.php';
               <?= icon('history', 'text-gold', 18) ?> ประวัติการทำรายการซื้อขาย (Transaction History)
             </h2>
             <p class="metric-subtitle-meta">
-              บันทึกคำสั่งซื้อขายล่าสุดและค่าธรรมเนียมจริงในระบบจำลอง
+              บันทึกคำสั่งซื้อขายล่าสุดและค่าธรรมเนียมจริงในระบบจำลอง (แปลงมูลค่าเป็นเงินบาท ณ วันทำรายการ)
             </p>
           </div>
           <span class="text-xs text-muted nowrap">
@@ -288,14 +300,14 @@ require_once __DIR__ . '/../templates/header.php';
           <table class="financial-table">
             <thead>
               <tr>
-                <th>วันที่ / เวลา</th>
+                <th>วันเวลาทำรายการ</th>
                 <th>ประเภท</th>
-                <th>หลักทรัพย์</th>
-                <th class="th-right">จำนวนหุ้น</th>
-                <th class="th-right">ราคาที่ทำรายการ</th>
-                <th class="th-right">มูลค่ารวม</th>
-                <th class="th-right">ค่าธรรมเนียม</th>
-                <th class="th-right">ยอดเงินสุทธิ</th>
+                <th>ชื่อย่อหุ้น</th>
+                <th class="th-right">จำนวน</th>
+                <th class="th-right">ราคาต่อหุ้น</th>
+                <th class="th-right">มูลค่ารวม (บาท)</th>
+                <th class="th-right">ค่าคอมฯ (0.157%)</th>
+                <th class="th-right">ยอดสุทธิ (Net Total)</th>
               </tr>
             </thead>
             <tbody>
@@ -306,7 +318,10 @@ require_once __DIR__ . '/../templates/header.php';
                   </td>
                 </tr>
               <?php else: ?>
-                <?php foreach ($transactions as $tx): ?>
+                <?php foreach ($transactions as $tx): 
+                  $isThaiTx = isThaiStock((string)($tx['market'] ?? 'SET'), (string)$tx['symbol']);
+                  $txCurrSym = $isThaiTx ? '฿' : '$';
+                ?>
                   <tr>
                     <td class="text-xs text-muted nowrap">
                       <?= date('d/m/Y H:i', strtotime((string)($tx['created_at'] ?? $tx['executed_at'] ?? 'now'))) ?>
@@ -355,6 +370,12 @@ require_once __DIR__ . '/../templates/header.php';
   <?php
   $modalStock = null;
   $modalAllStocks = $allStocks;
+  $userCashBalance = (float)$portfolio['cash_balance'];
+  $userTotalNetAsset = (float)$portfolio['total_portfolio_value'];
+  $userHoldingsMap = [];
+  foreach ($holdings as $h) {
+      $userHoldingsMap[(int)$h['stock_id']] = (int)$h['quantity'];
+  }
   require __DIR__ . '/../templates/trade_modal.php';
   ?>
 

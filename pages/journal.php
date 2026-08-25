@@ -73,7 +73,7 @@ require_once __DIR__ . '/../templates/header.php';
           </p>
         </div>
         <div>
-          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline btn-sm">
+          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline">
             <?= icon('wallet', '', 14) ?> กลับไปพอร์ตจำลอง
           </a>
         </div>

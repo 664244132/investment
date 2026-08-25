@@ -78,7 +78,7 @@ require_once __DIR__ . '/../templates/header.php';
           </p>
         </div>
         <div class="d-flex gap-sm">
-          <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-outline btn-sm">
+          <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-outline">
             <?= icon('filter', '', 14) ?> ค้นหาหุ้นใน Screener
           </a>
           <a href="<?= e(BASE_URL) ?>/index.php" class="btn btn-primary btn-sm">
@@ -174,7 +174,7 @@ require_once __DIR__ . '/../templates/header.php';
                   </div>
 
                   <div class="watchlist-price-box">
-                    <span class="watchlist-price-main"><?= formatMoney($currentPrice) ?></span>
+                    <span class="watchlist-price-main"><?= formatStockPrice($currentPrice, $item['market'], $item['symbol']) ?></span>
                     <span class="badge <?= getPnlBadgeClass($pctChange) ?> badge-sm">
                       <?= formatPercent($pctChange) ?>
                     </span>
@@ -206,7 +206,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?= icon('crosshair', 'text-gain', 14) ?>
                       <span class="watchlist-target-label">เป้าซื้อ:</span>
                       <span class="watchlist-target-val">
-                        <?= $item['target_buy_price'] ? formatMoney((float)$item['target_buy_price']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
+                        <?= $item['target_buy_price'] ? formatStockPrice((float)$item['target_buy_price'], $item['market'], $item['symbol']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
                       </span>
                     </div>
                     <div>
@@ -228,7 +228,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <?= icon('trending-up', 'text-loss', 14) ?>
                       <span class="watchlist-target-label">เป้าขาย:</span>
                       <span class="watchlist-target-val">
-                        <?= $item['target_sell_price'] ? formatMoney((float)$item['target_sell_price']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
+                        <?= $item['target_sell_price'] ? formatStockPrice((float)$item['target_sell_price'], $item['market'], $item['symbol']) : '<span class="text-muted font-normal">ไม่ได้ตั้ง</span>' ?>
                       </span>
                     </div>
                     <div>
@@ -260,8 +260,9 @@ require_once __DIR__ . '/../templates/header.php';
                 <div class="d-flex gap-xs">
                   <button type="button" class="btn btn-outline btn-sm" 
                           onclick="openTargetEditModal(<?= e((string)$item['stock_id']) ?>, '<?= e($item['symbol']) ?>', '<?= e((string)($item['target_buy_price'] ?? '')) ?>', '<?= e((string)($item['target_sell_price'] ?? '')) ?>', '<?= e(addslashes($item['notes'] ?? '')) ?>')"
-                          title="แก้ไขราคาเป้าหมายและโน้ต">
-                    <?= icon('edit', '', 13) ?> ตั้งเป้าหมาย
+                          title="แก้ไขราคาเป้าหมายและโน้ต"
+                          aria-label="แก้ไขราคาเป้าหมายและโน้ต">
+                    <?= icon('edit', '', 14) ?>
                   </button>
                   <button type="button" class="btn btn-outline btn-sm text-loss" 
                           onclick="removeWatchlistItem(<?= e((string)$item['stock_id']) ?>, '<?= e($item['symbol']) ?>')"

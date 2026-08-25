@@ -207,7 +207,7 @@ require_once __DIR__ . '/../templates/header.php';
           <span class="badge <?= $allPassed ? 'badge-gain' : 'badge-loss' ?> badge-health-pill">
             <?= $allPassed ? icon('check-circle', '', 14) . ' ทุกระบบทำงานปกติ (100% Operational)' : icon('alert', '', 14) . ' พบข้อผิดพลาด' ?>
           </span>
-          <a href="<?= e(BASE_URL) ?>/pages/health_check.php" class="btn btn-outline btn-sm">
+          <a href="<?= e(BASE_URL) ?>/pages/health_check.php" class="btn btn-outline">
             <?= icon('repeat', '', 14) ?> รันการตรวจซ้ำ
           </a>
         </div>

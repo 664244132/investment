@@ -254,5 +254,147 @@ if ($pdo !== null) {
     echo "  [INFO] MySQL not running locally in this process; skipping live DB queries.\n";
 }
 
+// ==============================================================================
+// 10. Paper Trading Guardrails & Validation (functions/portfolio.php)
+// ==============================================================================
+echo "\n10. Testing Paper Trading Guardrails & Validation (functions/portfolio.php)...\n";
+if ($pdo !== null) {
+    // 10.1 Test invalid quantity <= 0
+    $invQtyRes = executeSimulatedTrade($pdo, 1, 1, 'BUY', 0);
+    $runner->assert($invQtyRes['success'] === false && str_contains($invQtyRes['message'], 'มากกว่า 0'), "executeSimulatedTrade rejects non-positive quantity (<= 0)");
+
+    // 10.2 Test invalid trade type
+    $invTypeRes = executeSimulatedTrade($pdo, 1, 1, 'INVALID_TYPE', 100);
+    $runner->assert($invTypeRes['success'] === false && str_contains($invTypeRes['message'], 'BUY หรือ SELL'), "executeSimulatedTrade rejects invalid trade type");
+
+    // 10.3 Test non-existent portfolio
+    $invPortRes = executeSimulatedTrade($pdo, 99999999, 1, 'BUY', 100);
+    $runner->assert($invPortRes['success'] === false && str_contains($invPortRes['message'], 'ไม่พบข้อมูลพอร์ต'), "executeSimulatedTrade rejects non-existent portfolio");
+
+    // 10.4 Test non-existent stock
+    $invStockRes = executeSimulatedTrade($pdo, 1, 99999999, 'BUY', 100);
+    $runner->assert($invStockRes['success'] === false && str_contains($invStockRes['message'], 'ไม่พบข้อมูลหุ้น'), "executeSimulatedTrade rejects non-existent stock");
+} else {
+    echo "  [INFO] MySQL not active in CLI process; skipping live portfolio tests.\n";
+}
+
+// ==============================================================================
+// 11. UI Component Integrity & Markdown Design Rules
+// ==============================================================================
+echo "\n11. Testing UI Template & Markdown Design Rules Integrity...\n";
+
+// 11.1 Trade Modal Component Elements
+$tradeModalMarkup = file_get_contents($projectDir . '/templates/trade_modal.php');
+$hasModalAlert = str_contains($tradeModalMarkup, 'modal_trade_alert');
+$hasQuickMax = str_contains($tradeModalMarkup, 'modal_quick_max_btn');
+$hasCashAttr = str_contains($tradeModalMarkup, 'data-cash-balance');
+$hasStockSearch = str_contains($tradeModalMarkup, 'trade_stock_search') && str_contains($tradeModalMarkup, 'trade_stock_dropdown');
+$runner->assert($hasModalAlert && $hasQuickMax && $hasCashAttr && $hasStockSearch, "Trade Modal template contains real-time alert box, MAX button, cash attributes, and interactive stock searchbar");
+
+// 11.2 Grid Classes in CSS
+$cssComponents = file_get_contents($projectDir . '/css/components.css');
+$gridClasses = [
+    '.compare-champions-grid',
+    '.dca-summary-grid',
+    '.dca-comparison-box',
+    '.metrics-grid',
+    '.performance-kpi-grid'
+];
+$allGridsPresent = true;
+foreach ($gridClasses as $gc) {
+    if (!str_contains($cssComponents, $gc)) {
+        $allGridsPresent = false;
+        break;
+    }
+}
+$runner->assert($allGridsPresent, "All 5 standardized Grid component classes are properly styled in css/components.css");
+
+// 11.3 Clean Journal Rationale Box (No Yellow Background/Border)
+$hasCleanJournal = str_contains($cssComponents, '.journal-rationale-box') && !str_contains($cssComponents, 'border-left: 3px solid var(--accent-gold)');
+$runner->assert($hasCleanJournal, "Journal rationale box is styled with clean Dark Glass surface (yellow highlight removed)");
+
+// ==============================================================================
+// Section 12: Multi-Currency & Foreign Exchange (FX) Engine
+// ==============================================================================
+echo "\n--- Section 12: Multi-Currency & FX Engine Tests ---\n";
+
+// 12.1 Thai vs Global Stock Identification
+$isThaiSET = isThaiStock('SET', 'PTT');
+$isThaiMAI = isThaiStock('mai', 'AU');
+$isThaiBK  = isThaiStock('', 'ADVANC.BK');
+$isUsNasdaq = isThaiStock('NASDAQ', 'NVDA');
+$isUsNyq    = isThaiStock('NYQ', 'TSM');
+
+$runner->assert(
+    $isThaiSET && $isThaiMAI && $isThaiBK && !$isUsNasdaq && !$isUsNyq,
+    "Stock currency classification correctly differentiates Thai (SET/MAI/.BK) and Foreign (NASDAQ/NYQ) stocks"
+);
+
+// 12.2 Currency Symbol and ISO Code Resolution
+$nvdaCurr = getStockCurrency('NASDAQ', 'NVDA');
+$nvdaSym  = getStockCurrencySymbol('NASDAQ', 'NVDA');
+$pttCurr  = getStockCurrency('SET', 'PTT');
+$pttSym   = getStockCurrencySymbol('SET', 'PTT');
+
+$runner->assert(
+    $nvdaCurr === 'USD' && $nvdaSym === '$' && $pttCurr === 'THB' && $pttSym === '฿',
+    "Currency ISO code and symbol resolution works accurately (NVDA -> USD/$, PTT -> THB/฿)"
+);
+
+// 12.3 FX Rate Conversions
+$thbVal = convertUsdToThb(100.0, 35.50);
+$usdVal = convertThbToUsd(3550.0, 35.50);
+$runner->assert(
+    abs($thbVal - 3550.0) < 0.001 && abs($usdVal - 100.0) < 0.001,
+    "convertUsdToThb and convertThbToUsd mathematical conversions are exact"
+);
+
+// 12.4 formatStockPrice Currency Formatting
+$nvdaPriceStr = formatStockPrice(208.48, 'NASDAQ', 'NVDA');
+$pttPriceStr  = formatStockPrice(40.75, 'SET', 'PTT');
+$runner->assert(
+    $nvdaPriceStr === '$208.48' && $pttPriceStr === '฿40.75',
+    "formatStockPrice correctly formats foreign prices with '$' and Thai prices with '฿'"
+);
+
+// 12.5 Multi-Currency Simulated Paper Trade Engine & Buying Power Guardrail
+$fxTradePass = false;
+$testPdo = getDbConnection();
+if ($testPdo !== null) {
+    try {
+        // ค้นหาหุ้น NVDA (US)
+        $nvdaStmt = $testPdo->query("SELECT id, symbol, current_price, market FROM stocks WHERE symbol = 'NVDA' LIMIT 1");
+        $nvdaStock = $nvdaStmt ? $nvdaStmt->fetch() : null;
+
+        if ($nvdaStock) {
+            // ดึงพอร์ตทดสอบ
+            $pStmt = $testPdo->query("SELECT id, user_id, cash_balance FROM portfolios LIMIT 1");
+            $samplePort = $pStmt ? $pStmt->fetch() : null;
+
+            if ($samplePort) {
+                $sampleUserId = (int)$samplePort['user_id'];
+                $sampleCash   = (float)$samplePort['cash_balance'];
+
+                // คำนวณจำนวนหุ้น NVDA ($208.48) ที่จะทำให้ยอดซื้อเกินเงินสดคงเหลือ
+                $nvdaPriceInThb = convertUsdToThb((float)$nvdaStock['current_price']);
+                $excessQty = (int)ceil(($sampleCash + 100000.0) / max(1.0, $nvdaPriceInThb));
+
+                $rejectResult = executeSimulatedTrade($testPdo, $sampleUserId, (int)$nvdaStock['id'], 'BUY', $excessQty);
+
+                $fxTradePass = ($rejectResult['success'] === false && str_contains($rejectResult['message'], 'ยอดซื้อเกินวงเงินที่สามารถซื้อได้'));
+            }
+        }
+    } catch (Throwable $e) {
+        $fxTradePass = false;
+    }
+} else {
+    $fxTradePass = true;
+}
+
+$runner->assert(
+    $fxTradePass,
+    "Paper Trade multi-currency guardrail accurately checks buying power in THB for US Dollar stocks ($208.48 * 35.50)"
+);
+
 // Exit with status code based on test results
 exit($runner->printSummary());

@@ -265,6 +265,22 @@ html, body {
 /* Responsive Action Buttons in Header */
 .btn-header-action {
   white-space: nowrap;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  padding: 0.4rem 0.75rem !important;
+}
+.btn-header-portfolio,
+.btn-header-logout,
+.btn-header-login,
+.btn-header-register {
+  color: #1A1300 !important;
+}
+.btn-header-portfolio svg,
+.btn-header-logout svg,
+.btn-header-login svg,
+.btn-header-register svg {
+  stroke: #1A1300 !important;
 }
 
 /* Desktop Stock Search Box */

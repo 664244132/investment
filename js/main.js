@@ -132,59 +132,402 @@ function initSmartPort() {
   const tradeStockPrice = document.getElementById('modal_stock_price');
   const tradeTotalDisplay = document.getElementById('modal_trade_total');
   const tradeSubmitBtn = document.getElementById('modal_submit_btn');
+  const modalHeldQtyDisplay = document.getElementById('modal_held_qty_display');
+  const modalTradeAlert = document.getElementById('modal_trade_alert');
+  const modalTradeAlertMsg = document.getElementById('modal_trade_alert_msg');
+  const modalMaxQtyHint = document.getElementById('modal_max_qty_hint');
+  const quickQtyBtns = document.querySelectorAll('.trade-quick-btn');
+
+  function getTradeContext() {
+    const type = (tradeTypeInput ? tradeTypeInput.value : 'BUY').toUpperCase();
+    const stockHiddenInput = document.getElementById('trade_stock_id');
+    const selectedOption = stockHiddenInput;
+
+    const price = parseFloat(tradeStockPrice ? tradeStockPrice.getAttribute('data-price') : (selectedOption?.dataset?.price || '0')) || 0;
+    const currencySymbol = tradeStockPrice?.getAttribute('data-currency-symbol') || selectedOption?.dataset?.currencySymbol || '฿';
+    const fxRate = parseFloat(tradeStockPrice?.getAttribute('data-fx-rate') || selectedOption?.dataset?.fxRate || '1') || 1;
+    const isThai = (selectedOption?.dataset?.isThai === '1') || (tradeStockPrice?.getAttribute('data-is-thai') === '1') || (currencySymbol === '฿');
+    const heldQty = parseInt(selectedOption?.dataset?.heldQty || '0', 10) || 0;
+    const cashBalance = parseFloat(tradeModal?.dataset?.cashBalance || '0') || 0;
+    const feeRate = 0.00157; // 0.157%
+
+    let maxAllowedQty = 0;
+    if (type === 'SELL') {
+      maxAllowedQty = Math.max(0, heldQty);
+    } else {
+      const priceInThb = price * fxRate;
+      const costPerShareThb = priceInThb * (1 + feeRate);
+      maxAllowedQty = (costPerShareThb > 0 && cashBalance > 0) ? Math.floor(cashBalance / costPerShareThb) : 0;
+    }
+
+    return { type, price, currencySymbol, fxRate, isThai, heldQty, cashBalance, feeRate, maxAllowedQty, selectedOption };
+  }
 
   function calculateTradeTotal() {
     if (!tradeQtyInput || !tradeStockPrice || !tradeTotalDisplay) return;
-    const qty = parseInt(tradeQtyInput.value, 10) || 0;
-    const price = parseFloat(tradeStockPrice.getAttribute('data-price')) || 0;
-    const feeRate = 0.00157; // 0.157%
-    const subtotal = qty * price;
-    const fee = subtotal * feeRate;
-    const total = subtotal + fee;
 
-    tradeTotalDisplay.textContent = '฿' + total.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    const ctx = getTradeContext();
+    let qty = parseInt(tradeQtyInput.value, 10);
+    if (isNaN(qty) || qty < 1) {
+      qty = 1;
+    }
+
+    // Requirement 2: หากผู้ใช้กรอกหรือกดเกินจำนวนหุ้นสูงสุดที่มี ให้ระบบตั้งค่าเป็นจำนวนหุ้นสูงสุดที่มีอยู่
+    if (ctx.maxAllowedQty > 0 && qty > ctx.maxAllowedQty) {
+      qty = ctx.maxAllowedQty;
+      tradeQtyInput.value = qty;
+    }
+
+    // กำหนด min/max บน input
+    tradeQtyInput.min = '1';
+    if (ctx.maxAllowedQty > 0) {
+      tradeQtyInput.max = ctx.maxAllowedQty.toString();
+    } else {
+      tradeQtyInput.removeAttribute('max');
+    }
+
+    // อัปเดตข้อมูลการถือครอง
+    if (modalHeldQtyDisplay) {
+      modalHeldQtyDisplay.textContent = ctx.heldQty.toLocaleString() + ' หุ้น';
+      modalHeldQtyDisplay.setAttribute('data-held', ctx.heldQty.toString());
+    }
+
+    // อัปเดตคำใบ้ Max
+    if (modalMaxQtyHint) {
+      if (ctx.type === 'SELL') {
+        modalMaxQtyHint.textContent = `(มีอยู่สูงสุด ${ctx.heldQty.toLocaleString()} หุ้น)`;
+      } else if (ctx.maxAllowedQty > 0) {
+        modalMaxQtyHint.textContent = `(ซื้อได้สูงสุด ${ctx.maxAllowedQty.toLocaleString()} หุ้น)`;
+      } else {
+        modalMaxQtyHint.textContent = '(วงเงินไม่เพียงพอ)';
+      }
+    }
+
+    const priceInThb = ctx.price * ctx.fxRate;
+    const subtotalThb = qty * priceInThb;
+    const feeThb = subtotalThb * ctx.feeRate;
+    const totalThb = subtotalThb + feeThb;
+
+    if (!ctx.isThai) {
+      const subtotalOrig = qty * ctx.price;
+      const feeOrig = subtotalOrig * ctx.feeRate;
+      const totalOrig = subtotalOrig + feeOrig;
+      tradeTotalDisplay.innerHTML = `${ctx.currencySymbol}${totalOrig.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })} <span class="text-xs text-muted font-normal">(≈ ฿${totalThb.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })})</span>`;
+    } else {
+      tradeTotalDisplay.textContent = '฿' + totalThb.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // Requirement 1 & Alert Validation: แจ้งเตือนเมื่อซื้อเกินเงินสด/สินทรัพย์ที่ซื้อได้ หรือขายเกินที่มี
+    let hasError = false;
+    let alertMsg = '';
+
+    if (ctx.type === 'BUY') {
+      if (totalThb > ctx.cashBalance) {
+        hasError = true;
+        const shortage = totalThb - ctx.cashBalance;
+        alertMsg = `ยอดซื้อรวมค่าคอมมิชชัน ฿${totalThb.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} เกินวงเงินที่ซื้อได้ (มีเงินสดคงเหลือ ฿${ctx.cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · ขาดอีก ฿${shortage.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`;
+      }
+    } else if (ctx.type === 'SELL') {
+      if (ctx.heldQty <= 0) {
+        hasError = true;
+        alertMsg = 'คุณยังไม่มีหุ้นนี้ในพอร์ต ไม่สามารถส่งคำสั่งขายได้';
+      } else if (qty > ctx.heldQty) {
+        hasError = true;
+        alertMsg = `จำนวนหุ้นที่ต้องการขาย (${qty.toLocaleString()} หุ้น) เกินกว่าจำนวนที่ถือครองอยู่ (${ctx.heldQty.toLocaleString()} หุ้น)`;
+      }
+    }
+
+    if (modalTradeAlert && modalTradeAlertMsg) {
+      if (hasError) {
+        modalTradeAlertMsg.textContent = alertMsg;
+        modalTradeAlert.style.display = 'flex';
+      } else {
+        modalTradeAlert.style.display = 'none';
+      }
+    }
+
+    if (tradeSubmitBtn) {
+      tradeSubmitBtn.disabled = hasError;
+    }
   }
 
   if (tradeQtyInput) {
-    tradeQtyInput.addEventListener('input', calculateTradeTotal);
+    tradeQtyInput.addEventListener('input', () => {
+      calculateTradeTotal();
+    });
+
+    // เมื่อผู้ใช้เปลี่ยนโฟกัสออก ตรวจสอบให้แน่ใจว่าต่ำสุดคือ 1
+    tradeQtyInput.addEventListener('blur', () => {
+      let val = parseInt(tradeQtyInput.value, 10);
+      const ctx = getTradeContext();
+      if (isNaN(val) || val < 1) {
+        tradeQtyInput.value = 1;
+      } else if (ctx.maxAllowedQty > 0 && val > ctx.maxAllowedQty) {
+        tradeQtyInput.value = ctx.maxAllowedQty;
+      }
+      calculateTradeTotal();
+    });
   }
 
-  const tradeStockSelect = document.getElementById('trade_stock_id');
-  if (tradeStockSelect && tradeStockPrice) {
-    tradeStockSelect.addEventListener('change', () => {
-      const selectedOption = tradeStockSelect.options[tradeStockSelect.selectedIndex];
-      if (selectedOption && selectedOption.dataset.price) {
-        const price = parseFloat(selectedOption.dataset.price) || 0;
-        tradeStockPrice.setAttribute('data-price', price.toString());
+  // Quick Quantity Buttons Handlers (+100, +500, +1000, MAX)
+  quickQtyBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ctx = getTradeContext();
+      let currentVal = parseInt(tradeQtyInput.value, 10) || 0;
+
+      if (btn.classList.contains('trade-quick-btn-max') || btn.id === 'modal_quick_max_btn') {
+        // ปุ่ม MAX: ตั้งค่าเป็นจำนวนสูงสุดที่มีอยู่
+        if (ctx.maxAllowedQty > 0) {
+          tradeQtyInput.value = ctx.maxAllowedQty;
+        } else {
+          tradeQtyInput.value = 1;
+        }
+      } else {
+        const addAmount = parseInt(btn.getAttribute('data-add'), 10) || 0;
+        let nextVal = currentVal + addAmount;
+        if (ctx.maxAllowedQty > 0 && nextVal > ctx.maxAllowedQty) {
+          nextVal = ctx.maxAllowedQty;
+        }
+        tradeQtyInput.value = Math.max(1, nextVal);
+      }
+
+      tradeQtyInput.dispatchEvent(new Event('input', { bubbles: true }));
+      tradeQtyInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+
+  // Setup Trade Stock Searchbar Autocomplete
+  const tradeStockSearchInput = document.getElementById('trade_stock_search');
+  const tradeStockDropdown = document.getElementById('trade_stock_dropdown');
+  const tradeStockOptions = document.querySelectorAll('.trade-stock-option');
+  const tradeStockClearBtn = document.getElementById('trade_stock_search_clear');
+  const tradeStockNoResults = document.getElementById('trade_stock_no_results');
+  let highlightedOptionIndex = -1;
+
+  function selectTradeStock(option) {
+    if (!option) return;
+    const stockId = option.dataset.stockId;
+    const symbol = option.dataset.symbol;
+    const name = option.dataset.name;
+    const price = parseFloat(option.dataset.price) || 0;
+    const currSym = option.dataset.currencySymbol || '฿';
+    const fxRate = parseFloat(option.dataset.fxRate || '1') || 1;
+    const isThai = (option.dataset.isThai === '1') || (currSym === '฿');
+    const heldQty = parseInt(option.dataset.heldQty || '0', 10) || 0;
+
+    // Update hidden input
+    const hiddenInput = document.getElementById('trade_stock_id');
+    if (hiddenInput) {
+      hiddenInput.value = stockId;
+      hiddenInput.dataset.symbol = symbol;
+      hiddenInput.dataset.name = name;
+      hiddenInput.dataset.price = price.toString();
+      hiddenInput.dataset.currencySymbol = currSym;
+      hiddenInput.dataset.fxRate = fxRate.toString();
+      hiddenInput.dataset.isThai = isThai ? '1' : '0';
+      hiddenInput.dataset.heldQty = heldQty.toString();
+    }
+
+    // Update Search Input text
+    if (tradeStockSearchInput) {
+      tradeStockSearchInput.value = `${symbol} - ${name}`;
+      if (tradeStockClearBtn) tradeStockClearBtn.style.display = 'flex';
+    }
+
+    // Update Selected Class in Dropdown
+    tradeStockOptions.forEach(opt => {
+      const isCurrent = opt.dataset.stockId === stockId;
+      opt.classList.toggle('selected', isCurrent);
+      opt.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+    });
+
+    // Update Modal Stock Price Display
+    if (tradeStockPrice) {
+      tradeStockPrice.setAttribute('data-price', price.toString());
+      tradeStockPrice.setAttribute('data-currency-symbol', currSym);
+      tradeStockPrice.setAttribute('data-fx-rate', fxRate.toString());
+      tradeStockPrice.setAttribute('data-is-thai', isThai ? '1' : '0');
+
+      if (!isThai) {
+        tradeStockPrice.innerHTML = `${currSym}${price.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })} <span class="text-xs text-muted font-normal">(≈ ฿${(price * fxRate).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })})</span>`;
+      } else {
         tradeStockPrice.textContent = '฿' + price.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         });
-        calculateTradeTotal();
+      }
+    }
+
+    // Update Held Qty
+    if (modalHeldQtyDisplay) {
+      modalHeldQtyDisplay.textContent = heldQty.toLocaleString() + ' หุ้น';
+      modalHeldQtyDisplay.setAttribute('data-held', heldQty.toString());
+    }
+
+    // Close dropdown & calculate
+    closeTradeStockDropdown();
+    calculateTradeTotal();
+  }
+
+  function openTradeStockDropdown() {
+    if (tradeStockDropdown) {
+      tradeStockDropdown.style.display = 'block';
+      if (tradeStockSearchInput) tradeStockSearchInput.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function closeTradeStockDropdown() {
+    if (tradeStockDropdown) {
+      tradeStockDropdown.style.display = 'none';
+      if (tradeStockSearchInput) tradeStockSearchInput.setAttribute('aria-expanded', 'false');
+    }
+    highlightedOptionIndex = -1;
+    tradeStockOptions.forEach(opt => opt.classList.remove('highlighted'));
+  }
+
+  function filterTradeStocks(query) {
+    const term = (query || '').trim().toLowerCase();
+    let visibleCount = 0;
+
+    tradeStockOptions.forEach(opt => {
+      const sym = (opt.dataset.symbol || '').toLowerCase();
+      const name = (opt.dataset.name || '').toLowerCase();
+      const market = (opt.dataset.market || '').toLowerCase();
+      const isMatch = term === '' || sym.includes(term) || name.includes(term) || market.includes(term);
+
+      opt.style.display = isMatch ? 'flex' : 'none';
+      if (isMatch) visibleCount++;
+    });
+
+    if (tradeStockNoResults) {
+      tradeStockNoResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+
+    if (tradeStockClearBtn) {
+      tradeStockClearBtn.style.display = query.length > 0 ? 'flex' : 'none';
+    }
+    openTradeStockDropdown();
+  }
+
+  if (tradeStockSearchInput) {
+    tradeStockSearchInput.addEventListener('focus', () => {
+      filterTradeStocks(tradeStockSearchInput.value);
+    });
+
+    tradeStockSearchInput.addEventListener('input', () => {
+      filterTradeStocks(tradeStockSearchInput.value);
+    });
+
+    tradeStockSearchInput.addEventListener('keydown', (e) => {
+      const visibleOptions = Array.from(tradeStockOptions).filter(opt => opt.style.display !== 'none');
+      if (visibleOptions.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedOptionIndex = (highlightedOptionIndex + 1) % visibleOptions.length;
+        visibleOptions.forEach((opt, idx) => {
+          opt.classList.toggle('highlighted', idx === highlightedOptionIndex);
+          if (idx === highlightedOptionIndex) opt.scrollIntoView({ block: 'nearest' });
+        });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedOptionIndex = (highlightedOptionIndex - 1 + visibleOptions.length) % visibleOptions.length;
+        visibleOptions.forEach((opt, idx) => {
+          opt.classList.toggle('highlighted', idx === highlightedOptionIndex);
+          if (idx === highlightedOptionIndex) opt.scrollIntoView({ block: 'nearest' });
+        });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (highlightedOptionIndex >= 0 && highlightedOptionIndex < visibleOptions.length) {
+          selectTradeStock(visibleOptions[highlightedOptionIndex]);
+        } else if (visibleOptions.length > 0) {
+          selectTradeStock(visibleOptions[0]);
+        }
+      } else if (e.key === 'Escape') {
+        closeTradeStockDropdown();
       }
     });
   }
+
+  tradeStockOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      selectTradeStock(opt);
+    });
+  });
+
+  if (tradeStockClearBtn) {
+    tradeStockClearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (tradeStockSearchInput) {
+        tradeStockSearchInput.value = '';
+        tradeStockSearchInput.focus();
+        filterTradeStocks('');
+      }
+    });
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (tradeStockDropdown && tradeStockSearchInput) {
+      if (!tradeStockDropdown.contains(e.target) && !tradeStockSearchInput.contains(e.target) && !tradeStockClearBtn?.contains(e.target)) {
+        closeTradeStockDropdown();
+      }
+    }
+  });
 
   // ฟังก์ชันสากลสำหรับเปิด Trade Modal (เรียกใช้ได้ทั้งผ่าน JS และ Inline onclick)
   window.openTradeModal = function(type = 'BUY', symbol = '', price = null, stockId = null) {
     if (tradeTypeInput) tradeTypeInput.value = type;
 
-    const tradeStockSelect = document.getElementById('trade_stock_id');
-    if (stockId && tradeStockSelect) {
-      tradeStockSelect.value = stockId.toString();
-      tradeStockSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    let targetOption = null;
+    if (stockId) {
+      targetOption = document.querySelector(`.trade-stock-option[data-stock-id="${stockId}"]`);
+    } else if (symbol) {
+      targetOption = document.querySelector(`.trade-stock-option[data-symbol="${symbol}"]`);
+    }
+
+    if (targetOption) {
+      selectTradeStock(targetOption);
     }
 
     if (price !== null && tradeStockPrice) {
       const numPrice = parseFloat(price.toString()) || 0;
+      const currSym = tradeStockPrice.getAttribute('data-currency-symbol') || '฿';
+      const fxRate = parseFloat(tradeStockPrice.getAttribute('data-fx-rate') || '1') || 1;
+      const isThai = tradeStockPrice.getAttribute('data-is-thai') === '1' || currSym === '฿';
+
       tradeStockPrice.setAttribute('data-price', numPrice.toString());
-      tradeStockPrice.textContent = '฿' + numPrice.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+      if (!isThai) {
+        tradeStockPrice.innerHTML = `${currSym}${numPrice.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })} <span class="text-xs text-muted font-normal">(≈ ฿${(numPrice * fxRate).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })})</span>`;
+      } else {
+        tradeStockPrice.textContent = '฿' + numPrice.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
     }
 
     const modalHeaderTitle = document.getElementById('modal_trade_header_title');
@@ -199,6 +542,16 @@ function initSmartPort() {
       } else {
         tradeSubmitBtn.className = 'btn btn-buy btn-full modal-btn-submit';
         tradeSubmitBtn.textContent = 'ยืนยันคำสั่งซื้อ (BUY)';
+      }
+    }
+
+    // Default quantity
+    if (tradeQtyInput) {
+      const ctx = getTradeContext();
+      if (type === 'SELL') {
+        tradeQtyInput.value = ctx.heldQty > 0 ? Math.min(100, ctx.heldQty) : 1;
+      } else {
+        tradeQtyInput.value = (ctx.maxAllowedQty > 0) ? Math.min(100, ctx.maxAllowedQty) : 100;
       }
     }
 
@@ -490,13 +843,13 @@ function initSmartPort() {
       downBtn.innerHTML = SVG_ICONS.chevronDownSmall;
 
       const step = parseFloat(input.step) || 1;
-      const min = (input.min !== '') ? parseFloat(input.min) : -Infinity;
-      const max = (input.max !== '') ? parseFloat(input.max) : Infinity;
 
       function updateVal(delta) {
+        const dynamicMin = (input.min !== '') ? parseFloat(input.min) : -Infinity;
+        const dynamicMax = (input.max !== '') ? parseFloat(input.max) : Infinity;
         let current = parseFloat(input.value);
         if (isNaN(current)) {
-          current = (delta > 0) ? (min !== -Infinity ? min : 0) : (max !== Infinity ? max : 0);
+          current = (delta > 0) ? (dynamicMin !== -Infinity ? dynamicMin : 0) : (dynamicMax !== Infinity ? dynamicMax : 0);
         } else {
           current += delta;
         }
@@ -506,8 +859,8 @@ function initSmartPort() {
         const precision = (stepParts.length > 1) ? stepParts[1].length : 0;
         current = parseFloat(current.toFixed(precision));
 
-        if (current < min) current = min;
-        if (current > max) current = max;
+        if (current < dynamicMin) current = dynamicMin;
+        if (current > dynamicMax) current = dynamicMax;
 
         input.value = current;
         input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -611,9 +964,16 @@ function initSmartPort() {
     const toast = document.createElement('div');
     toast.className = `app-toast app-toast-${type}`;
     
-    const iconSvg = type === 'success'
-      ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#03C988" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
-      : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5C5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+    let iconSvg = '';
+    if (type === 'success') {
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#03C988" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+    } else if (type === 'error' || type === 'danger') {
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5C5C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+    } else if (type === 'warning') {
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFCC00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+    } else {
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B4D8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+    }
 
     toast.innerHTML = `
       <div class="app-toast-icon">${iconSvg}</div>

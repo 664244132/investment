@@ -45,11 +45,13 @@
 - เปรียบเทียบหุ้นพร้อมกันได้สูงสุด 4 บริษัท ควบคู่กับค่าเฉลี่ยกลุ่มอุตสาหกรรม (Peer Benchmark Average)
 - Normalized Performance Comparison Chart (Base 100%)
 - Matrix วิเคราะห์เปรียบเทียบ 5 หมวดหมู่พร้อมระบบ AI คัดเลือก Winner Badge อันดับ 1
+- ใช้โครงสร้าง Segmented Grid ไร้รอยต่อตามมาตรฐาน `.stats-bar.stats-bar-4`
 
 ### 📈 6. เครื่องมือจำลองการออมหุ้นแบบ DCA (`pages/dca.php`, `functions/dca.php`)
 - จำลองการลงทุนแบบถัวเฉลี่ยรายเดือน (Dollar-Cost Averaging Simulation)
 - รองรับการจำลอง Reinvest Dividend (DRIP: Dividend Reinvestment Plan)
 - ตาราง Amortization Breakdown รายเดือนและกราฟเปรียบเทียบ DCA vs Lump-Sum
+- กล่องสรุปผล `.dca-summary-grid` และ `.dca-comparison-box` ดีไซน์เรียบหรูไร้เส้นขอบซ้ำซ้อน
 
 ### 🔖 7. รายการติดตามหลักทรัพย์และแจ้งเตือนเป้าหมาย (`pages/watchlist.php`, `functions/watchlist.php`)
 - ระบบบันทึกหุ้นโปรด (Personal Watchlist)
@@ -60,16 +62,20 @@
 - บันทึก Trading Journal เชื่อมโยงกับประวัติคำสั่งซื้อขายจริงในพอร์ต
 - วิเคราะห์ Performance รายกลยุทธ์ (Win Rate, Profit Factor, Average Return, Strategy Breakdown Table)
 - บันทึก Emotion State, Rationale และ Lessons Learned
+- กล่อง `.journal-rationale-box` ดีไซน์ Dark Glass Surface สะอาดตา ไร้ไฮไลท์สีเหลืองกวนสายตา
 
 ### 💼 9. พอร์ตการลงทุนจำลองและระบบบริหารความเสี่ยง (`pages/portfolio.php`, `functions/portfolio.php`)
 - เงินทุนจำลอง 1,000,000 บาท พร้อมระบบหักค่าธรรมเนียมและภาษีซื้อขายจำลอง 0.157%
+- **Multi-Currency & FX Conversion Engine:** ระบบแปลงสกุลเงินอัจฉริยะ รองรับทั้งหุ้นไทย (SET/mai ในสกุล ฿ THB) และหุ้นต่างประเทศ (NASDAQ/NYSE ในสกุล $ USD) พร้อมแปลงอัตราแลกเปลี่ยน (FX Rate 35.50 THB/USD) ในการตัดเงินสด คำนวณมูลค่าพอร์ต และแสดงผล P&L อย่างแม่นยำ
+- **Buying Power Guardrail:** ระบบแจ้งเตือน Real-time บน Trade Modal ทันทีที่ยอดซื้อรวมเกินวงเงินสดคงเหลือ พร้อมล็อกปุ่มกดยืนยันคำสั่งซื้อ
+- **Max Quantity Clamping:** คำนวณขอบเขตจำนวนหุ้นอัตโนมัติ (ขายได้ไม่เกินหุ้นที่มี, ซื้อได้ไม่เกินกำลังเงินสดเทียบเท่าเงินบาท, และลดค่าต่ำสุดได้ 1 หุ้น) พร้อมปุ่มลัด `+100`, `+500`, `+1,000`, และ `MAX`
 - Asset Allocation Visualizer (สัดส่วนเงินสด vs ตราสารทุน)
 - Real-time P&L Tracking (Unrealized & Realized P&L)
 - Reusable Trade Modal Component (`templates/trade_modal.php`)
 
 ### 📑 10. ระบบออกรายงานและใบแจ้งยอดทางการ (`pages/export.php`, `functions/export.php`)
 - ส่งออกข้อมูลเป็นไฟล์ CSV (Active Holdings, Transaction History, Financial Statements)
-- ระบบสร้างใบแจ้งยอดพอร์ตการลงทุนอิเล็กทรอนิกส์ (Formal Account Statement) รองรับการสั่งพิมพ์ A4 / Save as PDF
+- ระบบสร้างใบแจ้งยอดพอร์ตการลงทุนอิเล็กทรอนิกส์ (Formal Account Statement) รองรับการสั่งพิมพ์ A4 / Save as PDF พร้อมแสดงผลสกุลเงินจริงและมูลค่าเทียบเท่าเงินบาท
 
 ---
 
@@ -81,6 +87,7 @@
 |       - Semantic HTML5, Modular CSS3 Architecture (variables, layout,         |
 |         components, fonts)                                                    |
 |       - Vanilla JavaScript (Zero External CDN Dependency)                     |
+|       - Multi-Currency Dynamic Price & FX Live Display                        |
 |       - Local SVG Vector Icons System (functions/icons.php)                   |
 |       - Native HTML5 Canvas 2D Financial Chart Engine (Chart.js Local UMD)    |
 +---------------------------------------+---------------------------------------+
@@ -100,8 +107,8 @@
 |   | - pages/journal.php      | - dca.php               |                  |   |
 |   | - pages/portfolio.php    | - watchlist.php         |                  |   |
 |   | - pages/export.php       | - journal.php           |                  |   |
-|   | - pages/health_check.php | - portfolio.php         |                  |   |
-|   | - pages/login.php        | - helpers.php           |                  |   |
+|   | - pages/health_check.php | - portfolio.php (FX)    |                  |   |
+|   | - pages/login.php        | - helpers.php (FX)      |                  |   |
 |   | - pages/register.php     | - icons.php             |                  |   |
 |   | - pages/logout.php       | - export.php            |                  |   |
 |   | - errors/403.php         |                         |                  |   |
@@ -110,7 +117,8 @@
 |   +--------------------------+-------------------------+------------------+   |
 |                                                                               |
 |   Security & Quality Assurance Layer:                                         |
-|   - Automated CLI Test Suite (tests/run_tests.php - 32/32 Passed 100% Green)  |
+|   - Automated CLI Test Suite (tests/run_tests.php - 44/44 Passed 100% Green)  |
+|   - Multi-Currency & FX Engine (isThaiStock, convertUsdToThb, formatStockPrice)|
 |   - Guard Clauses & Early Return Pattern                                      |
 |   - De Morgan's Laws Boolean Logic (!A || !B)                                 |
 |   - Output Escaping via e() helper against XSS                                |
@@ -142,9 +150,12 @@
 2. **Rule 6 (Zero Inline CSS):** ไม่มี Inline `style="..."` ใน HTML แท็ก (ใช้ CSS Custom Properties `--progress-pct`, `--score-pct`, `--alloc-pct` สำหรับค่า dynamic width)
 3. **Rule 1 (Zero Emojis in UI):** ใช้ไอคอน Local Vector SVG ผ่าน `icon('name')` เท่านั้น
 4. **Rule 2 (Zero CDN Dependency):** ไม่พึ่งพา CDN ภายนอก ไฟล์ CSS, JS, Chart.js และฟอนต์ WOFF2 ทั้ง 34 ไฟล์ โหลดจากเครื่อง Local 100%
-5. **DRY Principle (Don't Repeat Yourself):** รวมศูนย์ฟังก์ชันและการประกาศ SVG Icons ใน `js/main.js` และ `functions/helpers.php`
-6. **Automated Testing:** ชุดทดสอบอัตโนมัติ `tests/run_tests.php` รันตรวจสอบไวยากรณ์ ความปลอดภัย และความแม่นยำของโมเดลการเงิน 32 รายการ
-7. **Rule 10 & 11 Compliance:** โค้ดเตรียมคำสั่ง SQL สำหรับให้ผู้ใช้รันเอง และไม่ทำ Git Commit/Push โดยไม่ได้รับคำสั่ง
+5. **Rule 3 & 5 (Flat Button Interactions & Bespoke Styling):** ปุ่มไม่มีอนิเมชันลอยตัว `translateY` และไม่มีแสงฟุ้ง Box-Shadow พร้อมปุ่ม `.btn-outline` สไตล์พื้นหลังทองคำตัวอักษรเข้ม และ `.btn-outline.text-loss` สไตล์พื้นหลังสีแดงไอคอนขาว
+6. **Rule 9 (Clean Uniform Borders — No Accent Stripes):** ทุก Card, Row, Container, Box และ Toast Alert ใช้เส้นขอบบาง 1px สม่ำเสมอรอบด้าน ไร้เส้นแถบสีหนาด้านข้างหรือด้านบน
+7. **Top-Center Toast Notifications:** ระบบแจ้งเตือนแสดงผลกึ่งกลางด้านบนของหน้าจอ (Top-Center) บนพื้นผิวกระจก Dark Glass หรูหรา
+8. **DRY Principle (Don't Repeat Yourself):** รวมศูนย์ฟังก์ชันและการประกาศ SVG Icons ใน `js/main.js` และ `functions/helpers.php`
+9. **Automated Testing:** ชุดทดสอบอัตโนมัติ `tests/run_tests.php` รันตรวจสอบไวยากรณ์ ความปลอดภัย และความแม่นยำของโมเดลการเงินและ Multi-Currency FX Engine รวม 44 รายการ (100% Green)
+10. **Rule 10 & 11 Compliance:** โค้ดเตรียมคำสั่ง SQL สำหรับให้ผู้ใช้รันเอง และไม่ทำ Git Commit/Push โดยไม่ได้รับคำสั่ง
 
 ---
 
@@ -178,17 +189,17 @@ investment/
 │   ├── dca.php              # DCA Compounding Engine & DRIP Simulator
 │   ├── export.php           # CSV Exporter & Statement Generator
 │   ├── financial_models.php # Altman Z-Score & Piotroski F-Score Statistical Models
-│   ├── helpers.php          # Formatting, XSS Escaping, CSRF & Score Colors
+│   ├── helpers.php          # Formatting, FX Conversion, XSS Escaping, CSRF & Score Colors
 │   ├── icons.php            # SVG Vector Icon Dictionary (Icons Only)
 │   ├── journal.php          # Trading Journal CRUD & Performance Analytics
 │   ├── market_api.php       # Live Market Data Ingestion & 60s DB Cache
-│   ├── portfolio.php        # Paper Trading, Average Cost & P&L Calculator
+│   ├── portfolio.php        # Paper Trading, FX Conversion, Average Cost & P&L Calculator
 │   ├── stocks.php           # Fundamentals, Ratios & Financial Statements
 │   └── watchlist.php        # Watchlist Items, Target Prices & Alerts
 ├── js/
 │   ├── chart.umd.min.js     # Local Chart.js v4.4.1 Bundle (Zero External CDN)
 │   ├── chart_engine.js      # Interactive Canvas 2D Chart Controller
-│   └── main.js              # UI Interactivity, Dropdowns, Steppers & SVG_ICONS
+│   └── main.js              # UI Interactivity, Dropdowns, Steppers, Multi-Currency & SVG_ICONS
 ├── markdowns/               # Developer Playbooks, Coding Guides & Rules
 │   ├── aboutProject.md      # โครงสร้างและสถาปัตยกรรมโปรเจกต์ (เอกสารนี้)
 │   ├── CSSCodingGuide.md    # แนวทางการเขียน CSS คุณภาพสูง
@@ -217,9 +228,9 @@ investment/
 │   ├── flash.php            # Flash Alert Message Component
 │   ├── footer.php           # Global Footer & Script Bundle
 │   ├── header.php           # Global Header, Navigation & Meta Tags
-│   └── trade_modal.php      # Reusable Paper Trade Order Modal
+│   └── trade_modal.php      # Reusable Paper Trade Order Modal (Multi-Currency Support)
 ├── tests/
-│   └── run_tests.php        # Automated CLI Test Suite (32/32 Tests 100% Green)
+│   └── run_tests.php        # Automated CLI Test Suite (44/44 Tests 100% Green)
 ├── database_schema.sql      # โครงสร้างฐานข้อมูล DDL และ Seed Data
 ├── DESIGN.md                # ระบบดีไซน์ 60-30-5-5 & Icons Only
 ├── PRODUCT.md               # วิสัยทัศน์ผลิตภัณฑ์และกลุ่มผู้ใช้งาน

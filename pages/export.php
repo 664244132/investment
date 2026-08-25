@@ -76,7 +76,7 @@ require_once __DIR__ . '/../templates/header.php';
           </p>
         </div>
         <div class="d-flex gap-sm">
-          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline btn-sm">
+          <a href="<?= e(BASE_URL) ?>/pages/portfolio.php" class="btn btn-outline">
             <?= icon('wallet', '', 14) ?> กลับไปพอร์ตของฉัน
           </a>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
@@ -248,6 +248,8 @@ require_once __DIR__ . '/../templates/header.php';
                   <?php $idx = 1; foreach ($holdings as $h): 
                     $unrealizedPnlVal = (float)($h['unrealized_pnl'] ?? 0.0);
                     $unrealizedPnlPctVal = (float)($h['unrealized_pnl_pct'] ?? $h['return_percent'] ?? 0.0);
+                    $isThaiH = isThaiStock($h['market'], $h['symbol']);
+                    $currSymH = $isThaiH ? '฿' : '$';
                   ?>
                     <tr>
                       <td class="th-center text-muted"><?= $idx++ ?></td>
@@ -257,8 +259,8 @@ require_once __DIR__ . '/../templates/header.php';
                       <td><?= e($h['name_th'] ?: $h['name_en']) ?></td>
                       <td class="th-center text-xs text-muted"><?= e($h['market']) ?> · <?= e($h['sector']) ?></td>
                       <td class="num font-bold"><?= number_format((int)$h['quantity']) ?></td>
-                      <td class="num">฿<?= number_format((float)$h['average_price'], 2) ?></td>
-                      <td class="num">฿<?= number_format((float)$h['current_price'], 2) ?></td>
+                      <td class="num"><?= $currSymH . number_format((float)$h['average_price'], 2) ?></td>
+                      <td class="num"><?= $currSymH . number_format((float)$h['current_price'], 2) ?></td>
                       <td class="num font-bold">฿<?= number_format((float)$h['market_value'], 2) ?></td>
                       <td class="num <?= getPnlColorClass($unrealizedPnlVal) ?>">
                         <?= ($unrealizedPnlVal >= 0 ? '+' : '') ?>฿<?= number_format($unrealizedPnlVal, 2) ?>
@@ -289,7 +291,7 @@ require_once __DIR__ . '/../templates/header.php';
                   <th>รหัสหลักทรัพย์</th>
                   <th class="th-right">จำนวนหุ้น</th>
                   <th class="th-right">ราคาต่อหุ้น</th>
-                  <th class="th-right">มูลค่ารวมสุทธิ</th>
+                  <th class="th-right">มูลค่ารวมสุทธิ (บาท)</th>
                   <th class="th-right">ค่าธรรมเนียม</th>
                   <th class="th-right">กำไร / ขาดทุนรับรู้</th>
                 </tr>
@@ -306,6 +308,8 @@ require_once __DIR__ . '/../templates/header.php';
                     $isBuy = ($t['transaction_type'] === 'BUY');
                     $typeTh = $isBuy ? 'ซื้อ (BUY)' : 'ขาย (SELL)';
                     $pnl = $t['realized_pnl'] !== null ? (float)$t['realized_pnl'] : null;
+                    $isThaiT = isThaiStock($t['market'] ?? 'SET', $t['symbol']);
+                    $currSymT = $isThaiT ? '฿' : '$';
                   ?>
                     <tr>
                       <td class="text-xs text-muted"><?= formatThaiDate($t['created_at'], true) ?></td>
@@ -315,7 +319,7 @@ require_once __DIR__ . '/../templates/header.php';
                       </td>
                       <td class="font-bold font-mono text-gold"><?= e($t['symbol']) ?></td>
                       <td class="num"><?= number_format((int)$t['quantity']) ?></td>
-                      <td class="num">฿<?= number_format((float)$t['price'], 2) ?></td>
+                      <td class="num"><?= $currSymT . number_format((float)$t['price'], 2) ?></td>
                       <td class="num font-bold">฿<?= number_format((float)$t['total_amount'], 2) ?></td>
                       <td class="num text-muted text-xs">฿<?= number_format((float)$t['fee'], 2) ?></td>
                       <td class="num font-bold <?= $pnl !== null ? getPnlColorClass($pnl) : '' ?>">

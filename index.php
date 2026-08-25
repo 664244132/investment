@@ -145,8 +145,8 @@ require_once __DIR__ . '/templates/header.php';
                   </span>
                 </button>
 
-                <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=<?= e($stock['symbol']) ?>" class="btn btn-outline btn-sm" title="เปรียบเทียบ <?= e($stock['symbol']) ?> กับหุ้นคู่แข่ง">
-                  <?= icon('scale', 'text-gold', 12) ?> เปรียบเทียบคู่แข่ง
+                <a href="<?= e(BASE_URL) ?>/pages/compare.php?symbols=<?= e($stock['symbol']) ?>" class="btn btn-outline btn-sm" title="เปรียบเทียบ <?= e($stock['symbol']) ?> กับหุ้นคู่แข่ง" aria-label="เปรียบเทียบ <?= e($stock['symbol']) ?> กับหุ้นคู่แข่ง">
+                  <?= icon('scale', '', 16) ?>
                 </a>
               </div>
               <p class="hero-company-name">

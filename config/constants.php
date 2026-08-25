@@ -29,9 +29,10 @@ if (!defined('APP_INIT')) {
     define('DB_PASS', '');
     define('DB_CHARSET', 'utf8mb4');
 
-    // การตั้งค่าพอร์ตการลงทุนจำลอง
+    // การตั้งค่าพอร์ตการลงทุนจำลองและการแลกเปลี่ยนสกุลเงิน (Multi-Currency & FX)
     define('DEFAULT_PORTFOLIO_CASH', 1000000.00); // เงินทุนตั้งต้น 1,000,000 บาท
     define('SIMULATED_BROKER_FEE_RATE', 0.00157); // ค่าคอมมิชชันจำลอง 0.157%
+    define('DEFAULT_USD_THB_RATE', 35.50);        // อัตราแลกเปลี่ยนอ้างอิงมาตรฐาน 1 USD = 35.50 THB
 
     // การตั้งค่าเซสชัน (Session Security)
     define('SESSION_NAME', 'AI_INVEST_SESSION');

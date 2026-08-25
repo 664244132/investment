@@ -24,8 +24,12 @@ $user = getCurrentUser();
 $isUserLoggedIn = isLoggedIn();
 
 // รับรายชื่อหุ้นที่ต้องการเปรียบเทียบจาก $_GET['symbols']
-$rawSymbols = (string)($_GET['symbols'] ?? 'DELTA,NVDA,PTT');
-$symbolArray = array_filter(array_map('trim', explode(',', $rawSymbols)));
+$rawSymbols = $_GET['symbols'] ?? 'DELTA,NVDA,PTT';
+if (is_array($rawSymbols)) {
+    $symbolArray = array_filter(array_map('trim', array_map('strval', $rawSymbols)));
+} else {
+    $symbolArray = array_filter(array_map('trim', explode(',', (string)$rawSymbols)));
+}
 
 if (empty($symbolArray)) {
     $symbolArray = ['DELTA', 'NVDA', 'PTT'];
@@ -91,7 +95,7 @@ require_once __DIR__ . '/../templates/header.php';
             วิเคราะห์จุดแข็ง-จุดอ่อน เปรียบเทียบอัตราส่วนงบการเงิน และโมเดลคะแนน AI สรุปผู้ชนะในแต่ละมิติ (สูงสุด 4 บริษัท)
           </p>
         </div>
-        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-outline btn-sm">
+        <a href="<?= e(BASE_URL) ?>/pages/screener.php" class="btn btn-outline">
           <?= icon('filter', '', 14) ?> คัดกรองหุ้นใน Screener
         </a>
       </div>
@@ -244,7 +248,7 @@ require_once __DIR__ . '/../templates/header.php';
                       </a>
                       <span class="badge badge-neutral badge-xs"><?= e($s['market']) ?> · <?= e($s['sector']) ?></span>
                       <span class="compare-price-val">
-                        ฿<?= number_format((float)$s['current_price'], 2) ?>
+                        <?= formatStockPrice((float)$s['current_price'], $s['market'], $s['symbol']) ?>
                       </span>
                     </div>
                   </th>
@@ -342,10 +346,10 @@ require_once __DIR__ . '/../templates/header.php';
               </tr>
 
               <tr>
-                <td class="metric-title-cell">กำไรต่อหุ้น (EPS - บาท)</td>
+                <td class="metric-title-cell">กำไรต่อหุ้น (EPS)</td>
                 <?php foreach ($comparedStocks as $s): ?>
                   <td class="stock-val-cell">
-                    <?= $s['eps'] !== null ? '฿' . number_format((float)$s['eps'], 2) : '-' ?>
+                    <?= $s['eps'] !== null ? getStockCurrencySymbol($s['market'], $s['symbol']) . number_format((float)$s['eps'], 2) : '-' ?>
                   </td>
                 <?php endforeach; ?>
                 <td class="benchmark-val-cell">-</td>
@@ -504,7 +508,7 @@ require_once __DIR__ . '/../templates/header.php';
                   $isWinner = ($winners['market_cap'] ?? '') === $s['symbol'];
                 ?>
                   <td class="stock-val-cell <?= $isWinner ? 'winner-cell' : '' ?>">
-                    ฿<?= formatCompactNumber((float)$s['market_cap']) ?>
+                    <?= getStockCurrencySymbol($s['market'], $s['symbol']) . formatCompactNumber((float)$s['market_cap']) ?>
                   </td>
                 <?php endforeach; ?>
                 <td class="benchmark-val-cell">-</td>

@@ -335,7 +335,7 @@ function getAllSectors(PDO $pdo): array
  */
 function screenStocks(PDO $pdo, array $filters = []): array
 {
-    $sql = "SELECT s.id, s.symbol, s.name_th, s.name_en, s.sector, s.current_price, s.percent_change,
+    $sql = "SELECT s.id, s.symbol, s.name_th, s.name_en, s.market, s.sector, s.current_price, s.percent_change,
                    fm.pe_ratio, fm.eps, fm.roe, fm.dividend_yield, fm.revenue_growth_yoy, fm.de_ratio,
                    ai.total_score, ai.recommendation
             FROM stocks s

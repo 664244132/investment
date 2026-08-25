@@ -9,7 +9,7 @@
 ระบบมีชุดทดสอบอัตโนมัติ 2 ระดับ ครอบคลุมการทำงานทั้งผ่าน CLI และ Web UI:
 
 ### 1.1 Automated CLI Test Suite Runner (`tests/run_tests.php`)
-รันการทดสอบ 32 รายการครอบคลุม:
+รันการทดสอบ 44 รายการครอบคลุม 12 หมวดหมู่:
 1. **Strict Types:** ตรวจสอบ `declare(strict_types=1);` ในไฟล์ PHP ทุกไฟล์ (37 ไฟล์รวม `errors/`)
 2. **De Morgan's Laws:** ตรวจสอบเงื่อนไข Boolean ปราศจาก `!(A && B)` หรือ `!(A || B)`
 3. **Zero External CDN:** ยืนยันว่าไม่มีการเรียกใช้งาน Assets จากภายนอก
@@ -19,9 +19,12 @@
 7. **DCA Compounding Engine:** ทดสอบการคำนวณเงินต้น, การทบต้น (DRIP), และตาราง Amortization
 8. **SVG Vector Icons:** ทดสอบการเรนเดอร์ไอคอน Vector จาก `functions/icons.php`
 9. **Database Connectivity:** ตรวจสอบการเชื่อมต่อฐานข้อมูลและตารางหลัก
+10. **Paper Trading Guardrails:** ทดสอบการปฏิเสธคำสั่งซื้อ-ขายที่มีจำนวนหุ้น `<= 0`, ประเภทคำสั่งไม่ถูกต้อง, หรือพอร์ต/หุ้นที่ไม่มีอยู่จริง
+11. **UI Template & Markdown Design Integrity:** ตรวจสอบ Trade Modal Alert Box, ปุ่ม Quick MAX, CSS Segmented Grids, และการลบไฮไลท์สีเหลืองใน Journal
+12. **Multi-Currency & FX Engine:** ตรวจสอบการจำแนกสกุลเงินหุ้นไทย (SET/MAI) และสากล (NASDAQ/NYQ), แปลงค่า USD ⇄ THB ด้วย FX Rate 35.50, และ Guardrail ตรวจสอบวงเงินซื้อในสกุลเงินบาทอย่างถูกต้อง
 
 ```powershell
-# รันชุดทดสอบอัตโนมัติทั้งหมด (ผลลัพธ์ต้อง 100% Green / 32 Passed)
+# รันชุดทดสอบอัตโนมัติทั้งหมด (ผลลัพธ์ต้อง 100% Green / 44 Passed)
 C:\xampp\php\php.exe tests/run_tests.php
 ```
 
@@ -149,6 +152,35 @@ curl "http://localhost/investment/api/search.php?q=AAPL"
   1. ในตาราง `transactions` ให้ใช้ฟิลด์ `created_at` สำหรับวันเวลาที่ทำรายการเสมอ
   2. คำนวณมูลค่าสุทธิด้วยสูตร: `($isBuy ? $total_amount + $fee : $total_amount - $fee)`
 
+### 🔴 ปัญหา 7: ปุ่มกดยืนยันคำสั่งซื้อ (BUY) ใน Trade Modal ถูก Disabled
+- **สาเหตุ:** ยอดซื้อรวมค่าคอมมิชชันเกินมูลค่าเงินสดคงเหลือ (`cash_balance`)
+- **วิธีแก้:**
+  1. กล่องแจ้งเตือน `#modal_trade_alert` จะแสดงยอดที่ขาดแบบ Real-time ให้ปรับลดจำนวนหุ้นลง
+  2. หรือกดปุ่มลัด `MAX (สูงสุด)` เพื่อให้ระบบคำนวณจำนวนหุ้นสูงสุดที่สามารถซื้อได้ด้วยเงินสดที่มีอยู่ทันที
+
+### 🔴 ปัญหา 8: เมื่อพิมพ์ตัวเลขจำนวนหุ้น 9999+ แล้วตัวเลขถูกปรับลดลงอัตโนมัติ
+- **สาเหตุ:** ระบบ Automatic Quantity Clamping ทำงานเพื่อความปลอดภัย โดยล็อกไม่ให้ขายเกินจำนวนหุ้นที่ถือครองจริง (`Held Shares`) และล็อกไม่ให้ซื้อเกินเงินสดที่มี
+- **วิธีแก้:** การทำงานนี้เป็นไปตาม Requirement ทางการเงินที่ถูกต้อง หากต้องการขายเพิ่มต้องมีหุ้นในพอร์ตเพิ่มขึ้นก่อน
+
+### 🔴 ปัญหา 9: ซื้อหุ้นต่างประเทศ (เช่น NVDA ราคา $208.48) แล้วคำนวณเงินสดไม่ตรงกับความเป็นจริง
+- **สาเหตุ:** หุ้นสากล (NASDAQ/NYQ) ซื้อขายในสกุลเงินดอลลาร์ ($ USD) แต่เงินสดในพอร์ตเป็นสกุลเงินบาท (฿ THB)
+- **วิธีแก้:**
+  1. ใช้ฟังก์ชัน `isThaiStock($market, $symbol)` เพื่อแยกแยะหุ้นไทยและหุ้นต่างประเทศ
+  2. แปลงราคาเป็นเงินบาทด้วย `convertUsdToThb($price, DEFAULT_USD_THB_RATE)` (FX Rate 35.50 THB/USD) ก่อนหักเงินสดหรือคำนวณกำลังซื้อ (Buying Power)
+  3. ในส่วนแสดงผล ให้ใช้ `formatStockPrice($price, $market, $symbol)` หรือแสดงผลแบบ Dual-Currency `$208.48 (~฿7,401.04)`
+
+### 🔴 ปัญหา 10: กล่องแจ้งเตือน Toast Alert ไม่แสดงตรงกลาง หรือมีเส้นแถบสีเขียวหนาที่ขอบ
+- **สาเหตุ:** คลาส CSS `.app-toast-container` ยังคงตั้งค่าไว้ที่มุมขวาบน หรือมีสไตล์ `border-left: 4px solid ...` หนาด้านข้าง
+- **วิธีแก้:**
+  1. ใน [`css/components.css`](../css/components.css) ให้กำหนดตำแหน่ง `.app-toast-container` เป็น `top: 1.5rem; left: 50%; transform: translateX(-50%);`
+  2. ลบ `border-left: 4px solid ...` ออกทั้งหมด และใช้เส้นขอบบาง 1px สม่ำเสมอรอบด้าน `border: 1px solid rgba(255, 204, 0, 0.25)` บนพื้นผิวกระจก Dark Glass (`#251D1D`)
+
+### 🔴 ปัญหา 11: ปุ่ม `.btn-outline` หรือปุ่มลบใน Watchlist แสดงผลสีไม่ถูกต้อง
+- **สาเหตุ:** สับสนระหว่างปุ่ม Outline สีทอง (`.btn-outline`) กับปุ่ม Action สีแดง (`.btn-outline.text-loss`)
+- **วิธีแก้:**
+  1. ปุ่ม **"วิเคราะห์"** ทั่วไป ให้ใช้ `.btn-outline` (พื้นหลังสีทองคำ `linear-gradient(180deg, #FFD633 0%, #FFCC00 100%)` และตัวอักษรสีเข้ม `#1A1300 !important`)
+  2. ปุ่ม **"ลบออกจาก Watchlist"** หรือ **"ออกจากระบบ"** ให้ใช้ `.btn.btn-outline.btn-sm.text-loss` (พื้นหลังสีแดงทับทิม `linear-gradient(180deg, #FF3333 0%, #D60000 100%)` และตัวอักษร/ไอคอนสีขาว `#FFFFFF !important`)
+
 ---
 
 ## 5. กฎเหล็กที่ AI Agents ต้องปฏิบัติตามเสมอ (Mandatory Rules Compliance)
@@ -157,6 +189,9 @@ curl "http://localhost/investment/api/search.php?q=AAPL"
 2. **ห้าม Push หรือ Commit ขึ้น Git เด็ดขาด** (Rule 11) - ผู้ใช้จะเป็นผู้ควบคุม Version Control เอง
 3. **ห้ามใช้ Emojis บน UI** (Rule 1) - ให้ใช้ฟังก์ชัน `icon('name')` จาก `functions/icons.php` เท่านั้น
 4. **ห้ามใช้ External CDN** (Rule 2) - ต้องใช้ Local Assets 100%
-5. **ห้ามเขียน Inline `style="..."`** (Rule 6) - ต้องใช้ CSS Classes และ CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)
-6. **ใช้ De Morgan's Laws เสมอ** - เขียนเงื่อนไขในรูปแบบ `!A || !B` หรือ `!A && !B` หลีกเลี่ยง `!(A && B)`
-7. **Strict Types 100%** - ทุกไฟล์ PHP ต้องขึ้นต้นด้วย `declare(strict_types=1);` และระบุ Type Hinting
+5. **ปุ่มต้องเป็นการตอบสนองแบบ Flat สถิต** (Rule 3) - ห้ามมีอนิเมชันลอยตัว `translateY` และห้ามมีแสงฟุ้ง Box-Shadow
+6. **ห้ามเขียน Inline `style="..."`** (Rule 6) - ต้องใช้ CSS Classes และ CSS Custom Properties (`--progress-pct`, `--score-pct`, `--alloc-pct`)
+7. **ห้ามใช้เส้นแถบสีหัวพื้นหลังหรือขอบหนาด้านข้าง** (Rule 9) - ทุก Container, Card, Row และ Alert ต้องใช้เส้นขอบบาง 1px สม่ำเสมอรอบด้าน (Uniform 1px Border)
+8. **ใช้ De Morgan's Laws เสมอ** - เขียนเงื่อนไขในรูปแบบ `!A || !B` หรือ `!A && !B` หลีกเลี่ยง `!(A && B)`
+9. **Strict Types 100%** - ทุกไฟล์ PHP ต้องขึ้นต้นด้วย `declare(strict_types=1);` และระบุ Type Hinting
+

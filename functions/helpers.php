@@ -26,6 +26,98 @@ function e(?string $value): string
 }
 
 /**
+ * ตรวจสอบว่าหุ้นเป็นหุ้นไทย (SET / mai) หรือหุ้นต่างประเทศ
+ *
+ * @param array|string|null $stockOrMarket ข้อมูลหุ้น (array) หรือชื่อตลาด (string เช่น 'SET', 'NASDAQ')
+ * @param string $symbol ชื่อย่อหุ้น
+ * @return bool true หากเป็นหุ้นไทย
+ */
+function isThaiStock(array|string|null $stockOrMarket = 'SET', string $symbol = ''): bool
+{
+    $market = 'SET';
+    $sym = $symbol;
+
+    if (is_array($stockOrMarket)) {
+        $market = (string)($stockOrMarket['market'] ?? 'SET');
+        $sym = (string)($stockOrMarket['symbol'] ?? $sym);
+    } elseif ($stockOrMarket !== null) {
+        $market = (string)$stockOrMarket;
+    }
+
+    $marketUpper = strtoupper(trim($market));
+    
+    // หากตลาดเป็น SET, mai หรือลงท้ายด้วย .BK ถือเป็นหุ้นไทย
+    if ($marketUpper === 'SET' || $marketUpper === 'MAI' || str_ends_with(strtoupper($sym), '.BK')) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * ดึงรหัสสกุลเงินของหุ้น ('THB' หรือ 'USD')
+ *
+ * @param array|string|null $stockOrMarket
+ * @param string $symbol
+ * @return string
+ */
+function getStockCurrency(array|string|null $stockOrMarket = 'SET', string $symbol = ''): string
+{
+    return isThaiStock($stockOrMarket, $symbol) ? 'THB' : 'USD';
+}
+
+/**
+ * ดึงสัญลักษณ์สกุลเงินของหุ้น ('฿' หรือ '$')
+ *
+ * @param array|string|null $stockOrMarket
+ * @param string $symbol
+ * @return string
+ */
+function getStockCurrencySymbol(array|string|null $stockOrMarket = 'SET', string $symbol = ''): string
+{
+    return isThaiStock($stockOrMarket, $symbol) ? '฿' : '$';
+}
+
+/**
+ * แปลงมูลค่าจากดอลลาร์สหรัฐ (USD) เป็นบาทไทย (THB)
+ *
+ * @param float $amountInUsd จำนวนเงินดอลลาร์
+ * @param float $rate อัตราแลกเปลี่ยน (ค่าเริ่มต้น 35.50)
+ * @return float จำนวนเงินบาท
+ */
+function convertUsdToThb(float $amountInUsd, float $rate = DEFAULT_USD_THB_RATE): float
+{
+    return $amountInUsd * $rate;
+}
+
+/**
+ * แปลงมูลค่าจากบาทไทย (THB) เป็นดอลลาร์สหรัฐ (USD)
+ *
+ * @param float $amountInThb จำนวนเงินบาท
+ * @param float $rate อัตราแลกเปลี่ยน (ค่าเริ่มต้น 35.50)
+ * @return float จำนวนเงินดอลลาร์
+ */
+function convertThbToUsd(float $amountInThb, float $rate = DEFAULT_USD_THB_RATE): float
+{
+    return ($rate > 0) ? ($amountInThb / $rate) : 0.0;
+}
+
+/**
+ * จัดรูปแบบราคาหุ้นพร้อมสัญลักษณ์สกุลเงินจริง (เช่น ฿148.50 หรือ $208.48)
+ *
+ * @param float $price ราคาหุ้น
+ * @param array|string|null $stockOrMarket ข้อมูลหุ้นหรือตลาด
+ * @param string $symbol ชื่อย่อหุ้น
+ * @param int $decimals ทศนิยม
+ * @return string
+ */
+function formatStockPrice(float $price, array|string|null $stockOrMarket = 'SET', string $symbol = '', int $decimals = 2): string
+{
+    $sym = getStockCurrencySymbol($stockOrMarket, $symbol);
+    return $sym . number_format($price, $decimals, '.', ',');
+}
+
+/**
  * จัดรูปแบบตัวเลขจำนวนเงิน (เช่น 1,000,000.00 บาท)
  *
  * @param float $amount จำนวนเงิน

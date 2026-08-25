@@ -199,7 +199,7 @@ require_once __DIR__ . '/../templates/header.php';
                       <div class="text-xs text-muted"><?= e($s['sector']) ?></div>
                     </td>
                     <td class="num font-bold">
-                      ฿<?= number_format((float)$s['current_price'], 2) ?>
+                      <?= formatStockPrice((float)$s['current_price'], $s['market'], $s['symbol']) ?>
                     </td>
                     <td class="num <?= getPnlColorClass((float)$s['percent_change']) ?>">
                       <?= formatPercent((float)$s['percent_change']) ?>
@@ -232,8 +232,8 @@ require_once __DIR__ . '/../templates/header.php';
                       </span>
                     </td>
                     <td class="th-center">
-                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" class="btn btn-outline btn-sm">
-                        <?= icon('bot', '', 12) ?> วิเคราะห์
+                      <a href="<?= e(BASE_URL) ?>/index.php?symbol=<?= e($s['symbol']) ?>" class="btn btn-outline btn-sm" title="วิเคราะห์ <?= e($s['symbol']) ?>" aria-label="วิเคราะห์ <?= e($s['symbol']) ?>">
+                        <?= icon('bot', '', 14) ?>
                       </a>
                     </td>
                   </tr>
