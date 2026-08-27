@@ -4,6 +4,19 @@
 
 ---
 
+## 📌 [Version 1.23.0] - 2026-08-27
+### 🌐 Dynamic BASE_URL Auto-Detection for InfinityFree & Production Deployments
+
+- **1. ปรับปรุงการคำนวณ Path อัตโนมัติ ([`config/constants.php`](file:///c:/xampp/htdocs/investment/config/constants.php)):**
+  - แก้ไขปัญหา CSS / JS ไม่โหลด (404 Not Found) เมื่อ Deploy ขึ้น **InfinityFree Web Hosting** เนื่องจากเดิมมีการ Hardcode ค่า `BASE_URL = '/investment'`
+  - เพิ่มระบบ **Dynamic Auto-Detection** คำนวณ `BASE_URL` อัตโนมัติจาก `DOCUMENT_ROOT` และ `SCRIPT_NAME`:
+    - **บน Localhost (XAMPP):** ตรวจพบ Subfolder `/investment` ให้อัตโนมัติ
+    - **บน InfinityFree / Custom Domain (`investment.freedev.app`):** ตรวจพบ Root Directory (`""`) ทำให้โหลดไฟล์ CSS/JS จาก `/css/...` และ `/js/...` ได้ถูกต้อง 100%
+  - เพิ่มการรองรับ Environment Variables สำหรับการเชื่อมต่อฐานข้อมูล MySQL (`DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME`)
+- **2. ยืนยันผลการทดสอบ:** ชุดทดสอบอัตโนมัติ 44/44 ผ่านฉลุย 100% และ Runtime Execution 18 หน้าเพจไม่มีข้อผิดพลาด
+
+---
+
 ## 📌 [Version 1.22.3] - 2026-08-25
 ### 🏷️ Icon-Only Action Button Styling Matching .btn-bookmark.bookmarked
 
